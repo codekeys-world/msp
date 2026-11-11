@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuel d'utilisateur — Administrateur | MSP</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#19352a;line-height:1.7;padding:2rem;max-width:900px;margin:0 auto;background:#fff}
+h1{font-size:1.8rem;color:#124b34;border-bottom:3px solid #198754;padding-bottom:.5rem;margin-bottom:1rem}
+h2{font-size:1.3rem;color:#167347;margin:1.5rem 0 .75rem;padding-left:.75rem;border-left:4px solid #198754}
+h3{font-size:1.05rem;color:#34a36c;margin:1rem 0 .5rem}
+p,li{font-size:.92rem;margin-bottom:.5rem}
+ul,ol{padding-left:1.5rem;margin-bottom:1rem}
+.badge{display:inline-block;background:#eaf6ee;color:#147044;font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:1rem;margin-right:.3rem;text-transform:uppercase;letter-spacing:.05em}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+th,td{padding:.5rem .75rem;border:1px solid #e8eee9;text-align:left}
+th{background:#eaf6ee;color:#124b34;font-weight:700}
+tr:nth-child(even){background:#fbfcfb}
+.cover{text-align:center;padding:3rem 0;border-bottom:2px solid #e8eee9;margin-bottom:2rem}
+.cover h1{border:none;text-align:center;font-size:2rem}
+.cover .subtitle{color:#7b8a81;font-size:1rem;margin-top:.5rem}
+.cover .version{color:#8a9890;font-size:.8rem;margin-top:1rem}
+.toc{background:#fbfcfb;border:1px solid #edf1ee;border-radius:.85rem;padding:1.2rem;margin:1.5rem 0}
+.toc h3{margin-top:0;color:#124b34}
+.toc ul{list-style:none;padding-left:0}
+.toc li{padding:.2rem 0}
+.toc a{color:#176640;text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.note{background:#edf4fc;border-left:4px solid #2563a5;padding:.75rem 1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0;font-size:.88rem}
+.warning{background:#fff4df;border-left:4px solid #b97c16;padding:.75rem 1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0;font-size:.88rem}
+footer{text-align:center;margin-top:3rem;padding-top:1rem;border-top:1px solid #e8eee9;color:#8a9890;font-size:.75rem}
+@media print{body{padding:1rem}h2{page-break-after:avoid}.note,.warning{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>📘 Manuel d'utilisateur</h1>
+  <p class="subtitle">Rôle : <strong>Administrateur</strong></p>
+  <p class="subtitle">Système de Gestion — Mutuelle du Personnel de la Sécurité Pénitentiaire (MSP)</p>
+  <p class="version">Version 1.0 — Novembre 2026</p>
+</div>
+
+<div class="toc">
+  <h3>📑 Table des matières</h3>
+  <ul>
+    <li><a href="#introduction">1. Introduction</a></li>
+    <li><a href="#connexion">2. Connexion au système</a></li>
+    <li><a href="#tableau">3. Tableau de bord</a></li>
+    <li><a href="#adherents">4. Gestion des adhérents</a></li>
+    <li><a href="#missions">5. Ordres de mission</a></li>
+    <li><a href="#pv">6. Procès-verbaux</a></li>
+    <li><a href="#courriers">7. Courriers</a></li>
+    <li><a href="#plaintes">8. Plaintes</a></li>
+    <li><a href="#convocations">9. Convocations</a></li>
+    <li><a href="#cas-sociaux">10. Cas sociaux</a></li>
+    <li><a href="#prestations">11. Prestations</a></li>
+    <li><a href="#archives">12. Archives</a></li>
+    <li><a href="#finances">13. Gestion financière</a></li>
+    <li><a href="#materiel">14. Gestion du matériel</a></li>
+    <li><a href="#administration">15. Administration</a></li>
+    <li><a href="#profil">16. Mon profil</a></li>
+  </ul>
+</div>
+
+<h2 id="introduction">1. Introduction</h2>
+<p>Bienvenue dans le manuel d'utilisation du système de gestion de la <strong>Mutuelle du Personnel de la Sécurité Pénitentiaire (MSP)</strong>. En tant qu'<span class="badge">Administrateur</span>, vous disposez d'un accès complet à toutes les fonctionnalités du système.</p>
+<p>Ce manuel vous guide pas à pas à travers chaque module et fonctionnalité disponible.</p>
+
+<h2 id="connexion">2. Connexion au système</h2>
+<h3>2.1 Première connexion</h3>
+<ol>
+  <li>Ouvrez votre navigateur et accédez à l'adresse de l'application.</li>
+  <li>Entrez votre <strong>matricule</strong> et votre <strong>mot de passe</strong>.</li>
+  <li>Cliquez sur le bouton <strong>Se connecter</strong>.</li>
+</ol>
+<div class="note">💡 <strong>Conseil :</strong> Il est recommandé de changer votre mot de passe après votre première connexion via la section « Mon profil ».</div>
+
+<h3>2.2 Mot de passe oublié</h3>
+<ol>
+  <li>Sur la page de connexion, cliquez sur <strong>Mot de passe oublié ?</strong>.</li>
+  <li>Entrez votre adresse e-mail enregistrée.</li>
+  <li>Vous recevrez un e-mail avec un lien pour réinitialiser votre mot de passe.</li>
+</ol>
+
+<h2 id="tableau">3. Tableau de bord</h2>
+<p>Le tableau de bord est votre page d'accueil après la connexion. Il affiche :</p>
+<ul>
+  <li><strong>Vue d'ensemble :</strong> Nombre d'adhérents, missions, procès-verbaux, courriers et plaintes.</li>
+  <li><strong>Suivi des missions :</strong> État de validation et avancement des ordres de mission.</li>
+  <li><strong>Statistiques des adhérents :</strong> Répartition par genre et taux de féminisation.</li>
+  <li><strong>Suivi des courriers :</strong> Taux de traitement des courriers.</li>
+  <li><strong>Suivi des plaintes :</strong> Taux de traitement des plaintes.</li>
+  <li><strong>Actions rapides :</strong> Raccourcis vers les modules les plus utilisés.</li>
+</ul>
+
+<h2 id="adherents">4. Gestion des adhérents</h2>
+<p>Le module Adhérents permet de gérer les membres de la mutuelle.</p>
+<h3>4.1 Lister les adhérents</h3>
+<p>Accédez à <strong>Adhérents → Liste</strong> pour voir tous les membres enregistrés. Vous pouvez filtrer et rechercher par nom, matricule ou téléphone.</p>
+<h3>4.2 Créer un nouvel adhérent</h3>
+<ol>
+  <li>Cliquez sur <strong>+ Nouvel adhérent</strong>.</li>
+  <li>Remplissez le formulaire avec les informations personnelles (nom, prénom, date de naissance, etc.).</li>
+  <li>Ajoutez les informations familiales (conjoint, enfants) si nécessaire.</li>
+  <li>Uploadez une photo de profil.</li>
+  <li>Cliquez sur <strong>Enregistrer</strong>.</li>
+</ol>
+<h3>4.3 Consulter un adhérent</h3>
+<p>Cliquez sur le nom d'un adhérent pour voir son dossier complet : informations personnelles, famille, historique, etc.</p>
+<h3>4.4 Modifier un adhérent</h3>
+<p>Depuis la fiche d'un adhérent, cliquez sur <strong>Modifier</strong> pour mettre à jour ses informations.</p>
+<h3>4.5 Confectionner une carte membre</h3>
+<p>Depuis la fiche d'un adhérent, cliquez sur <strong>Confectionner la carte</strong> pour générer la carte membre officielle.</p>
+
+<h2 id="missions">5. Ordres de mission</h2>
+<p>Le module Ordres de mission permet de gérer les déplacements officiels du personnel.</p>
+<h3>5.1 Créer un ordre de mission</h3>
+<ol>
+  <li>Accédez à <strong>Missions → + Nouvel ordre</strong>.</li>
+  <li>Remplissez les informations : bénéficiaire, destination, date de départ, date de retour, motif.</li>
+  <li>Uploadez les documents justificatifs si nécessaire.</li>
+  <li>Enregistrez l'ordre de mission.</li>
+</ol>
+<h3>5.2 Valider un ordre de mission</h3>
+<p>Les ordres de mission en attente de validation peuvent être validés depuis la liste en cliquant sur <strong>Valider</strong>.</p>
+<h3>5.3 Modifier et rechercher</h3>
+<p>Vous pouvez modifier les ordres de mission et les rechercher par numéro, bénéficiaire ou date.</p>
+
+<h2 id="pv">6. Procès-verbaux</h2>
+<p>Le module Procès-verbaux permet de gérer les documents officiels des réunions.</p>
+<h3>6.1 Créer un procès-verbal</h3>
+<ol>
+  <li>Accédez à <strong>Procès-verbaux → + Nouveau PV</strong>.</li>
+  <li>Remplissez : numéro, objet, type de réunion, date, observation.</li>
+  <li>Uploadez le document PDF du PV.</li>
+  <li>Enregistrez.</li>
+</ol>
+<h3>6.2 Lister et consulter</h3>
+<p>La liste des PV affiche tous les procès-verbaux enregistrés. Cliquez sur un PV pour le consulter en détail.</p>
+
+<h2 id="courriers">7. Courriers</h2>
+<p>Le module Courriers permet de gérer les courriers entrants et sortants.</p>
+<h3>7.1 Enregistrer un courrier</h3>
+<ol>
+  <li>Accédez à <strong>Courriers → + Nouveau courrier</strong>.</li>
+  <li>Sélectionnez le type : <strong>Arrivée</strong> ou <strong>Départ</strong>.</li>
+  <li>Remplissez : référence, objet, correspondant, date.</li>
+  <li>Uploadez le document du courrier.</li>
+</ol>
+<h3>7.2 Transmettre un courrier</h3>
+<p>Un courrier peut être transmis à un autre utilisateur pour traitement via le bouton <strong>Transmettre</strong>.</p>
+
+<h2 id="plaintes">8. Plaintes</h2>
+<p>Le module Plaintes permet de gérer les réclamations des adhérents.</p>
+<h3>8.1 Enregistrer une plainte</h3>
+<ol>
+  <li>Accédez à <strong>Plaintes → + Nouvelle plainte</strong>.</li>
+  <li>Remplissez la date et l'observation détaillée.</li>
+  <li>Enregistrez.</li>
+</ol>
+<h3>8.2 Suivi des plaintes</h3>
+<p>La liste des plaintes affiche l'état de traitement de chaque réclamation.</p>
+
+<h2 id="convocations">9. Convocations</h2>
+<p>Le module Convocations permet de gérer les invitations aux réunions et événements.</p>
+<h3>9.1 Créer une convocation</h3>
+<ol>
+  <li>Accédez à <strong>Convocations → + Nouvelle convocation</strong>.</li>
+  <li>Remplissez la description et la date de la convocation.</li>
+  <li>Enregistrez.</li>
+</ol>
+
+<h2 id="cas-sociaux">10. Cas sociaux</h2>
+<p>Le module Cas sociaux permet de gérer les situations sociales des adhérents (maladie, accident, décès, retraite, etc.).</p>
+<h3>10.1 Types de cas sociaux</h3>
+<ul>
+  <li><strong>Maladie</strong> : Cas de maladie d'un adhérent.</li>
+  <li><strong>Accident de circulation</strong> : Accident subi par un adhérent.</li>
+  <li><strong>Radiation/Revocation/Retraite/Disciplinaire</strong> : Changement de statut professionnel.</li>
+  <li><strong>Décès</strong> : Décès d'un adhérent.</li>
+  <li><strong>Réforme/Invalidité</strong> : Situation de handicap.</li>
+  <li><strong>Décès d'adhérent</strong> : Gestion des droits des ayants droit.</li>
+  <li><strong>Retraite</strong> : Départ à la retraite.</li>
+</ul>
+
+<h2 id="prestations">11. Prestations</h2>
+<p>Le module Prestations permet de gérer les aides financières accordées aux adhérents.</p>
+<h3>11.1 Types de prestations</h3>
+<ul>
+  <li>Aide médicale</li>
+  <li>Aide funéraire</li>
+  <li>Aide à la naissance</li>
+  <li>Aide scolaire</li>
+  <li>Autres aides sociales</li>
+</ul>
+
+<h2 id="archives">12. Archives</h2>
+<p>Le module Archives permet de stocker et consulter les documents archivés.</p>
+<h3>12.1 Archiver un document</h3>
+<p>Un document peut être archivé depuis son module d'origine. Les archives sont consultables via <strong>Archives → Liste</strong>.</p>
+
+<h2 id="finances">13. Gestion financière</h2>
+<h3>13.1 Encaissements</h3>
+<p>Le module Encaissements permet d'enregistrer les recettes (cotisations, dons, etc.).</p>
+<h3>13.2 Dépenses</h3>
+<p>Le module Dépenses permet d'engager et suivre les dépenses de la mutuelle.</p>
+<h3>13.3 Achat et Vente de matériel</h3>
+<p>Les modules Achat et Vente permettent de gérer les transactions de matériel.</p>
+
+<h2 id="materiel">14. Gestion du matériel</h2>
+<p>Le module Matériel permet de suivre le parc matériel de la mutuelle : état, localisation, affectation.</p>
+
+<h2 id="administration">15. Administration</h2>
+<div class="note">🔒 Cette section est réservée aux rôles <strong>Administrateur</strong> et <strong>Super Administrateur (SYSADMIN)</strong>.</div>
+<h3>15.1 Gestion des utilisateurs</h3>
+<p>Depuis <strong>Administration → Utilisateurs</strong>, vous pouvez :</p>
+<ul>
+  <li><strong>Lister</strong> tous les utilisateurs du système.</li>
+  <li><strong>Activer/Désactiver</strong> les comptes des utilisateurs via le bouton toggle.</li>
+  <li>Consulter les informations de chaque utilisateur (rôle, email, téléphone, statut).</li>
+</ul>
+<div class="warning">⚠️ <strong>Attention :</strong> La désactivation d'un compte empêche l'utilisateur de se connecter. Un message « Votre compte a été désactivé » s'affichera à sa prochaine tentative de connexion.</div>
+
+<h2 id="profil">16. Mon profil</h2>
+<p>Depuis <strong>Mon profil</strong> (menu en haut à droite), vous pouvez :</p>
+<ul>
+  <li>Consulter vos informations personnelles.</li>
+  <li>Modifier vos coordonnées (téléphone, email).</li>
+  <li>Changer votre mot de passe.</li>
+  <li>Modifier votre photo de profil.</li>
+</ul>
+
+<footer>
+  <p>Manuel d'utilisateur — Rôle Administrateur | MSP — Version 1.0</p>
+  <p>© 2026 Mutuelle du Personnel de la Sécurité Pénitentiaire</p>
+</footer>
+
+</body>
+</html>
