@@ -40,8 +40,8 @@ jobs:
           image: postgres:15
           env:
             POSTGRES_DB: msp_test_db
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: my_secret_test_password
+            POSTGRES_USER: test@example.com
+            POSTGRES_PASSWORD: test_password
           ports:
             - 5432:5432
           options: >-
@@ -67,3 +67,8 @@ jobs:
             ./mvnw clean test
           env:
             ACTIVE_PROFILE: test
+            DB_HOST: localhost
+            DB_PORT: 5432
+            DB_NAME: msp_test_db
+            DB_USERNAME: test@example.com
+            DB_PASSWORD: test_password
