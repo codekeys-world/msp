@@ -51,6 +51,7 @@ public class Utilisateur extends Personne implements UserDetails {
     private Document profileImage;
     private boolean accountLocked;
     private boolean accountNonExpired;
+    @Builder.Default
     private boolean enabled = true;
     @Column(nullable = false)
     private String pere;

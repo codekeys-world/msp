@@ -31,3 +31,23 @@ jobs:
             cd msp_backend
             chmod +x ./mvnw
             ./mvnw clean compile
+
+    test-unitaire:
+      runs-on: ubuntu-latest
+      name: Test unitaire du projet
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: '0'
+            clean: true
+        - name: Setup JDK
+          uses: actions/setup-java@v5
+          with:
+            distribution: 'temurin'
+            java-version: '17'
+        - name: Exécution des tests unitaires
+          run: |
+            cd msp_backend
+            chmod +x ./mvnw
+            ./mvnw clean test

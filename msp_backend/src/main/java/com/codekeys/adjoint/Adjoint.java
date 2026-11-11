@@ -37,6 +37,7 @@ public class Adjoint extends AbstractEntity {
     private LocalDate dateFin;
 
     @Column(name = "est_actif", nullable = false)
+    @Builder.Default
     private boolean estActif = true;
 
     private String motif;
