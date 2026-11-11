@@ -4,6 +4,7 @@ on:
     branches:
       - develop
       - ci
+      - main
     paths:
       - msp_backend/**
       - docker/backend/**
