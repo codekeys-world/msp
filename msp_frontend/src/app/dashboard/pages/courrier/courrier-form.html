@@ -1,0 +1,91 @@
+<main class="courrier-form-page">
+  <section class="courrier-form-card">
+    <header class="courrier-form-heading">
+      <div>
+        <span>Gestion du secrétariat</span>
+        <h1>{{ isEditing ? 'Modifier un courrier' : 'Enregistrer un courrier' }}</h1>
+        <p>Renseignez les informations, puis joignez le document numérisé.</p>
+      </div>
+      <button class="btn btn-outline-success" type="button" (click)="retourListe()">
+        <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Retour à la liste
+      </button>
+    </header>
+
+    @if (errorMessages().length) {
+      <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <ul class="mb-0">@for (message of errorMessages(); track $index) { <li>{{ message }}</li> }</ul>
+      </div>
+    }
+    @if (successMessage()) { <div class="alert alert-success position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ successMessage() }}</div> }
+    @if (isLoading()) {
+      <div class="text-center py-5"><span class="spinner-border text-success" role="status"></span><span class="visually-hidden">Chargement…</span></div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <fieldset [disabled]="isSubmitting()">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="courrier-reference">Référence <span class="text-danger">*</span></label>
+              <input id="courrier-reference" class="form-control" formControlName="nom" autocomplete="off"
+                     placeholder="Ex. COUR-2026-001"
+                     [class.is-invalid]="form.controls.nom.touched && form.controls.nom.invalid">
+              @if (form.controls.nom.touched && form.controls.nom.invalid) { <div class="invalid-feedback">La référence est obligatoire.</div> }
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="courrier-type">Type de courrier <span class="text-danger">*</span></label>
+              <select id="courrier-type" class="form-select" formControlName="typeCourrier">
+                <option value="ARRIVE">Courrier entrant</option>
+                <option value="DEPART">Courrier sortant</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="courrier-objet">Objet <span class="text-danger">*</span></label>
+              <input id="courrier-objet" class="form-control" formControlName="objet"
+                     placeholder="Ex. Demande de rapport annuel adressée au ministère">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="courrier-correspondant">Expéditeur / destinataire <span class="text-danger">*</span></label>
+              <input id="courrier-correspondant" class="form-control" formControlName="description"
+                     placeholder="Ex. Direction régionale de Sikasso">
+              <div class="form-text">Pour un courrier entrant, indiquez l’expéditeur ; pour un courrier sortant, le destinataire.</div>
+            </div>
+            @if (typeCourrier === 'ARRIVE') {
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="courrier-date-arrivee">Date de réception <span class="text-danger">*</span></label>
+                <input id="courrier-date-arrivee" class="form-control" type="date" formControlName="dateArrivee" placeholder="Date de réception"
+                       [class.is-invalid]="form.controls.dateArrivee.touched && form.controls.dateArrivee.invalid">
+                @if (form.controls.dateArrivee.touched && form.controls.dateArrivee.invalid) { <div class="invalid-feedback">La date de réception est obligatoire.</div> }
+              </div>
+            } @else {
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="courrier-date-depart">Date d’envoi <span class="text-danger">*</span></label>
+                <input id="courrier-date-depart" class="form-control" type="date" formControlName="dateDepart" placeholder="Date d'envoi"
+                       [class.is-invalid]="form.controls.dateDepart.touched && form.controls.dateDepart.invalid">
+                @if (form.controls.dateDepart.touched && form.controls.dateDepart.invalid) { <div class="invalid-feedback">La date d’envoi est obligatoire.</div> }
+              </div>
+            }
+            <div class="col-12">
+              <label class="form-label" for="courrier-document">Document @if (isEditing) { (facultatif pour conserver le fichier actuel) } @else { <span class="text-danger">*</span> }</label>
+              <input #fileInput id="courrier-document" class="form-control" type="file" accept=".pdf,image/*"
+                     [required]="!isEditing" (change)="onFileSelected($event)">
+              @if (existingFilename()) { <div class="form-text">Document actuel : {{ existingFilename() }}. Choisissez un fichier uniquement pour le remplacer.</div> }
+              @if (selectedFile()) { <div class="form-text">Fichier sélectionné : {{ selectedFile()?.name }}</div> }
+              @if (!existingFilename() && !selectedFile()) { <div class="form-text">Format PDF ou image. Exemple : courrier signé et enregistré au secrétariat à Bamako.</div> }
+            </div>
+          </div>
+        </fieldset>
+        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
+          <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
+            <i class="fa-solid fa-xmark me-1" aria-hidden="true"></i>Annuler
+          </button>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+            @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            @else { <i class="fa-solid me-2" [class.fa-floppy-disk]="isEditing" [class.fa-plus]="!isEditing" aria-hidden="true"></i> }
+            {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer le courrier') }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>

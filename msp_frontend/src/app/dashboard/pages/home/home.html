@@ -1,0 +1,357 @@
+<main class="home-page">
+  <header class="home-hero">
+    <div class="home-hero__content">
+      <span class="home-hero__eyebrow"><i class="bi bi-sun me-2" aria-hidden="true"></i>Espace de pilotage</span>
+      <h1>Tableau de bord</h1>
+      <p>Suivez en un coup d’œil les activités et les indicateurs de gestion.</p>
+    </div>
+    <div class="home-hero__ornament" aria-hidden="true"><i class="bi bi-grid-1x2-fill"></i></div>
+  </header>
+
+  <section class="card border-0 shadow-sm p-4 mb-4" aria-labelledby="manuels-title">
+    <h2 id="manuels-title" class="h5">Manuels d’utilisation</h2>
+    <p class="text-muted">Téléchargez les guides PDF correspondant à votre rôle.</p>
+    @if (manuelsLoading()) { <p role="status">Chargement de vos manuels…</p> }
+    @if (manuelsError()) {
+      <p class="text-danger" role="alert">{{ manuelsError() }}</p>
+      @if (manuels().length === 0) {
+        <button type="button" class="btn btn-outline-primary" (click)="chargerManuels()">Réessayer</button>
+      }
+    }
+    <div class="d-flex flex-wrap gap-2">
+      @for (manuel of manuels(); track manuel.role) {
+        <button type="button" class="btn btn-outline-primary" [disabled]="downloadingRoles().includes(manuel.role)" (click)="telechargerManuel(manuel)">
+          <i class="bi bi-file-earmark-pdf me-2" aria-hidden="true"></i>
+          {{ downloadingRoles().includes(manuel.role) ? 'Téléchargement…' : manuel.titre + ' — PDF' }}
+        </button>
+      }
+    </div>
+    @if (!manuelsLoading() && !manuelsError() && manuels().length === 0) {
+      <p class="text-muted mb-0">Aucun manuel disponible pour votre rôle.</p>
+    }
+  </section>
+
+  <section class="home-overview" aria-label="Vue d’ensemble">
+    @if (canViewAdherentStats) {
+    <a class="overview-card" routerLink="/dashboard/adherents">
+      <span class="overview-card__icon overview-card__icon--members"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content">
+        <span class="overview-card__label">Adhérents</span>
+        <strong>
+          @if (isLoadingAdherentStats()) {
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-label="Chargement"></span>
+          } @else {
+            {{ adherentStatistiques()?.total ?? '—' }}
+          }
+        </strong>
+        <span class="overview-card__hint">Membres enregistrés</span>
+      </span>
+      <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
+    </a>
+    }
+    @if (canViewMissionStats) {
+    <a class="overview-card" routerLink="/dashboard/ordre-missions">
+      <span class="overview-card__icon overview-card__icon--missions"><i class="bi bi-airplane-engines-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content">
+        <span class="overview-card__label">Missions</span>
+        <strong>
+          @if (isLoadingMissionStats()) {
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-label="Chargement"></span>
+          } @else {
+            {{ ordreMissionStatistiques()?.total ?? '—' }}
+          }
+        </strong>
+        <span class="overview-card__hint">Ordres de mission</span>
+      </span>
+      <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
+    </a>
+    }
+    @if (canViewPvStats) {
+    <a class="overview-card" routerLink="/dashboard/proces-verbaux">
+      <span class="overview-card__icon overview-card__icon--pv"><i class="bi bi-clipboard2-check-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content">
+        <span class="overview-card__label">Procès-verbaux</span>
+        <strong>
+          @if (isLoadingPvStats()) {
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-label="Chargement"></span>
+          } @else {
+            {{ pvStatistiques()?.total ?? '—' }}
+          }
+        </strong>
+        <span class="overview-card__hint">Documents enregistrés</span>
+      </span>
+      <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
+    </a>
+    }
+    <article class="overview-card overview-card--static">
+      <span class="overview-card__icon overview-card__icon--assembly"><i class="bi bi-building-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content"><span class="overview-card__label">Assemblées</span><strong>12</strong><span class="overview-card__hint">Réunions organisées</span></span>
+    </article>
+    @if (canViewCourrierStats) {
+    <a class="overview-card" routerLink="/dashboard/courrier">
+      <span class="overview-card__icon overview-card__icon--mail"><i class="bi bi-envelope-paper-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content">
+        <span class="overview-card__label">Courriers</span>
+        <strong>
+          @if (isLoadingCourrierStats()) {
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-label="Chargement"></span>
+          } @else {
+            {{ courrierStatistiques()?.total ?? '—' }}
+          }
+        </strong>
+        <span class="overview-card__hint">Courriers enregistrés</span>
+      </span>
+      <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
+    </a>
+    }
+    @if (canViewPlainteStats) {
+    <a class="overview-card" routerLink="/dashboard/plaintes">
+      <span class="overview-card__icon overview-card__icon--complaints"><i class="bi bi-exclamation-diamond-fill" aria-hidden="true"></i></span>
+      <span class="overview-card__content">
+        <span class="overview-card__label">Plaintes</span>
+        <strong>
+          @if (isLoadingPlainteStats()) {
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-label="Chargement"></span>
+          } @else {
+            {{ plainteStatistiques()?.total ?? '—' }}
+          }
+        </strong>
+        <span class="overview-card__hint">Dossiers déclarés</span>
+      </span>
+      <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
+    </a>
+    }
+  </section>
+
+  @if (canViewMissionStats) {
+  <section class="home-section" aria-labelledby="mission-stats-title">
+    <div class="home-section__heading">
+      <div class="home-section__title">
+        <span class="home-section__icon"><i class="bi bi-airplane" aria-hidden="true"></i></span>
+        <div><h2 id="mission-stats-title">Suivi des ordres de mission</h2><p>État de validation et avancement des missions</p></div>
+      </div>
+      <a class="home-section__link" routerLink="/dashboard/ordre-missions">Voir les missions <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+    </div>
+    @if (missionStatsError()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ missionStatsError() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="chargerStatistiquesOrdreMission()">
+          <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    }
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--warning"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span><span class="metric-card__label">En attente</span><strong>{{ isLoadingMissionStats() ? '—' : (ordreMissionStatistiques()?.enAttenteValidation ?? '—') }}</strong><small>de validation</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-check2-circle" aria-hidden="true"></i></span><span class="metric-card__label">Approuvées</span><strong>{{ isLoadingMissionStats() ? '—' : (ordreMissionStatistiques()?.approuvees ?? '—') }}</strong><small>validées</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--danger"><i class="bi bi-x-circle" aria-hidden="true"></i></span><span class="metric-card__label">Refusées</span><strong>{{ isLoadingMissionStats() ? '—' : (ordreMissionStatistiques()?.refusees ?? '—') }}</strong><small>non validées</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--primary"><i class="bi bi-signpost-split" aria-hidden="true"></i></span><span class="metric-card__label">En cours</span><strong>{{ isLoadingMissionStats() ? '—' : (ordreMissionStatistiques()?.enCours ?? '—') }}</strong><small>aujourd'hui</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--neutral"><i class="bi bi-flag" aria-hidden="true"></i></span><span class="metric-card__label">Terminées</span><strong>{{ isLoadingMissionStats() ? '—' : (ordreMissionStatistiques()?.terminees ?? '—') }}</strong><small>date de retour passée</small></article>
+      </div>
+    </div>
+  </section>
+  }
+
+  @if (canViewPvStats) {
+  <section class="home-section" aria-labelledby="pv-stats-title">
+    <div class="home-section__heading">
+      <div class="home-section__title">
+        <span class="home-section__icon home-section__icon--pv"><i class="bi bi-clipboard2-check" aria-hidden="true"></i></span>
+        <div><h2 id="pv-stats-title">Suivi des procès-verbaux</h2><p>Suivi des validations des procès-verbaux</p></div>
+      </div>
+      <a class="home-section__link" routerLink="/dashboard/proces-verbaux">Voir les PV <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+    </div>
+    @if (pvStatsError()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ pvStatsError() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="chargerStatistiquesPv()">
+          <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    }
+    <div class="row g-3">
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--warning"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span><span class="metric-card__label">En attente</span><strong>{{ isLoadingPvStats() ? '—' : (pvStatistiques()?.enAttenteValidation ?? '—') }}</strong><small>de validation</small></article></div>
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-check2-circle" aria-hidden="true"></i></span><span class="metric-card__label">Approuvés</span><strong>{{ isLoadingPvStats() ? '—' : (pvStatistiques()?.approuves ?? '—') }}</strong><small>validés</small></article></div>
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--danger"><i class="bi bi-x-circle" aria-hidden="true"></i></span><span class="metric-card__label">Refusés</span><strong>{{ isLoadingPvStats() ? '—' : (pvStatistiques()?.refuses ?? '—') }}</strong><small>non validés</small></article></div>
+    </div>
+  </section>
+  }
+
+  @if (canViewCourrierStats) {
+  <section class="home-section" aria-labelledby="courrier-stats-title">
+    <div class="home-section__heading">
+      <div class="home-section__title">
+        <span class="home-section__icon home-section__icon--courrier"><i class="bi bi-envelope-paper" aria-hidden="true"></i></span>
+        <div><h2 id="courrier-stats-title">Suivi des courriers</h2><p>Répartition des courriers et état de leur traitement</p></div>
+      </div>
+      <a class="home-section__link" routerLink="/dashboard/courrier">Voir les courriers <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+    </div>
+    @if (courrierStatsError()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ courrierStatsError() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="chargerStatistiquesCourriers()">
+          <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    }
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--primary"><i class="bi bi-envelope-paper" aria-hidden="true"></i></span><span class="metric-card__label">Total</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.total ?? '—') }}</strong><small>courriers enregistrés</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-inbox" aria-hidden="true"></i></span><span class="metric-card__label">Entrants</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.courriersArrives ?? '—') }}</strong><small>courriers reçus</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--primary"><i class="bi bi-send" aria-hidden="true"></i></span><span class="metric-card__label">Sortants</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.courriersDepart ?? '—') }}</strong><small>courriers envoyés</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--warning"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span><span class="metric-card__label">En attente</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.enAttente ?? '—') }}</strong><small>de traitement</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-check2-circle" aria-hidden="true"></i></span><span class="metric-card__label">Traités</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.traites ?? '—') }}</strong><small>validés</small></article>
+      </div>
+      <div class="col-6 col-md-4 col-xl">
+        <article class="metric-card"><span class="metric-card__icon metric-card__icon--danger"><i class="bi bi-x-circle" aria-hidden="true"></i></span><span class="metric-card__label">Refusés</span><strong>{{ isLoadingCourrierStats() ? '—' : (courrierStatistiques()?.refuses ?? '—') }}</strong><small>non validés</small></article>
+      </div>
+    </div>
+  </section>
+  }
+
+  @if (canViewPlainteStats) {
+  <section class="home-section" aria-labelledby="plainte-stats-title">
+    <div class="home-section__heading">
+      <div class="home-section__title">
+        <span class="home-section__icon home-section__icon--complaints"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span>
+        <div><h2 id="plainte-stats-title">Suivi des plaintes</h2><p>État de traitement des dossiers transmis</p></div>
+      </div>
+      <a class="home-section__link" routerLink="/dashboard/plaintes">Voir les plaintes <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+    </div>
+    @if (plainteStatsError()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ plainteStatsError() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="chargerStatistiquesPlaintes()">
+          <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    }
+    <div class="row g-3">
+      <div class="col-6 col-md-3"><article class="metric-card"><span class="metric-card__icon metric-card__icon--primary"><i class="bi bi-folder2-open" aria-hidden="true"></i></span><span class="metric-card__label">Total</span><strong>{{ isLoadingPlainteStats() ? '—' : (plainteStatistiques()?.total ?? '—') }}</strong><small>dossiers enregistrés</small></article></div>
+      <div class="col-6 col-md-3"><article class="metric-card"><span class="metric-card__icon metric-card__icon--warning"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span><span class="metric-card__label">En attente</span><strong>{{ isLoadingPlainteStats() ? '—' : (plainteStatistiques()?.enAttente ?? '—') }}</strong><small>à traiter</small></article></div>
+      <div class="col-6 col-md-3"><article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-check2-circle" aria-hidden="true"></i></span><span class="metric-card__label">Traitées</span><strong>{{ isLoadingPlainteStats() ? '—' : (plainteStatistiques()?.traitees ?? '—') }}</strong><small>dossiers validés</small></article></div>
+      <div class="col-6 col-md-3"><article class="metric-card"><span class="metric-card__icon metric-card__icon--danger"><i class="bi bi-x-circle" aria-hidden="true"></i></span><span class="metric-card__label">Refusées</span><strong>{{ isLoadingPlainteStats() ? '—' : (plainteStatistiques()?.refusees ?? '—') }}</strong><small>dossiers refusés</small></article></div>
+    </div>
+  </section>
+  }
+
+  @if (canViewAdherentStats) {
+  <section class="home-section" aria-labelledby="adherent-stats-title">
+    <div class="home-section__heading">
+      <div class="home-section__title">
+        <span class="home-section__icon home-section__icon--members"><i class="bi bi-people" aria-hidden="true"></i></span>
+        <div><h2 id="adherent-stats-title">Suivi des adhérents</h2><p>Répartition des membres enregistrés</p></div>
+      </div>
+      @if (canListAdherents) {
+      <a class="home-section__link" routerLink="/dashboard/adherents">Voir les adhérents <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+      }
+    </div>
+    @if (adherentStatsError()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ adherentStatsError() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="chargerStatistiquesAdherents()">
+          <i class="fa-solid fa-rotate-right me-1" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    }
+    <div class="row g-3">
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--success"><i class="bi bi-people" aria-hidden="true"></i></span><span class="metric-card__label">Total des adhérents</span><strong>{{ isLoadingAdherentStats() ? '—' : (adherentStatistiques()?.total ?? '—') }}</strong><small>inscrits dans le système</small></article></div>
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--primary"><i class="bi bi-gender-male" aria-hidden="true"></i></span><span class="metric-card__label">Hommes</span><strong>{{ isLoadingAdherentStats() ? '—' : (adherentStatistiques()?.hommes ?? '—') }}</strong><small>adhérents de genre masculin</small></article></div>
+      <div class="col-12 col-md-4"><article class="metric-card"><span class="metric-card__icon metric-card__icon--danger"><i class="bi bi-gender-female" aria-hidden="true"></i></span><span class="metric-card__label">Femmes</span><strong>{{ isLoadingAdherentStats() ? '—' : (adherentStatistiques()?.femmes ?? '—') }}</strong><small>adhérentes de genre féminin</small></article></div>
+    </div>
+  </section>
+  }
+
+  @if (canViewAdherentStats || canViewMissionStats || canViewPvStats || canViewCourrierStats || canViewPlainteStats) {
+  <section class="home-bottom-grid">
+    <article class="home-panel home-activity">
+      <header class="home-panel__heading">
+        <div><span class="home-panel__eyebrow">Suivi</span><h2>Activités récentes</h2></div>
+        <span class="home-today"><i class="bi bi-calendar-event me-1" aria-hidden="true"></i>Aujourd’hui</span>
+      </header>
+      <div class="activity-list">
+        @if (canViewAdherentStats) {
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--members"><i class="bi bi-people" aria-hidden="true"></i></span><span class="activity-item__name">Adhérents inscrits</span><strong class="text-success">{{ isLoadingAdherentStats() ? '—' : (adherentStatistiques()?.total ?? '—') }}</strong></div>
+        }
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--mission"><i class="bi bi-airplane" aria-hidden="true"></i></span><span class="activity-item__name">Ordre de mission #67 approuvé</span><span class="badge text-bg-success">Approuvé</span><small>Il y a 15 min</small></div>
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--pv"><i class="bi bi-clipboard-check" aria-hidden="true"></i></span><span class="activity-item__name">PV de réunion enregistré</span><span class="badge text-bg-info">Enregistré</span><small>Il y a 1h</small></div>
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--mail"><i class="bi bi-envelope" aria-hidden="true"></i></span><span class="activity-item__name">Courrier reçu enregistré</span><span class="badge text-bg-warning">Reçu</span><small>Il y a 2h</small></div>
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--complaint"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span><span class="activity-item__name">Plainte traitée</span><span class="badge text-bg-success">Traité</span><small>Il y a 3h</small></div>
+        <div class="activity-item"><span class="activity-item__icon activity-item__icon--control"><i class="bi bi-shield-check" aria-hidden="true"></i></span><span class="activity-item__name">Contrôle interne terminé</span><span class="badge text-bg-info">Terminé</span><small>Il y a 5h</small></div>
+      </div>
+    </article>
+
+    <div class="home-side-panels">
+      <article class="home-panel home-monthly">
+        <header class="home-panel__heading">
+          <div><span class="home-panel__eyebrow">Indicateurs</span><h2>Statistiques mensuelles</h2></div>
+          <span class="home-monthly__icon"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></span>
+        </header>
+        <div class="progress-stat">
+          @if (canViewAdherentStats) {
+          <div class="progress-stat__heading"><span>Adhérentes</span><strong>{{ isLoadingAdherentStats() ? '—' : femaleAdherentRate() + '%' }}</strong></div>
+          <div class="progress progress-stat__track" role="progressbar" aria-label="Part des adhérentes" [attr.aria-valuenow]="femaleAdherentRate()" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-success" [style.width.%]="femaleAdherentRate()"></div></div>
+          }
+          @if (canViewMissionStats) {
+          <div class="progress-stat__heading"><span>Missions complétées</span><strong>{{ isLoadingMissionStats() ? '—' : missionCompletionRate() + '%' }}</strong></div>
+          <div class="progress progress-stat__track" role="progressbar" aria-label="Missions terminées" [attr.aria-valuenow]="missionCompletionRate()" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-primary" [style.width.%]="missionCompletionRate()"></div></div>
+          }
+          @if (canViewCourrierStats) {
+          <div class="progress-stat__heading"><span>Courriers traités</span><strong>{{ isLoadingCourrierStats() ? '—' : courrierTreatmentRate() + '%' }}</strong></div>
+          <div class="progress progress-stat__track" role="progressbar" aria-label="Courriers traités" [attr.aria-valuenow]="courrierTreatmentRate()" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-info" [style.width.%]="courrierTreatmentRate()"></div></div>
+          }
+          @if (canViewPlainteStats) {
+          <div class="progress-stat__heading"><span>Plaintes traitées</span><strong>{{ isLoadingPlainteStats() ? '—' : plainteTreatmentRate() + '%' }}</strong></div>
+          <div class="progress progress-stat__track" role="progressbar" aria-label="Plaintes traitées" [attr.aria-valuenow]="plainteTreatmentRate()" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-warning" [style.width.%]="plainteTreatmentRate()"></div></div>
+          }
+          <div class="progress-stat__heading"><span>Contrôles effectués</span><strong>40%</strong></div>
+          <div class="progress progress-stat__track" role="progressbar" aria-label="Contrôles effectués" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-secondary" style="width:40%"></div></div>
+        </div>
+      </article>
+
+      <article class="home-panel home-quick-actions">
+        <header class="home-panel__heading">
+          <div><span class="home-panel__eyebrow">Raccourcis</span><h2>Actions rapides</h2></div>
+          <span class="home-monthly__icon"><i class="bi bi-lightning-charge" aria-hidden="true"></i></span>
+        </header>
+        <div class="quick-actions">
+          @if (canCreateAdherents) {
+            <a routerLink="/dashboard/adherent/create"><i class="bi bi-person-plus" aria-hidden="true"></i><span>Nouvel adhérent</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          }
+          @if (canCreateOrdreMission) {
+            <a routerLink="/dashboard/nouveau-ordre-missions"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i><span>Nouvel ordre de mission</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          }
+          @if (canCreatePv) {
+            <a routerLink="/dashboard/nouveau-pv"><i class="bi bi-clipboard-plus" aria-hidden="true"></i><span>Nouveau procès-verbal</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          }
+          @if (canAddCourrier) {
+            <a routerLink="/dashboard/nouveau-courrier"><i class="bi bi-envelope-plus" aria-hidden="true"></i><span>Nouveau courrier</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          }
+          <a href="pages/rapports.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i><span>Générer un rapport</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </article>
+    </div>
+  </section>
+  }
+</main>

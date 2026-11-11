@@ -1,0 +1,210 @@
+<main class="cas-social-form-page">
+  <section class="cas-social-form-card">
+    <header class="cas-social-form-heading">
+      <div>
+        <span>Prestations et accompagnement</span>
+        <h1>{{ isEditing ? 'Modifier un cas social' : 'Enregistrer un cas social' }}</h1>
+        <p>Renseignez le dossier de l'adherent et les informations de remise de prestation.</p>
+      </div>
+      <button class="btn btn-outline-success" type="button" (click)="retourListe()">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Retour a la liste
+      </button>
+    </header>
+
+    @if (errorMessages().length) {
+      <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <ul class="mb-0">@for (message of errorMessages(); track $index) { <li>{{ message }}</li> }</ul>
+      </div>
+    }
+    @if (successMessage()) { <div class="alert alert-success position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ successMessage() }}</div> }
+    @if (isLoading()) {
+      <div class="text-center py-5"><span class="spinner-border text-success" role="status"></span><span class="visually-hidden">Chargement…</span></div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <fieldset [disabled]="isSubmitting()">
+          <section class="cas-form-section">
+            <h2><i class="bi bi-person-badge me-2" aria-hidden="true"></i>Adherent et nature du dossier</h2>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label" for="cas-adherent">Adherent concerne <span class="text-danger">*</span></label>
+                <input id="cas-adherent" class="form-control" type="search" autocomplete="off"
+                       [value]="adherentSearchTerm()" (input)="onAdherentSearch($event)"
+                       placeholder="Rechercher par nom, numero d'adherent ou telephone">
+                @if (form.controls.adherentSlug.touched && form.controls.adherentSlug.invalid) {
+                  <div class="text-danger small mt-1">Selectionnez un adherent dans les resultats.</div>
+                }
+                @if (adherentSearchError()) { <div class="text-danger small mt-1">{{ adherentSearchError() }}</div> }
+                @if (isSearchingAdherents()) {
+                  <div class="form-text"><span class="spinner-border spinner-border-sm text-success me-1" aria-hidden="true"></span>Recherche…</div>
+                } @else if (adherents().length) {
+                  <div class="cas-adherent-results" role="listbox" aria-label="Resultats de recherche des adherents">
+                    @for (adherent of adherents(); track adherent.slug) {
+                      <button type="button" class="cas-adherent-option" role="option" (click)="selectAdherent(adherent)"><i class="bi bi-person-check me-2" aria-hidden="true"></i>
+                        <strong>{{ adherent.nomComplet }}</strong>
+                        <span>{{ adherent.numeroInscription }} · {{ adherent.telephonePrincipal }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+                @if (selectedAdherent()) {
+                  <div class="cas-selected-adherent"><i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+                    Selection : {{ selectedAdherent()?.nomComplet }} · {{ selectedAdherent()?.numeroInscription }}
+                  </div>
+                }
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="cas-type">Type de cas social <span class="text-danger">*</span></label>
+                <select id="cas-type" class="form-select" formControlName="typeCas" (change)="onTypeChanged()"
+                        [class.is-invalid]="form.controls.typeCas.touched && form.controls.typeCas.invalid">
+                  <option value="">Choisir le type de cas</option>
+                  <option value="MALADIE">Maladie (hospitalisation d'au moins 72 heures)</option>
+                  <option value="ACCIDENT_CIRCULATION">Accident de la circulation</option>
+                  <option value="RADIATION_REVOCATION_RETRAITE_DISCIPLINAIRE">Radiation, revocation ou retraite disciplinaire</option>
+                </select>
+                @if (form.controls.typeCas.touched && form.controls.typeCas.invalid) {
+                  <div class="invalid-feedback">Le type du cas social est obligatoire.</div>
+                }
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="cas-date">Date du cas <span class="text-danger">*</span></label>
+                <input id="cas-date" class="form-control" type="date" formControlName="dateCas" placeholder="Date du cas social"
+                       [class.is-invalid]="form.controls.dateCas.touched && form.controls.dateCas.invalid">
+                @if (form.controls.dateCas.touched && form.controls.dateCas.invalid) {
+                  <div class="invalid-feedback">La date du cas est obligatoire.</div>
+                }
+              </div>
+              @if (form.controls.typeCas.value === 'MALADIE') {
+                <div class="col-12 col-md-6">
+                  <label class="form-label" for="cas-heures">Duree d'hospitalisation (heures) <span class="text-danger">*</span></label>
+                  <input id="cas-heures" class="form-control" type="number" min="72" formControlName="heuresHospitalisation"
+                         [class.is-invalid]="form.controls.heuresHospitalisation.touched && form.controls.heuresHospitalisation.invalid">
+                  @if (form.controls.heuresHospitalisation.touched && form.controls.heuresHospitalisation.invalid) {
+                    <div class="invalid-feedback">La maladie doit avoir necessite au moins 72 heures d'hospitalisation.</div>
+                  }
+                </div>
+              }
+            </div>
+          </section>
+
+          @if (requiresContributionAmount) {
+            <section class="cas-form-section">
+              <h2><i class="bi bi-coin me-2" aria-hidden="true"></i>Cotisations versees</h2>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label class="form-label" for="cas-cotisations-versees">Total des cotisations versees (FCFA) <span class="text-danger">*</span></label>
+                  <input id="cas-cotisations-versees" class="form-control" type="number" min="0"
+                         formControlName="montantCotisationsVersees"
+                         [class.is-invalid]="form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid">
+                  @if (form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid) {
+                    <div class="invalid-feedback">Le total verse doit etre renseigne pour calculer le remboursement.</div>
+                  }
+                </div>
+                <div class="col-12">
+                  <div class="cas-prestation-note">
+                    Les cotisations versees sont remboursees a l'adherent.
+                  </div>
+                </div>
+              </div>
+            </section>
+          }
+
+          <section class="cas-form-section">
+            <h2><i class="bi bi-person-check me-2" aria-hidden="true"></i>Remise de la prestation</h2>
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="cas-beneficiaire">La prestation sera remise a <span class="text-danger">*</span></label>
+                <select id="cas-beneficiaire" class="form-select" formControlName="typeBeneficiaire" (change)="onBeneficiaryChanged()"
+                        [class.is-invalid]="form.controls.typeBeneficiaire.touched && form.controls.typeBeneficiaire.invalid">
+                  <option value="">Choisir le beneficiaire</option>
+                  <option value="ADHERENT">L'adherent</option>
+                  <option value="PERSONNE_DESIGNEE">Une personne designee</option>
+                </select>
+                @if (form.controls.typeBeneficiaire.touched && form.controls.typeBeneficiaire.invalid) {
+                  <div class="invalid-feedback">Le beneficiaire de la prestation est obligatoire.</div>
+                }
+              </div>
+              @if (isDesignatedBeneficiary) {
+                <div class="col-12 col-md-6">
+                  <label class="form-label" for="cas-beneficiaire-prenom">Prenom <span class="text-danger">*</span></label>
+                  <input id="cas-beneficiaire-prenom" class="form-control" formControlName="prenomBeneficiaire"
+                         [class.is-invalid]="form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid">
+                  @if (form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid) {
+                    <div class="invalid-feedback">Le prenom de la personne designee est obligatoire.</div>
+                  }
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label" for="cas-beneficiaire-nom">Nom <span class="text-danger">*</span></label>
+                  <input id="cas-beneficiaire-nom" class="form-control" formControlName="nomBeneficiaire"
+                         [class.is-invalid]="form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid">
+                  @if (form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid) {
+                    <div class="invalid-feedback">Le nom de la personne designee est obligatoire.</div>
+                  }
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label" for="cas-beneficiaire-telephone">Telephone <span class="text-danger">*</span></label>
+                  <input id="cas-beneficiaire-telephone" class="form-control" type="tel" formControlName="telephoneBeneficiaire"
+                         [class.is-invalid]="form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid">
+                  @if (form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid) {
+                    <div class="invalid-feedback">Le numero de telephone de la personne designee est obligatoire.</div>
+                  }
+                </div>
+              }
+              <div class="col-12">
+                <label class="form-label" for="cas-justificatif">Justificatif (facultatif)</label>
+                <input #fileInput id="cas-justificatif" class="form-control" type="file" accept=".pdf,image/*"
+                       (change)="onFileSelected($event)">
+                @if (existingFilename()) {
+                  <div class="form-text">Document actuel : {{ existingFilename() }}. Choisissez un fichier pour le remplacer.</div>
+                }
+                @if (selectedFile()) { <div class="form-text">Fichier selectionne : {{ selectedFile()?.name }}</div> }
+                @if (!existingFilename() && !selectedFile()) {
+                  <div class="form-text">Le justificatif est facultatif.</div>
+                }
+              </div>
+              <div class="col-12">
+                <div class="cas-prestation-note">
+                  <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                  @if (form.controls.typeCas.value === 'MALADIE') {
+                    Prestation prevue : <strong>50 FCFA</strong>, sous reserve d'une hospitalisation d'au moins 72 heures.
+                  } @else if (form.controls.typeCas.value === 'ACCIDENT_CIRCULATION') {
+                    Le montant de la prestation pour accident de la circulation reste a definir.
+                  } @else if (form.controls.typeCas.value === 'RADIATION_REVOCATION_RETRAITE_DISCIPLINAIRE') {
+                    Les cotisations versees sont remboursees a l'adherent.
+                  } @else {
+                    Le montant applicable s'affichera selon le type de cas social.
+                  }
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="cas-form-section">
+            <h2><i class="bi bi-chat-left-text me-2" aria-hidden="true"></i>Details et observation</h2>
+            <div>
+              <label class="form-label" for="cas-observation">Observation complementaire</label>
+              <textarea id="cas-observation" class="form-control" rows="5" maxlength="2000" formControlName="observation"
+                        [class.is-invalid]="form.controls.observation.touched && form.controls.observation.invalid"
+                        placeholder="Ajoutez ici tous les details utiles concernant ce dossier…"></textarea>
+              @if (form.controls.observation.touched && form.controls.observation.invalid) {
+                <div class="invalid-feedback">L'observation ne peut pas depasser 2 000 caracteres.</div>
+              }
+              <div class="form-text">Facultatif, disponible pour tous les types de cas sociaux (2 000 caracteres maximum).</div>
+            </div>
+          </section>
+        </fieldset>
+        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
+          <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
+            <i class="bi bi-x-lg me-1" aria-hidden="true"></i>Annuler
+          </button>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+            @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            @else { <i class="bi me-2" [class.bi-pencil-square]="isEditing" [class.bi-plus-circle]="!isEditing" aria-hidden="true"></i> }
+            {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer le cas social') }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>

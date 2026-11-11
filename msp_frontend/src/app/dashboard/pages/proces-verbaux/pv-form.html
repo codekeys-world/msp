@@ -1,0 +1,73 @@
+<main class="pv-form-page">
+  <section class="pv-form-card">
+    <header class="pv-form-heading">
+      <div>
+        <span>Gestion documentaire</span>
+        <h1>{{ isEditing ? 'Modifier le procès-verbal' : 'Enregistrer un procès-verbal' }}</h1>
+        <p>Renseignez les informations du PV et joignez son document.</p>
+      </div>
+      <button class="btn btn-outline-success" type="button" (click)="retourListe()">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Retour à la liste
+      </button>
+    </header>
+
+    @if (errorMessages().length) {
+      <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <ul class="mb-0">@for (message of errorMessages(); track message) { <li>{{ message }}</li> }</ul>
+      </div>
+    }
+    @if (successMessage()) { <div class="alert alert-success position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ successMessage() }}</div> }
+    @if (isLoading()) {
+      <div class="text-center py-5"><span class="spinner-border text-success" role="status"></span><span class="visually-hidden">Chargement…</span></div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="pv-numero">Numéro <span class="text-danger">*</span></label>
+            <input id="pv-numero" class="form-control" formControlName="numero" autocomplete="off" placeholder="Ex. PV-CA-2026-001"
+                   [class.is-invalid]="form.controls.numero.touched && form.controls.numero.invalid">
+            @if (form.controls.numero.touched && form.controls.numero.invalid) { <div class="invalid-feedback">Le numéro est obligatoire.</div> }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="pv-type">Type <span class="text-danger">*</span></label>
+            <input id="pv-type" class="form-control" formControlName="type" placeholder="Ex. Conseil d’administration"
+                   [class.is-invalid]="form.controls.type.touched && form.controls.type.invalid">
+            @if (form.controls.type.touched && form.controls.type.invalid) { <div class="invalid-feedback">Le type est obligatoire.</div> }
+          </div>
+          <div class="col-md-8">
+            <label class="form-label" for="pv-objet">Objet <span class="text-danger">*</span></label>
+            <input id="pv-objet" class="form-control" formControlName="objet" placeholder="Ex. Réunion du bureau national à Bamako"
+                   [class.is-invalid]="form.controls.objet.touched && form.controls.objet.invalid">
+            @if (form.controls.objet.touched && form.controls.objet.invalid) { <div class="invalid-feedback">L’objet est obligatoire.</div> }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="pv-date">Date du procès-verbal <span class="text-danger">*</span></label>
+            <input id="pv-date" class="form-control" type="date" formControlName="datePv" placeholder="Date du procès-verbal" title="Sélectionnez la date de la réunion ou de la séance au Mali"
+                   [class.is-invalid]="form.controls.datePv.touched && form.controls.datePv.invalid">
+            @if (form.controls.datePv.touched && form.controls.datePv.invalid) { <div class="invalid-feedback">La date est obligatoire.</div> }
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="pv-observation">Observation</label>
+            <textarea id="pv-observation" class="form-control" rows="3" formControlName="observation" placeholder="Ex. Séance tenue à Bamako, sous la présidence de…"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="pv-document">Document @if (isEditing) { (facultatif pour conserver le document actuel) } @else { <span class="text-danger">*</span> }</label>
+            <input #fileInput id="pv-document" class="form-control" type="file" accept=".pdf,.png,.jpg,.jpeg"
+                   (change)="onFileSelected($event)">
+            @if (existingFilename()) { <div class="form-text">Document actuel : {{ existingFilename() }}</div> }
+            @if (selectedFile()) { <div class="form-text">Nouveau fichier : {{ selectedFile()?.name }}</div> }
+          </div>
+        </div>
+        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
+          <button class="btn btn-outline-secondary" type="button" (click)="retourListe()"><i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler</button>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting()"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>
+            @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Créer le PV') }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>

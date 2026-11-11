@@ -1,0 +1,278 @@
+<section class="missions-page">
+  <header class="missions-heading">
+    <div>
+      <span class="missions-heading__eyebrow">Gestion financière</span>
+      <h1>
+        @if (fraisDeGestion) {
+          Dépenses — Frais de Gestion {{ fraisDeGestion.annee }}
+        } @else {
+          Dépenses
+        }
+      </h1>
+      <p>
+        @if (fraisDeGestion) {
+          Solde disponible : {{ formatMontant(fraisDeGestion.solde) }}
+        } @else {
+          Gérez les dépenses engagées et leur validation.
+        }
+      </p>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      @if (fraisDeGestion) {
+        <a class="btn missions-heading__action" routerLink="/dashboard/frais-de-gestion">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Retour
+        </a>
+      }
+      @if (canAdd) {
+        <button type="button" class="btn missions-heading__action" (click)="ajouter()">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          Nouvelle dépense
+        </button>
+      }
+    </div>
+  </header>
+
+  <section class="missions-list" aria-labelledby="depenses-list-title">
+    <div class="missions-list__heading">
+      <div>
+        <h2 id="depenses-list-title">Liste des dépenses</h2>
+        <p>Les dépenses enregistrées et leur statut de validation</p>
+      </div>
+      @if (!loading && depenses.length > 0 && totalPages > 1) {
+        <span class="missions-list__page-indicator">Page {{ page + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    <form class="missions-search input-group mb-4" role="search" (submit)="$event.preventDefault(); rechercher()">
+      <label class="visually-hidden" for="depense-search">Rechercher une dépense</label>
+      <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+      <input id="depense-search" class="form-control" type="search" [(ngModel)]="terme" name="depenseSearch"
+             (keyup.enter)="rechercher()"
+             placeholder="Rechercher par libellé, statut…">
+      @if (terme) {
+        <button class="btn btn-outline-secondary" type="button" (click)="terme = ''; rechercher()">
+          <i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer
+        </button>
+      }
+    </form>
+
+    @if (loading) {
+      <div class="missions-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des dépenses…
+      </div>
+    } @else if (errorMessage) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-3" role="alert">
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="charger()">
+          <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    } @else if (depenses.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span class="fs-2" aria-hidden="true"><i class="bi bi-folder2-open"></i></span>
+        <strong>Aucune dépense trouvée.</strong>
+        <p class="mb-0">Créez une nouvelle dépense pour la retrouver ici.</p>
+        @if (canAdd) {
+          <button type="button" class="btn missions-heading__action" (click)="ajouter()">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+            Créer une dépense
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (dep of depenses; track dep.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="depense-card h-100">
+              <header class="depense-card__header">
+                <div class="depense-card__heading">
+                  <span class="depense-card__eyebrow">
+                    Dépense{{ dep.fraisDeGestionAnnee ? ' · Exercice ' + dep.fraisDeGestionAnnee : '' }}
+                  </span>
+                  <h3 class="depense-card__title">{{ dep.libelle }}</h3>
+                </div>
+                <span class="depense-card__icon" aria-hidden="true">
+                  <i class="bi bi-receipt"></i>
+                </span>
+              </header>
+
+              <div class="depense-card__summary">
+                <div>
+                  <span>Montant</span>
+                  <strong>{{ formatMontant(dep.montant) }}</strong>
+                </div>
+                <span class="badge rounded-pill bg-{{ couleurStatut(dep.statut) }}">
+                  {{ libelleStatut(dep.statut) }}
+                </span>
+              </div>
+
+              <dl class="depense-card__details">
+                <div>
+                  <dt><i class="bi bi-calendar3" aria-hidden="true"></i> Date de dépense</dt>
+                  <dd>{{ dep.dateDepense | date:'dd/MM/yyyy' }}</dd>
+                </div>
+                <div>
+                  <dt><i class="bi bi-wallet2" aria-hidden="true"></i> Frais de gestion</dt>
+                  <dd>{{ dep.fraisDeGestionAnnee || 'Non renseigné' }}</dd>
+                </div>
+                @if (dep.observation) {
+                  <div class="depense-card__observation">
+                    <dt><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observation</dt>
+                    <dd>{{ dep.observation }}</dd>
+                  </div>
+                }
+                @if (dep.observationValidation) {
+                  <div class="depense-card__observation">
+                    <dt><i class="bi bi-chat-square-check" aria-hidden="true"></i> Décision</dt>
+                    <dd>{{ dep.observationValidation }}</dd>
+                  </div>
+                }
+              </dl>
+
+              <footer class="depense-card__footer">
+                <div class="depense-card__document">
+                  <span class="depense-card__document-icon" aria-hidden="true">
+                    <i class="bi bi-paperclip"></i>
+                  </span>
+                  <span class="depense-card__document-name"
+                        [title]="dep.nomFichierJustificatif || 'Aucun justificatif'">
+                    {{ dep.nomFichierJustificatif || 'Aucun justificatif' }}
+                  </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (dep.nomFichierJustificatif) {
+                    <button class="btn btn-outline-primary btn-sm" type="button"
+                            (click)="ouvrirJustificatif(dep)" title="Voir le justificatif"
+                            aria-label="Voir le justificatif">
+                      <i class="bi bi-file-earmark-eye" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (dep.statut === StatutDepense.EN_ATTENTE && canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button"
+                            [routerLink]="['modifier', dep.slug]" title="Modifier"
+                            aria-label="Modifier la dépense">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (dep.statut === StatutDepense.EN_ATTENTE && canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button"
+                            (click)="supprimer(dep.slug!)" title="Supprimer"
+                            aria-label="Supprimer la dépense">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (dep.statut === StatutDepense.EN_ATTENTE && canValidate) {
+                    <button class="btn btn-outline-success btn-sm" type="button"
+                            (click)="valider(dep.slug!)" title="Valider"
+                            aria-label="Valider la dépense">
+                      <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" type="button"
+                            (click)="rejeter(dep.slug!)" title="Rejeter"
+                            aria-label="Rejeter la dépense">
+                      <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+
+      @if (totalPages > 1) {
+        <nav class="missions-pagination" aria-label="Pagination des dépenses">
+          <button type="button" class="missions-pagination__button" (click)="page = 0; charger()"
+                  aria-label="Première page" [disabled]="premierePage"><i class="bi bi-chevron-double-left me-2" aria-hidden="true"></i>
+            <span>Premier</span>
+          </button>
+          <button type="button" class="missions-pagination__button" (click)="page = page - 1; charger()"
+                  aria-label="Page précédente" [disabled]="premierePage">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            <span>Précédent</span>
+          </button>
+          <div class="missions-pagination__pages">
+            <button type="button" class="missions-pagination__number is-active"
+                    [attr.aria-current]="'page'"
+                    disabled>
+              {{ page + 1 }} / {{ totalPages }}
+            </button>
+          </div>
+          <button type="button" class="missions-pagination__button" (click)="page = page + 1; charger()"
+                  aria-label="Page suivante" [disabled]="dernierePage">
+            <span>Suivant</span>
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="missions-pagination__button" (click)="page = totalPages - 1; charger()"
+                  aria-label="Dernière page" [disabled]="dernierePage"><i class="bi bi-chevron-double-right me-2" aria-hidden="true"></i>
+            <span>Dernier</span>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</section>
+
+@if (decision; as currentDecision) {
+  <div class="modal-backdrop fade show" (click)="fermerDecision()"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true"
+       aria-labelledby="decision-title">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form (ngSubmit)="confirmerDecision()">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="decision-title">
+              {{ currentDecision.type === 'valider' ? 'Valider la dépense' : 'Rejeter la dépense' }}
+            </h2>
+            <button type="button" class="btn-close" aria-label="Fermer"
+                    (click)="fermerDecision()" [disabled]="decisionPending"></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              @if (currentDecision.type === 'valider') {
+                Confirmez-vous la validation de cette dépense ?
+              } @else {
+                Indiquez le motif du rejet de cette dépense.
+              }
+            </p>
+            <label class="form-label" for="decision-observation">
+              {{ currentDecision.type === 'valider' ? 'Observation (facultative)' : 'Motif du rejet *' }}
+            </label>
+            <textarea id="decision-observation" class="form-control" rows="3"
+                      [(ngModel)]="currentDecision.observation" name="observationValidation"
+                      [required]="currentDecision.type === 'rejeter'"
+                      [disabled]="decisionPending"
+                      [placeholder]="currentDecision.type === 'valider'
+                        ? 'Ajouter une observation, si nécessaire'
+                        : 'Saisir le motif du rejet'"></textarea>
+            @if (decisionError) {
+              <div class="text-danger small mt-2" role="alert">{{ decisionError }}</div>
+            }
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="fermerDecision()"
+                    [disabled]="decisionPending">Annuler</button>
+            <button type="submit"
+                    class="btn"
+                    [class.btn-success]="currentDecision.type === 'valider'"
+                    [class.btn-danger]="currentDecision.type === 'rejeter'"
+                    [disabled]="decisionPending">
+              @if (decisionPending) {
+                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+              }
+              {{ currentDecision.type === 'valider' ? 'Confirmer la validation' : 'Confirmer le rejet' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<app-document-viewer *ngIf="justificatifViewer.show"
+                     [pdfBase64]="justificatifViewer.data"
+                     [filename]="justificatifViewer.nom || ''"
+                     [contentType]="justificatifViewer.type ?? null" />

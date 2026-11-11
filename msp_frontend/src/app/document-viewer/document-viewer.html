@@ -1,0 +1,19 @@
+<div class="d-inline-flex align-items-center gap-2">
+  <button type="button" class="btn btn-outline-secondary btn-sm"
+          title="Imprimer le document" aria-label="Imprimer le document"
+          [disabled]="!hasDocument" (click)="imprimerDocument()">
+    <i class="fa-solid fa-print" aria-hidden="true"></i>
+  </button>
+  <button type="button" class="btn btn-outline-primary btn-sm"
+          title="Télécharger le document" aria-label="Télécharger le document"
+          [disabled]="!hasDocument" (click)="telechargerDocument()">
+    <i class="fa-solid fa-download" aria-hidden="true"></i>
+  </button>
+</div>
+
+@if (errorMessage()) {
+  <div class="alert alert-warning mt-2 mb-0 py-2 small position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+    {{ errorMessage() }}
+  </div>
+}

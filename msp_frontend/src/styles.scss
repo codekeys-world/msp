@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+$primary: #0F7D4B;
+$body-bg: #f7faf8;
+@import "bootstrap/scss/bootstrap";
+
+
+.btn-hover:hover{
+	background-color: #DCF7E2;
+}
+
+.card:hover{
+    border: 1px solid #0F7D4B;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #0F7D4B;
+  box-shadow: 0 0 0 0.2rem rgba(15,125,75,0.15);
+}
+
+.form-check-input:checked {
+  background-color: #0F7D4B;
+  border-color: #0F7D4B;
+}
+

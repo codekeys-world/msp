@@ -1,0 +1,25 @@
+# Cache et builds locaux
+target/
+*.jar
+*.war
+
+# Dossiers d'IDE (Eclipse, IntelliJ, VS Code)
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# Logs applicatifs locaux
+*.log
+logs/
+
+# Systèmes de fichiers et OS
+.DS_Store
+Thumbs.db
+.git
+.gitignore
+
+# Environnement et secrets locaux
+.env

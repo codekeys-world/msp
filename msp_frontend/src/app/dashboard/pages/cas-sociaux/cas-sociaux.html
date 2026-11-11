@@ -1,0 +1,162 @@
+<main class="cas-sociaux-page">
+  <header class="cas-sociaux-heading">
+    <div>
+      <span class="cas-sociaux-eyebrow">Prestations et accompagnement</span>
+      <h1>Cas sociaux</h1>
+      <p>Suivez les dossiers de maladie, d’accident et de décès des adhérents.</p>
+    </div>
+    @if (canAdd) {
+      <button class="btn btn-light fw-semibold" type="button" (click)="ajouter()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouveau cas social
+      </button>
+    }
+  </header>
+
+  <section class="cas-sociaux-content" aria-labelledby="cas-sociaux-list-title">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h2 id="cas-sociaux-list-title">Dossiers enregistrés</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} dossier(s)</p>
+      </div>
+      @if (totalPages > 0) {
+        <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    @if (canList) {
+      <form class="cas-sociaux-search input-group mb-4" role="search"
+            (submit)="$event.preventDefault(); submitSearch()">
+        <label for="cas-social-search" class="visually-hidden">Rechercher un cas social</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="cas-social-search" class="form-control" type="search" [value]="searchTerm()"
+               (input)="onSearchInput($event)" placeholder="Adhérent, type, date, bénéficiaire ou observation…">
+        @if (searchTerm() || activeSearchTerm) {
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+        }
+      </form>
+    }
+
+    @if (isLoading()) {
+      <div class="cas-sociaux-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des cas sociaux…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        @if (canList) {
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+        }
+      </div>
+    } @else if (casSociaux.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-heart-pulse fs-2" aria-hidden="true"></i>
+        <strong>{{ activeSearchTerm ? 'Aucun résultat pour cette recherche.' : 'Aucun cas social enregistré.' }}</strong>
+        <p class="mb-0">{{ activeSearchTerm ? 'Essayez avec un autre terme.' : 'Les dossiers créés apparaîtront ici.' }}</p>
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (casSocial of casSociaux; track casSocial.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="cas-social-card">
+              <header class="cas-social-card__header">
+                <div class="cas-social-card__heading">
+                  <span class="cas-social-card__eyebrow">{{ typeLabel(casSocial.typeCas) }}</span>
+                  <h3>{{ reference(casSocial) }}</h3>
+                  <p>{{ casSocial.observation || 'Aucune observation renseignée.' }}</p>
+                </div>
+                <span class="cas-social-card__icon" aria-hidden="true"><i class="bi bi-heart-pulse"></i></span>
+              </header>
+              <div class="cas-social-card__summary">
+                <div>
+                  <span class="cas-social-card__label">Date du cas</span>
+                  <strong><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>{{ casSocial.dateCas | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <span class="cas-social-card__amount">{{ prestationLabel(casSocial) }}</span>
+              </div>
+              <dl class="cas-social-card__details">
+                <div>
+                  <dt><i class="bi bi-person-badge me-1" aria-hidden="true"></i>Adhérent</dt>
+                  <dd>{{ casSocial.adherentNomComplet }} <span>{{ casSocial.adherentNumeroInscription }}</span></dd>
+                </div>
+                @if (casSocial.typeCas === 'MALADIE') {
+                  <div>
+                    <dt><i class="bi bi-hospital me-1" aria-hidden="true"></i>Hospitalisation</dt>
+                    <dd>{{ casSocial.heuresHospitalisation }} heures</dd>
+                  </div>
+                }
+                <div>
+                  <dt><i class="bi bi-person-check me-1" aria-hidden="true"></i>Prestation remise à</dt>
+                  <dd>{{ beneficiaryLabel(casSocial) }}</dd>
+                </div>
+                @if (casSocial.dureeCotisationMois !== null) {
+                  <div>
+                    <dt><i class="bi bi-clock-history me-1" aria-hidden="true"></i>Ancienneté de cotisation</dt>
+                    <dd>{{ casSocial.dureeCotisationMois }} mois</dd>
+                  </div>
+                }
+                <div>
+                  <dt><i class="bi bi-cash-coin me-1" aria-hidden="true"></i>Décision de prestation</dt>
+                  <dd>{{ prestationLabel(casSocial) }}</dd>
+                </div>
+                <div>
+                  <dt><i class="bi bi-person me-1" aria-hidden="true"></i>Enregistré par</dt>
+                  <dd>{{ casSocial.creerPar || 'Non renseigné' }}</dd>
+                </div>
+              </dl>
+              <footer class="cas-social-card__footer">
+                <div class="cas-social-card__document">
+                  <span class="cas-social-card__document-icon" aria-hidden="true"><i class="bi bi-paperclip"></i></span>
+                  <span class="cas-social-card__filename" [title]="casSocial.nomFichierJustificatif">
+                    {{ casSocial.nomFichierJustificatif || 'Aucun justificatif' }}
+                  </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (casSocial.justificatif) {
+                    <app-document-viewer [pdfBase64]="casSocial.justificatif"
+                                         [filename]="casSocial.nomFichierJustificatif || reference(casSocial)"
+                                         [contentType]="casSocial.typeFichierJustificatif" />
+                  }
+                  @if (canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button" title="Modifier"
+                            [attr.aria-label]="'Modifier le cas social ' + reference(casSocial)" (click)="modifier(casSocial)">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Supprimer"
+                            [attr.aria-label]="'Supprimer le cas social ' + reference(casSocial)"
+                            [disabled]="deletingSlug() === casSocial.slug" (click)="supprimer(casSocial)">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="cas-sociaux-pagination" aria-label="Pagination des cas sociaux">
+          <button class="cas-sociaux-pagination__button" type="button" (click)="goToPage(page() - 1)"
+                  [disabled]="isLoading() || page() === 0" aria-label="Page précédente">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span>
+          </button>
+          <div class="cas-sociaux-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button class="cas-sociaux-pagination__number" type="button" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber" [disabled]="isLoading()"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null">{{ pageNumber + 1 }}</button>
+            }
+          </div>
+          <button class="cas-sociaux-pagination__button" type="button" (click)="goToPage(page() + 1)"
+                  [disabled]="isLoading() || isLastPage" aria-label="Page suivante">
+            <span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</main>

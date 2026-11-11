@@ -1,0 +1,232 @@
+<main class="adjoints-page">
+  <header class="adjoints-heading">
+    <div>
+      <span class="adjoints-eyebrow">Gestion des adjoints</span>
+      <h1>Désignation des adjoints</h1>
+      <p>Désignez un adjoint pour chaque rôle en cas d'absence.</p>
+    </div>
+  </header>
+
+  <section class="adjoints-content" aria-labelledby="adjoints-list-title">
+    <!-- Cartes de rôle -->
+    <div class="row g-3 mb-4">
+      @for (role of rolesDisponibles; track role.value) {
+        <div class="col-12 col-md-6 col-xl">
+          <div class="role-card">
+            <div class="role-card__icon" aria-hidden="true">
+              <i class="fas fa-id-badge"></i>
+            </div>
+            <h3>{{ role.label }}</h3>
+            @let actif = adjoints.find(a => a.roleDelegue === role.value && a.estActif);
+            @if (actif) {
+              <div class="role-card__adjoint">
+                <span class="role-card__label">Adjoint actuel</span>
+                <strong><i class="fas fa-user-check me-1" aria-hidden="true"></i>{{ actif.adjointNomComplet }}</strong>
+                <small class="text-muted d-block">{{ actif.adjointTelephone }}</small>
+              </div>
+            } @else {
+              <p class="role-card__empty">Aucun adjoint désigné</p>
+            }
+            <button class="btn btn-success btn-sm mt-2" type="button" (click)="openForm(role.value)">
+              <i class="fas fa-plus me-1" aria-hidden="true"></i>Désigner un adjoint
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Formulaire modal -->
+    @if (showForm()) {
+      <div class="adjoints-modal-overlay" (click)="closeForm()">
+        <div class="adjoints-modal" (click)="$event.stopPropagation()">
+          <div class="adjoints-modal__header">
+            <div>
+              <h2>Désigner un adjoint</h2>
+              <p>{{ getRoleForLabel(selectedRole()) }}</p>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" type="button" (click)="closeForm()">
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <form (submit)="$event.preventDefault(); submit()" class="adjoints-form">
+            <!-- Sélection utilisateur depuis la liste des adhérents -->
+            <div class="mb-3">
+              <label class="form-label">
+                <i class="fas fa-user me-1" aria-hidden="true"></i>Adjoint <span class="text-danger">*</span>
+              </label>
+
+              @let user = selectedUser();
+              @if (user) {
+                <!-- Utilisateur sélectionné -->
+                <div class="form-control-plaintext d-flex align-items-center gap-2 p-2 border rounded bg-light">
+                  <i class="fas fa-user-check text-success" aria-hidden="true"></i>
+                  <div class="flex-grow-1">
+                    <strong>{{ user.prenom }} {{ user.nom.toUpperCase() }}</strong>
+                    <small class="text-muted d-block">{{ user.matricule }} — {{ user.telephonePrincipal || '' }}</small>
+                  </div>
+                  <button class="btn btn-sm btn-outline-danger" type="button"
+                          (click)="clearSelectedUser()" title="Changer de sélection">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                  </button>
+                </div>
+              } @else {
+                <!-- Champ de recherche + liste des adhérents -->
+                <div class="adjoint-search-wrapper">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control"
+                           [value]="searchQuery()" (input)="onSearchQueryChange($event)"
+                           (focus)="showAdherentList.set(true)"
+                           placeholder="Rechercher par nom, prénom, matricule ou téléphone…">
+                  </div>
+
+                  @if (showAdherentList()) {
+                    <div class="adjoint-adherent-list" role="listbox">
+                      @if (filteredAdherents().length === 0) {
+                        <div class="adjoint-adherent-list__empty">
+                          <i class="fas fa-user-slash" aria-hidden="true"></i>
+                          <span>Aucun adhérent trouvé</span>
+                        </div>
+                      } @else {
+                        @for (user of filteredAdherents(); track user.slug) {
+                          <button type="button"
+                                  class="adjoint-adherent-list__item"
+                                  role="option"
+                                  (click)="selectUser(user)">
+                            <div class="adjoint-adherent-list__item-avatar">
+                              <i class="fas fa-user" aria-hidden="true"></i>
+                            </div>
+                            <div class="adjoint-adherent-list__item-info">
+                              <strong>{{ user.prenom }} {{ user.nom.toUpperCase() }}</strong>
+                              <small class="text-muted">{{ user.matricule }} — {{ user.telephonePrincipal || '' }}</small>
+                            </div>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                          </button>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Date de début -->
+            <div class="mb-3">
+              <label for="adjoint-date-debut" class="form-label">
+                <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>Date de début <span class="text-danger">*</span>
+              </label>
+              <input id="adjoint-date-debut" class="form-control" type="date"
+                     [value]="dateDebut()" (input)="onDateDebutChange($event)" required>
+            </div>
+
+            <!-- Date de fin -->
+            <div class="mb-3">
+              <label for="adjoint-date-fin" class="form-label">
+                <i class="fas fa-calendar-times me-1" aria-hidden="true"></i>Date de fin (optionnelle)
+              </label>
+              <input id="adjoint-date-fin" class="form-control" type="date"
+                     [value]="dateFin()" (input)="onDateFinChange($event)">
+            </div>
+
+            <!-- Motif -->
+            <div class="mb-3">
+              <label for="adjoint-motif" class="form-label">
+                <i class="fas fa-book me-1" aria-hidden="true"></i>Motif
+              </label>
+              <textarea id="adjoint-motif" class="form-control" rows="2"
+                        [value]="motif()" (input)="onMotifChange($event)"
+                        placeholder="Motif de la délégation (absence, congé, mission…)"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button class="btn btn-outline-secondary" type="button" (click)="closeForm()">
+                <i class="fas fa-times me-1" aria-hidden="true"></i>Annuler
+              </button>
+              <button class="btn btn-success" type="submit" [disabled]="submitting()">
+                @if (submitting()) {
+                  <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                } @else {
+                  <i class="fas fa-check me-1" aria-hidden="true"></i>
+                }
+                Désigner
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Liste des délégations -->
+    <h2 id="adjoints-list-title" class="mt-4">Historique des délégations</h2>
+    <p class="text-muted">{{ adjoints.length }} délégation(s) enregistrée(s)</p>
+
+    @if (isLoading()) {
+      <div class="adjoints-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des délégations…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+      </div>
+    } @else if (adjoints.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="fas fa-folder-open fs-2" aria-hidden="true"></i>
+        <strong>Aucune délégation enregistrée.</strong>
+        <p class="mb-0">Les adjoints désignés apparaîtront ici.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th><i class="fas fa-user me-1" aria-hidden="true"></i>Adjoint</th>
+              <th><i class="fas fa-id-badge me-1" aria-hidden="true"></i>Rôle</th>
+              <th><i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>Début</th>
+              <th><i class="fas fa-calendar-times me-1" aria-hidden="true"></i>Fin</th>
+              <th><i class="fas fa-circle me-1" aria-hidden="true"></i>Statut</th>
+              <th class="text-end"><i class="fas fa-cog me-1" aria-hidden="true"></i>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (adjoint of adjoints; track adjoint.slug) {
+              <tr>
+                <td>
+                  <strong>{{ adjoint.adjointNomComplet }}</strong>
+                  <br><small class="text-muted">{{ adjoint.adjointMatricule }} — {{ adjoint.adjointTelephone }}</small>
+                </td>
+                <td><span class="badge text-bg-success">{{ getRoleLabel(adjoint.roleDelegue) }}</span></td>
+                <td>{{ adjoint.dateDebut | date:'dd/MM/yyyy' }}</td>
+                <td>{{ adjoint.dateFin ? (adjoint.dateFin | date:'dd/MM/yyyy') : '—' }}</td>
+                <td>
+                  @if (adjoint.estActif) {
+                    <span class="badge text-bg-success">Actif</span>
+                  } @else {
+                    <span class="badge text-bg-secondary">Inactif</span>
+                  }
+                </td>
+                <td class="text-end">
+                  @if (adjoint.estActif) {
+                    <button class="btn btn-outline-danger btn-sm" type="button"
+                            title="Désactiver" (click)="desactiver(adjoint)">
+                      <i class="fas fa-stop-circle" aria-hidden="true"></i>
+                    </button>
+                  } @else {
+                    <button class="btn btn-outline-success btn-sm" type="button"
+                            title="Réactiver" (click)="reactivier(adjoint)">
+                      <i class="fas fa-play-circle" aria-hidden="true"></i>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

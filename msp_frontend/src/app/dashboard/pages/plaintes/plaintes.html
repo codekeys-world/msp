@@ -1,0 +1,151 @@
+<main class="plaintes-page">
+  <header class="plaintes-heading">
+    <div>
+      <span class="plaintes-eyebrow">Suivi des dossiers sociaux</span>
+      <h1>Plaintes</h1>
+      <p>Consultez et gérez les plaintes transmises au secrétariat aux affaires sociales.</p>
+    </div>
+    @if (canAdd) {
+      <button class="btn btn-light fw-semibold" type="button" (click)="ajouter()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouvelle plainte
+      </button>
+    }
+  </header>
+
+  <section class="plaintes-content" aria-labelledby="plaintes-list-title">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h2 id="plaintes-list-title">Liste des plaintes</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} plainte(s) enregistrée(s)</p>
+      </div>
+      @if (totalPages > 0) {
+        <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    @if (canList) {
+      <form class="plaintes-search input-group mb-4" role="search"
+            (submit)="$event.preventDefault(); submitSearch()">
+        <label for="plainte-search" class="visually-hidden">Rechercher une plainte</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="plainte-search" class="form-control" type="search" [value]="searchTerm()"
+               (input)="onSearchInput($event)" placeholder="Date, observation, rédacteur ou document…">
+        @if (searchTerm() || activeSearchTerm) {
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+        }
+      </form>
+    }
+
+    @if (isLoading()) {
+      <div class="plaintes-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des plaintes…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        @if (canList) {
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+        }
+      </div>
+    } @else if (plaintes.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-folder2-open fs-2" aria-hidden="true"></i>
+        <strong>{{ activeSearchTerm ? 'Aucun résultat : la liste est vide.' : 'La liste des plaintes est vide.' }}</strong>
+        <p class="mb-0">{{ activeSearchTerm ? 'Aucune plainte ne correspond à votre recherche.' : 'Les plaintes enregistrées apparaîtront ici.' }}</p>
+        @if (activeSearchTerm) {
+          <button class="btn btn-outline-success" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer la recherche</button>
+        }
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (plainte of plaintes; track plainte.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="plainte-card">
+              <header class="plainte-card__header">
+                <div class="plainte-card__heading">
+                  <span class="plainte-card__eyebrow">Dossier de plainte</span>
+                  <h3>{{ reference(plainte) }}</h3>
+                  <p>{{ plainte.observation || 'Aucune observation renseignée.' }}</p>
+                </div>
+                <span class="plainte-card__icon" aria-hidden="true"><i class="bi bi-exclamation-triangle"></i></span>
+              </header>
+              <div class="plainte-card__summary">
+                <div>
+                  <span class="plainte-card__label">Date de la plainte</span>
+                  <strong><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>{{ plainte.datePv | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <span class="badge" [class.text-bg-success]="plainte.dateValidation"
+                      [class.text-bg-danger]="plainte.dateRefus"
+                      [class.text-bg-warning]="!plainte.dateValidation && !plainte.dateRefus">
+                  {{ statut(plainte) }}
+                </span>
+              </div>
+              <dl class="plainte-card__details">
+                <div>
+                  <dt><i class="bi bi-person me-1" aria-hidden="true"></i>Enregistrée par</dt>
+                  <dd>{{ plainte.creerPar || 'Non renseigné' }}</dd>
+                </div>
+                @if (plainte.messageValidation) {
+                  <div>
+                    <dt><i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Commentaire de suivi</dt>
+                    <dd>{{ plainte.messageValidation }}</dd>
+                  </div>
+                }
+              </dl>
+              <footer class="plainte-card__footer">
+                <div class="plainte-card__document">
+                  <span class="plainte-card__document-icon" aria-hidden="true"><i class="bi bi-paperclip"></i></span>
+                  <span class="plainte-card__filename" [title]="plainte.nomFichierPlainte">
+                    {{ plainte.nomFichierPlainte || 'Aucun document joint' }}
+                  </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (plainte.documentPlainte) {
+                    <app-document-viewer [pdfBase64]="plainte.documentPlainte"
+                                         [filename]="plainte.nomFichierPlainte || reference(plainte)"
+                                         [contentType]="plainte.typeFichierPlainte" />
+                  }
+                  @if (canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button" title="Modifier"
+                            [attr.aria-label]="'Modifier la plainte ' + reference(plainte)" (click)="modifier(plainte)">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Supprimer"
+                            [attr.aria-label]="'Supprimer la plainte ' + reference(plainte)"
+                            [disabled]="deletingSlug() === plainte.slug" (click)="supprimer(plainte)">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="plaintes-pagination" aria-label="Pagination des plaintes">
+          <button class="plaintes-pagination__button" type="button" (click)="goToPage(page() - 1)"
+                  [disabled]="isLoading() || isFirstPage" aria-label="Page précédente">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span>
+          </button>
+          <div class="plaintes-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button class="plaintes-pagination__number" type="button" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber" [disabled]="isLoading()"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null">{{ pageNumber + 1 }}</button>
+            }
+          </div>
+          <button class="plaintes-pagination__button" type="button" (click)="goToPage(page() + 1)"
+                  [disabled]="isLoading() || isLastPage" aria-label="Page suivante">
+            <span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</main>

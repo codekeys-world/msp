@@ -1,0 +1,81 @@
+services:
+  postgres:
+    container_name: postgres-sql-msp
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgres/data
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "${POSTGRESQL_PORT:-5432}:5432"
+    networks:
+      - msp-network
+    restart: unless-stopped
+  mail-dev:
+    container_name: mail-dev-msp
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "${MAIL_DEV_SEND_PORT:-1025}:1025"
+    networks:
+      - msp-network
+  adminer:
+    container_name: adminer-5.4.1-msp
+    image: adminer:5.4.1
+    restart: always
+    ports:
+      - "${ADMINER_READ_PORT:-9081}:8080"
+    networks:
+      - msp-network
+  msp-api:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    env_file:
+      - .env
+    container_name: msp_api-${APPLICATION_VERSION}
+    image: msp/msp-api:${APPLICATION_VERSION}
+    restart: always
+    ports:
+      - "8088:8088"
+    networks:
+      - msp-network
+    depends_on:
+      - postgres
+    volumes:
+      - fichiers:/app/fichiers
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      ACTIVE_PROFILE: ${ACTIVE_PROFILE}
+      SPRING_MAIL_HOST: ${EMAIL_HOSTNAME}
+      SPRING_MAIL_USERNAME: ${EMAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD}
+      FILE_UPLOAD_PATH: ${FILE_UPLOAD_PATH}
+  msp-front:
+    build:
+      context: ./msp_frontend
+      dockerfile: ../docker/frontend/Dockerfile
+    env_file:
+      - .env
+    container_name: msp_front-${APPLICATION_VERSION}
+    image: msp/msp-front:${APPLICATION_VERSION}
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - msp-network
+    depends_on:
+      - msp-api
+
+volumes:
+  postgres:
+    driver: local
+  fichiers:
+    driver: local
+
+networks:
+  msp-network:
+    driver: bridge

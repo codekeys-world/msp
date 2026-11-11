@@ -1,0 +1,19 @@
+:host { display: block; }
+
+.adherent-form-page { max-width: 74rem; margin: 0 auto; padding: clamp(1rem, 2.5vw, 2rem); }
+.adherent-form-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.adherent-form-heading h1 { margin: .4rem 0; color: #19352a; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 750; }
+.adherent-form-heading p { margin: 0; color: #73847a; }
+.adherent-eyebrow { color: #176640; font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.adherent-form-card { padding: clamp(1rem, 2.5vw, 1.6rem); background: #fff; border: 1px solid #e5ece7; border-radius: 1rem; box-shadow: 0 .35rem 1.1rem rgb(25 53 42 / 5%); }
+.adherent-form-card__heading { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.25rem; }
+.adherent-form-card__heading h2 { margin: 0; color: #19352a; font-size: 1.05rem; font-weight: 700; }
+.adherent-form-card__heading p { margin: .2rem 0 0; color: #73847a; font-size: .86rem; }
+.adherent-section-icon { display: grid; width: 2.6rem; height: 2.6rem; flex: 0 0 auto; place-items: center; color: #176640; font-size: 1.2rem; background: #eaf6ee; border-radius: .75rem; }
+.adherent-photo-preview { width: 7rem; height: 7rem; object-fit: cover; border-radius: .75rem; }
+.adherent-photo-placeholder { display: grid; place-items: center; width: 7rem; height: 7rem; color: #176640; font-size: 2.5rem; background: #eaf6ee; border-radius: .75rem; }
+.family-form { margin-top: 1rem; padding: 1rem; background: #f8faf8; border: 1px solid #e7eee9; border-radius: .8rem; }
+.family-form__heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: .9rem; }
+.family-form__heading h3 { margin: 0; color: #284438; font-size: .95rem; font-weight: 700; }
+.form-control:focus, .form-select:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); }
+@media (max-width: 575.98px) { .adherent-form-heading { align-items: flex-start; flex-direction: column; } }

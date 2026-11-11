@@ -1,0 +1,167 @@
+<main class="encaissements-page">
+  <header class="encaissements-heading">
+    <div>
+      <span class="encaissements-eyebrow">Trésorerie</span>
+      <h1>Encaissements</h1>
+      <p>Gérez les versements, dons, legs et intérêts des placements.</p>
+    </div>
+    @if (canAdd) {
+      <button class="btn btn-light fw-semibold" type="button" (click)="ajouter()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouvel encaissement
+      </button>
+    }
+  </header>
+
+  <section class="encaissements-content" aria-labelledby="encaissements-list-title">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h2 id="encaissements-list-title">Encaissements enregistrés</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} encaissement(s)</p>
+      </div>
+      @if (totalPages > 0) {
+        <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    @if (canList) {
+      <form class="encaissements-search input-group mb-4" role="search"
+            (submit)="$event.preventDefault(); submitSearch()">
+        <label for="encaissement-search" class="visually-hidden">Rechercher un encaissement</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="encaissement-search" class="form-control" type="search" [value]="searchTerm()"
+               (input)="onSearchInput($event)" placeholder="Type, date, montant ou observation…">
+        @if (searchTerm() || activeSearchTerm) {
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+        }
+      </form>
+    }
+
+    @if (isLoading()) {
+      <div class="encaissements-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des encaissements…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        @if (canList) {
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+        }
+      </div>
+    } @else if (encaissements.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-cash-stack fs-2" aria-hidden="true"></i>
+        <strong>{{ activeSearchTerm ? 'Aucun résultat pour cette recherche.' : 'Aucun encaissement enregistré.' }}</strong>
+        <p class="mb-0">{{ activeSearchTerm ? 'Essayez avec un autre terme.' : 'Les encaissements créés apparaîtront ici.' }}</p>
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (enc of encaissements; track enc.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="encaissement-card h-100">
+              <header class="encaissement-card__header">
+                <div class="encaissement-card__heading">
+                  <span class="encaissement-card__eyebrow">{{ reference(enc) }}</span>
+                  <h3 class="encaissement-card__title">{{ typeLabel(enc.typeEncaissement) }}</h3>
+                  <p class="encaissement-card__date">
+                    <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
+                    {{ enc.dateEncaissement | date:'dd/MM/yyyy' }}
+                  </p>
+                </div>
+                <span class="encaissement-card__icon" aria-hidden="true">
+                  <i class="bi bi-cash-stack"></i>
+                </span>
+              </header>
+
+              <div class="encaissement-card__amount">
+                <span>Montant encaissé</span>
+                <strong>{{ montantLabel(enc) }}</strong>
+              </div>
+
+              <dl class="encaissement-card__details">
+                <div>
+                  <dt><i class="bi bi-calendar-range" aria-hidden="true"></i> Période</dt>
+                  <dd>{{ periodeLabel(enc) }}</dd>
+                </div>
+                <div>
+                  <dt><i class="bi bi-geo-alt" aria-hidden="true"></i> Région / budget</dt>
+                  <dd>{{ enc.typeBudget || 'Non renseigné' }}</dd>
+                </div>
+                @if (enc.observation) {
+                  <div class="encaissement-card__observation">
+                    <dt><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observation</dt>
+                    <dd>{{ enc.observation }}</dd>
+                  </div>
+                }
+              </dl>
+
+              <footer class="encaissement-card__footer">
+                <div class="encaissement-card__document">
+                  <span class="encaissement-card__document-icon" aria-hidden="true">
+                    <i class="bi bi-paperclip"></i>
+                  </span>
+                  <span class="encaissement-card__document-name"
+                        [title]="enc.nomFichierJustificatif || 'Aucun justificatif'">
+                    {{ enc.nomFichierJustificatif || 'Aucun justificatif' }}
+                  </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (justificatifs()[enc.slug]) {
+                    <app-document-viewer [pdfBase64]="justificatifs()[enc.slug]"
+                                         [filename]="enc.nomFichierJustificatif || reference(enc)"
+                                         [contentType]="enc.typeFichierJustificatif" />
+                  } @else if (enc.nomFichierJustificatif) {
+                    <button class="btn btn-outline-primary btn-sm" type="button"
+                            [disabled]="loadingJustificatifSlug() === enc.slug"
+                            (click)="chargerJustificatif(enc)" title="Voir le justificatif"
+                            aria-label="Voir le justificatif">
+                      @if (loadingJustificatifSlug() === enc.slug) {
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      } @else {
+                        <i class="bi bi-file-earmark-eye" aria-hidden="true"></i>
+                      }
+                    </button>
+                  }
+                  @if (canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button" title="Modifier"
+                            [attr.aria-label]="'Modifier l\'encaissement ' + reference(enc)" (click)="modifier(enc)">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Supprimer"
+                            [attr.aria-label]="'Supprimer l\'encaissement ' + reference(enc)"
+                            [disabled]="deletingSlug() === enc.slug" (click)="supprimer(enc)">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="encaissements-pagination" aria-label="Pagination des encaissements">
+          <button class="encaissements-pagination__button" type="button" (click)="goToPage(page() - 1)"
+                  [disabled]="isLoading() || page() === 0" aria-label="Page précédente">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span>
+          </button>
+          <div class="encaissements-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button class="encaissements-pagination__number" type="button" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber" [disabled]="isLoading()"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null">{{ pageNumber + 1 }}</button>
+            }
+          </div>
+          <button class="encaissements-pagination__button" type="button" (click)="goToPage(page() + 1)"
+                  [disabled]="isLoading() || isLastPage" aria-label="Page suivante">
+            <span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</main>

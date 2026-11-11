@@ -1,0 +1,48 @@
+<header>
+    <nav class="landing-nav bg-light navbar navbar-expand-md navbar-light fixed-top border-bottom">
+        <div class="container-fluid mx-md-4 align-items-center">
+            <a class="navbar-brand landing-brand d-flex align-items-center gap-2" href="/">
+                <img src="logo_msp.png" alt="Logo MSP" class="landing-brand__logo">
+                <div>
+                    <p class="p-0 m-0 text-uppercase fw-bold lh-sm">MSP</p>
+                    <p class="p-0 m-0 fw-light fs-6 text-secondary lh-sm">Mutuelle des Surveillants de Prison du Mali</p>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbarNav" class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a href="#services" class="nav-link">Services</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#missions" class="nav-link">Missions</a>
+                    </li>
+                    @if (isLoggedIn()) {
+                    <li class="nav-item">
+                        <a routerLink="/dashboard" class="nav-link">
+                            <i class="fa-solid fa-gauge"></i>
+                            Tableau de bord
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" (click)="onLogout(); $event.preventDefault()" class="nav-link landing-login-link rounded-pill text-white">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Déconnexion
+                        </a>
+                    </li>
+                    } @else {
+                    <li class="nav-item">
+                        <a routerLink="/authentification" class="nav-link landing-login-link rounded-pill text-white">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            Connexion
+                        </a>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

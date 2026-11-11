@@ -1,0 +1,123 @@
+<section class="missions-page">
+  @if (successMessage()) {
+    <div class="alert alert-success alert-dismissible fade show position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+      {{ successMessage() }}
+      <button type="button" class="btn-close" aria-label="Fermer" (click)="successMessage.set(null)"></button>
+    </div>
+  }
+
+  <header class="missions-heading">
+    <div>
+      <span class="missions-heading__eyebrow">Gestion des déplacements</span>
+      <h1>Ordres de mission</h1>
+      <p>Consultez les missions, leurs itinéraires et les documents associés.</p>
+    </div>
+    @if (canAdd) {
+      <button type="button" class="btn missions-heading__action" (click)="goToAddOrdreMissionForm()">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        Nouvel ordre de mission
+      </button>
+    }
+  </header>
+
+  <section class="missions-list" aria-labelledby="missions-list-title">
+    <div class="missions-list__heading">
+      <div>
+        <h2 id="missions-list-title">Vos missions</h2>
+        @if (ordreMissions(); as response) {
+          <p>
+            {{ response.donnees.resultat.totalElements }}
+            {{ activeSearchTerm ? 'résultat(s) trouvé(s)' : 'mission(s) enregistrée(s)' }}
+          </p>
+        } @else {
+          <p>Les ordres de mission enregistrés dans votre espace</p>
+        }
+      </div>
+      @if (!isLoading() && !errorMessage() && pageNumbers.length > 0) {
+        <span class="missions-list__page-indicator">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    <form class="missions-search input-group mb-4" role="search" (submit)="$event.preventDefault(); searchOrdreMission()">
+      <label class="visually-hidden" for="mission-search">Rechercher un ordre de mission</label>
+      <span class="input-group-text" aria-hidden="true"><i class="fas fa-search"></i></span>
+      <input id="mission-search" class="form-control" type="search" [value]="searchTerm()"
+             (input)="onSearchInput($event)"
+             placeholder="Rechercher par libellé, objet, itinéraire, date, fichier…">
+      @if (searchTerm() || activeSearchTerm) {
+        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+          <i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer
+        </button>
+      }
+    </form>
+
+    @if (isLoading()) {
+      <div class="missions-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement des ordres de mission…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-3 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="onListOrdreMission()">
+          <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    } @else if (pageNumbers.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span class="fs-2" aria-hidden="true"><i class="fas fa-folder-open"></i></span>
+        @if (activeSearchTerm) {
+          <strong>Aucun résultat : la liste est vide.</strong>
+          <p class="mb-0">Aucun ordre de mission ne correspond à « {{ activeSearchTerm }} ».</p>
+          <button type="button" class="btn btn-outline-success" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer la recherche</button>
+        } @else {
+          <strong>La liste des ordres de mission est vide.</strong>
+          <p class="mb-0">Créez un nouvel ordre de mission pour le retrouver ici.</p>
+          <button type="button" class="btn missions-heading__action" (click)="goToAddOrdreMissionForm()">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+            Créer un ordre de mission
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (ordreMission of ordreMissions()?.donnees?.resultat?.content; track ordreMission.slug) {
+          <div class="col-12 col-xl-6">
+            <app-ordre-mission-details [ordreMission]="ordreMission"
+                                      [canEdit]="canEdit"
+                                      [canDelete]="canDelete"
+                                      (edit)="editOrdreMission($event)"
+                                      (delete)="deleteOrdreMission($event)"></app-ordre-mission-details>
+          </div>
+        }
+      </div>
+
+      <nav class="missions-pagination" aria-label="Pagination des ordres de mission">
+        <button type="button" class="missions-pagination__button" (click)="goToPreviousPage()"
+                aria-label="Page précédente" [disabled]="isLoading() || isFirstPage">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Précédent</span>
+        </button>
+        <div class="missions-pagination__pages">
+          @for (pageNumber of pageNumbers; track pageNumber) {
+            <button type="button" class="missions-pagination__number" (click)="goToPage(pageNumber)"
+                    [class.is-active]="page() === pageNumber"
+                    [attr.aria-current]="page() === pageNumber ? 'page' : null"
+                    [attr.aria-label]="'Page ' + (pageNumber + 1)"
+                    [disabled]="isLoading()">
+              {{ pageNumber + 1 }}
+            </button>
+          }
+        </div>
+        <button type="button" class="missions-pagination__button" (click)="goToNextPage()"
+                aria-label="Page suivante" [disabled]="isLoading() || isLastPage">
+          <span>Suivant</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </nav>
+    }
+  </section>
+</section>

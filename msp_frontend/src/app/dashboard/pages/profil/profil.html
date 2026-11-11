@@ -1,0 +1,110 @@
+<main class="profile-page">
+  <header class="profile-hero-banner">
+    <div class="profile-hero-banner__inner">
+      <div class="profile-hero-banner__left">
+        <span class="profile-hero-banner__badge">
+          <i class="fas fa-user-circle me-1" aria-hidden="true"></i>MON ESPACE
+        </span>
+        <h1 class="profile-hero-banner__title">Mon profil</h1>
+        <p class="profile-hero-banner__description">
+          Consultez et mettez à jour vos informations personnelles et votre sécurité.
+        </p>
+      </div>
+      <button class="profile-hero-banner__refresh btn btn-light" type="button" (click)="chargerProfil()" [disabled]="isLoading()">
+        <i class="fas fa-sync-alt me-1" aria-hidden="true"></i>Actualiser
+      </button>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ errorMessage() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="text-center py-5"><span class="spinner-border text-success" aria-hidden="true"></span><span class="visually-hidden">Chargement du profil…</span></div>
+  } @else if (profil()) {
+    <section class="profile-card mb-4">
+      <div class="profile-summary">
+        @if (photoPreview() || photoUrl()) {
+          <img class="profile-avatar" [src]="photoPreview() ?? photoUrl()" alt="Photo de profil">
+        } @else {
+          <div class="profile-avatar profile-avatar--initials">{{ initials() }}</div>
+        }
+        <div>
+          <h2>{{ profil()?.prenom }} {{ profil()?.nom }}</h2>
+          <p class="mb-1">{{ profil()?.role?.replace('_', ' ') }}</p>
+          <small class="text-muted">Matricule : {{ profil()?.matricule }}</small>
+        </div>
+      </div>
+      <div class="profile-photo">
+        <label class="form-label" for="profilePhoto">Photo de profil</label>
+        <div class="profile-photo-controls row g-2 align-items-end">
+          <div class="col-12 col-md">
+            <input id="profilePhoto" class="form-control" type="file" accept="image/*" (change)="choisirPhoto($event)">
+          </div>
+          <div class="col-12 col-md-auto">
+          <button class="btn btn-outline-success" type="button" (click)="enregistrerPhoto()" [disabled]="!selectedPhoto() || isSavingPhoto()">
+            @if (isSavingPhoto()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            <i class="bi bi-camera me-2" aria-hidden="true"></i>Mettre à jour la photo
+          </button>
+          </div>
+        </div>
+        <div class="form-text mt-2">Formats image uniquement.</div>
+      </div>
+    </section>
+
+    <section class="profile-card mb-4">
+      <div class="profile-card-heading">
+        <span class="profile-icon"><i class="bi bi-person-vcard" aria-hidden="true"></i></span>
+        <div><h2>Informations personnelles</h2><p>Modifiez vos coordonnées et vos informations d’état civil.</p></div>
+      </div>
+      <form [formGroup]="profilForm" (ngSubmit)="enregistrerProfil()" novalidate>
+        <div class="row g-3">
+          <div class="col-12 col-md-6"><label class="form-label" for="prenom">Prénom <span class="text-danger">*</span></label><input id="prenom" class="form-control" formControlName="prenom" autocomplete="given-name"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="nom">Nom <span class="text-danger">*</span></label><input id="nom" class="form-control" formControlName="nom" autocomplete="family-name"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="email">Adresse e-mail <span class="text-danger">*</span></label><input id="email" class="form-control" type="email" formControlName="email" autocomplete="email"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="matricule">Matricule <span class="text-danger">*</span></label><input id="matricule" class="form-control" formControlName="matricule"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="telephonePrincipal">Téléphone principal <span class="text-danger">*</span></label><input id="telephonePrincipal" class="form-control" type="tel" formControlName="telephonePrincipal" placeholder="+223 76 12 34 56"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="telephoneSecondaire">Téléphone secondaire</label><input id="telephoneSecondaire" class="form-control" type="tel" formControlName="telephoneSecondaire" placeholder="+223 66 12 34 56"></div>
+          <div class="col-12 col-md-4"><label class="form-label" for="dateNaissance">Date de naissance <span class="text-danger">*</span></label><input id="dateNaissance" class="form-control" type="date" formControlName="dateNaissance"></div>
+          <div class="col-12 col-md-4"><label class="form-label" for="lieuNaissance">Lieu de naissance <span class="text-danger">*</span></label><input id="lieuNaissance" class="form-control" formControlName="lieuNaissance" placeholder="Ex. Bamako"></div>
+          <div class="col-12 col-md-4"><label class="form-label" for="genre">Genre <span class="text-danger">*</span></label><select id="genre" class="form-select" formControlName="genre"><option value="HOMME">Homme</option><option value="FEMME">Femme</option></select></div>
+          <div class="col-12"><label class="form-label" for="adresse">Adresse</label><input id="adresse" class="form-control" formControlName="adresse" placeholder="Quartier, commune, ville"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="numeroInscription">Numéro d’inscription <span class="text-danger">*</span></label><input id="numeroInscription" class="form-control" formControlName="numeroInscription"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="pere">Nom complet du père <span class="text-danger">*</span></label><input id="pere" class="form-control" formControlName="pere"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="mere">Nom complet de la mère <span class="text-danger">*</span></label><input id="mere" class="form-control" formControlName="mere"></div>
+          <div class="col-12"><label class="form-label" for="observations">Observations</label><textarea id="observations" class="form-control" rows="3" formControlName="observations"></textarea></div>
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+          <button class="btn btn-success" type="submit" [disabled]="isSaving()">
+            @if (isSaving()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            <i class="bi bi-floppy me-2" aria-hidden="true"></i>Enregistrer les modifications
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="profile-card">
+      <div class="profile-card-heading">
+        <span class="profile-icon"><i class="bi bi-shield-lock" aria-hidden="true"></i></span>
+        <div><h2>Mot de passe</h2><p>Confirmez votre mot de passe actuel avant d’en choisir un nouveau.</p></div>
+      </div>
+      @if (passwordError()) { <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ passwordError() }}</div> }
+      <form [formGroup]="passwordForm" (ngSubmit)="changerMotDePasse()" novalidate>
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label" for="ancienMotDePasse">Mot de passe actuel <span class="text-danger">*</span></label><input id="ancienMotDePasse" class="form-control" type="password" formControlName="ancienMotDePasse" autocomplete="current-password"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="nouveauMotDePasse">Nouveau mot de passe <span class="text-danger">*</span></label><input id="nouveauMotDePasse" class="form-control" type="password" formControlName="nouveauMotDePasse" autocomplete="new-password" placeholder="8 caractères minimum"></div>
+          <div class="col-12 col-md-6"><label class="form-label" for="confirmationPassword">Confirmer le nouveau mot de passe <span class="text-danger">*</span></label><input id="confirmationPassword" class="form-control" type="password" formControlName="confirmationPassword" autocomplete="new-password"></div>
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+          <button class="btn btn-outline-success" type="submit" [disabled]="isSavingPassword()">
+            @if (isSavingPassword()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            <i class="bi bi-key me-2" aria-hidden="true"></i>Mettre à jour le mot de passe
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+</main>

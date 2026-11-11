@@ -1,0 +1,81 @@
+<article class="mission-card h-100">
+  <div class="mission-card__header">
+    <div class="mission-card__heading">
+      <span class="mission-card__eyebrow">Ordre de mission</span>
+      <h2 class="mission-card__title">{{ ordreMission().libelle }}</h2>
+      <p class="mission-card__subject">{{ ordreMission().objet }}</p>
+    </div>
+    <span class="mission-card__icon" aria-hidden="true">
+      <i class="fas fa-plane-departure"></i>
+    </span>
+  </div>
+
+  <div class="mission-card__route">
+    <div class="mission-card__route-point">
+      <span class="mission-card__route-label">Départ</span>
+      <strong>{{ ordreMission().dateDepart | date:'dd/MM/yyyy' }}</strong>
+    </div>
+    <span class="mission-card__route-line" aria-hidden="true">
+      <i class="fas fa-arrow-right"></i>
+    </span>
+    <div class="mission-card__route-point mission-card__route-point--end">
+      <span class="mission-card__route-label">Retour</span>
+      <strong>{{ ordreMission().dateRetour | date:'dd/MM/yyyy' }}</strong>
+    </div>
+  </div>
+
+  <dl class="mission-card__details">
+    <div class="mission-card__detail">
+      <dt><i class="fas fa-map-signs" aria-hidden="true"></i> Itinéraire</dt>
+      <dd>{{ ordreMission().itineraire || 'Non renseigné' }}</dd>
+    </div>
+    <div class="mission-card__detail">
+      <dt><i class="fas fa-car" aria-hidden="true"></i> Déplacement</dt>
+      <dd>{{ ordreMission().moyenDeplacement || 'Non renseigné' }}</dd>
+    </div>
+    <div class="mission-card__detail">
+      <dt><i class="fas fa-wallet" aria-hidden="true"></i> Imputation budgétaire</dt>
+      <dd>{{ ordreMission().imputationBudgetaire || 'Non renseignée' }}</dd>
+    </div>
+    @if (ordreMission().observation) {
+      <div class="mission-card__detail mission-card__detail--observation">
+        <dt><i class="fas fa-comment-dots" aria-hidden="true"></i> Observation</dt>
+        <dd>{{ ordreMission().observation }}</dd>
+      </div>
+    }
+  </dl>
+
+  <div class="mission-card__footer">
+    <div class="mission-card__document">
+      <span class="mission-card__document-icon" aria-hidden="true">
+        <i class="fas fa-file-pdf"></i>
+      </span>
+      <span class="mission-card__document-name" [title]="ordreMission().nomFichierOrdreMission">
+        {{ ordreMission().nomFichierOrdreMission || 'Document de mission' }}
+      </span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      @if (ordreMission().ordreMission) {
+        <app-document-viewer
+          [pdfBase64]="ordreMission().ordreMission"
+          [filename]="ordreMission().nomFichierOrdreMission || ordreMission().libelle"
+          [contentType]="ordreMission().typeFichierOrdreMission ?? null"
+        />
+      }
+      @if (canEdit()) {
+        <button type="button" class="btn btn-outline-success btn-sm"
+                aria-label="Modifier l'ordre de mission" title="Modifier"
+                (click)="edit.emit(ordreMission())">
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+        </button>
+      }
+      @if (canDelete()) {
+        <button type="button" class="btn btn-outline-danger btn-sm"
+                aria-label="Supprimer l'ordre de mission" title="Supprimer"
+                (click)="delete.emit(ordreMission())">
+          <i class="fas fa-trash" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+  </div>
+</article>

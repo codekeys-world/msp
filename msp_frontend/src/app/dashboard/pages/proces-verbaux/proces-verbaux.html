@@ -1,0 +1,154 @@
+<main class="pvs-page">
+  <header class="pvs-heading">
+    <div>
+      <span class="pvs-eyebrow">Gestion documentaire</span>
+      <h1>Procès-verbaux</h1>
+      <p>Consultez, recherchez et gérez les procès-verbaux et leurs documents.</p>
+    </div>
+    @if (canAdd) {
+      <button type="button" class="btn btn-light fw-semibold" (click)="ajouter()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouveau PV
+      </button>
+    }
+  </header>
+
+  <section class="pvs-content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h2>Liste des procès-verbaux</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} PV enregistré(s)</p>
+      </div>
+      @if (totalPages > 0) {
+        <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    @if (canSearch) {
+      <form class="pvs-search input-group mb-4" role="search" (submit)="$event.preventDefault(); submitSearch()">
+        <label for="pv-search" class="visually-hidden">Rechercher un procès-verbal</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="pv-search" class="form-control" type="search" [value]="searchTerm()"
+               (input)="onSearchInput($event)" placeholder="Numéro, objet, type, date, rédacteur, document…">
+        @if (searchTerm() || activeSearchTerm) {
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+        }
+      </form>
+    }
+
+    @if (isLoading()) {
+      <div class="pvs-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>Chargement des PV…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+      </div>
+    } @else if (pvs.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-folder2-open fs-2" aria-hidden="true"></i>
+        <strong>{{ activeSearchTerm ? 'Aucun résultat : la liste est vide.' : 'La liste des procès-verbaux est vide.' }}</strong>
+        <p class="mb-0">{{ activeSearchTerm ? 'Aucun PV ne correspond à cette recherche.' : 'Les procès-verbaux créés apparaîtront ici.' }}</p>
+        @if (activeSearchTerm) {
+          <button class="btn btn-outline-success" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer la recherche</button>
+        }
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (pv of pvs; track pv.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="pv-card">
+              <header class="pv-card__header">
+                <div class="pv-card__heading">
+                  <span class="pv-card__eyebrow">Procès-verbal</span>
+                  <h3 class="pv-card__number">{{ pv.numero }}</h3>
+                  <p class="pv-card__subject">{{ pv.objet }}</p>
+                </div>
+                <span class="pv-card__icon" aria-hidden="true"><i class="bi bi-clipboard2-check"></i></span>
+              </header>
+
+              <div class="pv-card__summary">
+                <div>
+                  <span class="pv-card__label">Date du PV</span>
+                  <strong><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>{{ pv.datePv | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <span class="badge rounded-pill text-bg-light">{{ pv.type }}</span>
+              </div>
+
+              <dl class="pv-card__details">
+                <div>
+                  <dt><i class="bi bi-person me-1" aria-hidden="true"></i>Rédacteur</dt>
+                  <dd>{{ pv.creerPar || 'Non renseigné' }}</dd>
+                </div>
+                <div>
+                  <dt><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Statut</dt>
+                  <dd>
+                    <span class="badge" [class.text-bg-success]="pv.dateValidation"
+                          [class.text-bg-danger]="pv.dateRefus" [class.text-bg-warning]="!pv.dateValidation && !pv.dateRefus">
+                      {{ statut(pv) }}
+                    </span>
+                  </dd>
+                </div>
+                @if (pv.observation) {
+                  <div class="pv-card__observation">
+                    <dt><i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Observation</dt>
+                    <dd>{{ pv.observation }}</dd>
+                  </div>
+                }
+              </dl>
+
+              <footer class="pv-card__footer">
+                <div class="pv-card__document">
+                  <span class="pv-card__document-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                  <span class="pv-card__filename" [title]="pv.nomFichierPv">
+                    {{ pv.nomFichierPv || 'Aucun document joint' }}
+                  </span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (pv.documentPv) {
+                    <app-document-viewer [pdfBase64]="pv.documentPv" [filename]="pv.nomFichierPv || pv.numero"
+                                         [contentType]="pv.typeFichierPv ?? null" />
+                  }
+                  @if (canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button" title="Modifier"
+                            [attr.aria-label]="'Modifier le PV ' + pv.numero" (click)="modifier(pv)">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Supprimer"
+                            [attr.aria-label]="'Supprimer le PV ' + pv.numero"
+                            [disabled]="deletingSlug() === pv.slug" (click)="supprimer(pv)">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="pvs-pagination" aria-label="Pagination des procès-verbaux">
+          <button class="pvs-pagination__button" type="button" (click)="goToPage(page() - 1)"
+                  [disabled]="isLoading() || isFirstPage" aria-label="Page précédente">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span>
+          </button>
+          <div class="pvs-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button class="pvs-pagination__number" type="button" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber" [disabled]="isLoading()"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null">{{ pageNumber + 1 }}</button>
+            }
+          </div>
+          <button class="pvs-pagination__button" type="button" (click)="goToPage(page() + 1)"
+                  [disabled]="isLoading() || isLastPage" aria-label="Page suivante">
+            <span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</main>

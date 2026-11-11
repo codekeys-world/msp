@@ -1,0 +1,173 @@
+<main class="adherent-form-page">
+  <header class="adherent-form-heading">
+    <div>
+      <span class="adherent-eyebrow">Gestion des adhérents</span>
+      <h1>{{ isEditing() ? 'Modifier un adhérent' : 'Enregistrer un adhérent' }}</h1>
+      <p>Renseignez l'état civil, les coordonnées et la composition familiale.</p>
+    </div>
+    <a class="btn btn-outline-success" routerLink="/dashboard/adherents">
+      <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>Retour à la liste
+    </a>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ errorMessage() }}</div>
+  }
+  @if (showValidationErrors()) {
+    <div class="alert alert-warning position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>Veuillez vérifier les champs obligatoires et corriger les valeurs signalées.</div>
+  }
+
+  <form [formGroup]="adherentForm" (ngSubmit)="submitAdherent()" novalidate>
+    <section class="adherent-form-card mb-4">
+      <div class="adherent-form-card__heading">
+        <span class="adherent-section-icon"><i class="fas fa-id-card" aria-hidden="true"></i></span>
+        <div><h2>Informations personnelles</h2><p>Les champs marqués d’un * sont obligatoires.</p></div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="photo">Photo de profil</label>
+          <input id="photo" class="form-control" type="file" accept="image/*" (change)="onProfileSelected($event)">
+          @if (photoPreview(); as preview) {
+            <img class="adherent-photo-preview mt-3" [src]="preview" alt="Aperçu de la photo de profil">
+          } @else {
+            <div class="adherent-photo-placeholder mt-3">
+              <i class="fas fa-user" aria-hidden="true"></i>
+            </div>
+          }
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="nom">Nom <span class="text-danger">*</span></label>
+          <input id="nom" class="form-control" formControlName="nom" autocomplete="family-name" placeholder="Ex. TRAORÉ">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="prenom">Prénom <span class="text-danger">*</span></label>
+          <input id="prenom" class="form-control" formControlName="prenom" autocomplete="given-name" placeholder="Ex. Aminata">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="dateNaissance">Date de naissance <span class="text-danger">*</span></label>
+          <input id="dateNaissance" class="form-control" type="date" formControlName="dateNaissance" placeholder="Date de naissance" title="Sélectionnez la date de naissance">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="lieuNaissance">Lieu de naissance <span class="text-danger">*</span></label>
+          <input id="lieuNaissance" class="form-control" formControlName="lieuNaissance" placeholder="Ex. Bamako, Sikasso, Ségou">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="genre">Genre <span class="text-danger">*</span></label>
+          <select id="genre" class="form-select" formControlName="genre" (change)="changerGenre()">
+            <option value="HOMME">Homme</option><option value="FEMME">Femme</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="matricule">Matricule <span class="text-danger">*</span></label>
+          <input id="matricule" class="form-control" formControlName="matricule" placeholder="Ex. MSP-2026-001">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="numeroAdhesion">Numéro d'adhésion</label>
+          <input id="numeroAdhesion" class="form-control" formControlName="numeroAdhesion" placeholder="Ex. ADH-2026-001">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="email">Adresse e-mail <span class="text-danger">*</span></label>
+          <input id="email" class="form-control" type="email" formControlName="email" autocomplete="email" placeholder="Ex. aminata.traore@example.ml">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="telephonePrincipal">Téléphone principal <span class="text-danger">*</span></label>
+          <input id="telephonePrincipal" class="form-control" type="tel" formControlName="telephonePrincipal" placeholder="Ex. +223 76 12 34 56">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="telephoneSecondaire">Téléphone secondaire</label>
+          <input id="telephoneSecondaire" class="form-control" type="tel" formControlName="telephoneSecondaire" placeholder="Ex. +223 66 12 34 56">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="pere">Nom complet du père <span class="text-danger">*</span></label>
+          <input id="pere" class="form-control" formControlName="pere" placeholder="Ex. Ousmane TRAORÉ">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="mere">Nom complet de la mère <span class="text-danger">*</span></label>
+          <input id="mere" class="form-control" formControlName="mere" placeholder="Ex. Fanta DIALLO">
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="adresse">Adresse</label>
+          <input id="adresse" class="form-control" formControlName="adresse" placeholder="Ex. Quartier du Fleuve, Bamako">
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="observations">Observations</label>
+          <textarea id="observations" class="form-control" rows="3" formControlName="observations" placeholder="Informations complémentaires sur l’adhérent"></textarea>
+        </div>
+      </div>
+    </section>
+
+    @if (!isEditing()) {
+      <section class="adherent-form-card mb-4">
+        <div class="adherent-form-card__heading">
+          <span class="adherent-section-icon"><i class="fas fa-heart" aria-hidden="true"></i></span>
+          <div><h2>Conjoint(e)s</h2><p>Jusqu’à {{ maxConjoints }} conjoint(e)(s) selon le genre renseigné.</p></div>
+          <button class="btn btn-outline-success ms-auto" type="button" (click)="ajouterConjoint()" [disabled]="!peutAjouterConjoint">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i>Ajouter
+          </button>
+        </div>
+        <div formArrayName="conjoints">
+          @for (conjoint of conjoints.controls; track $index) {
+            <div class="family-form" [formGroupName]="$index">
+              <div class="family-form__heading"><h3>Conjoint(e) {{ $index + 1 }}</h3>
+                <button class="btn btn-sm btn-outline-danger" type="button" (click)="retirerConjoint($index)"><i class="bi bi-trash me-2" aria-hidden="true"></i>Retirer</button>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Nom <span class="text-danger">*</span></label><input class="form-control" formControlName="nom" placeholder="Ex. COULIBALY"></div>
+                <div class="col-md-6"><label class="form-label">Prénom <span class="text-danger">*</span></label><input class="form-control" formControlName="prenom" placeholder="Ex. Mariam"></div>
+                <div class="col-md-4"><label class="form-label">Date de naissance <span class="text-danger">*</span></label><input class="form-control" type="date" formControlName="dateNaissance" placeholder="Date de naissance"></div>
+                <div class="col-md-4"><label class="form-label">Lieu de naissance <span class="text-danger">*</span></label><input class="form-control" formControlName="lieuNaissance" placeholder="Ex. Kayes"></div>
+                <div class="col-md-4"><label class="form-label">Genre <span class="text-danger">*</span></label><select class="form-select" formControlName="genre"><option value="FEMME">Femme</option><option value="HOMME">Homme</option></select></div>
+                <div class="col-md-6"><label class="form-label">Téléphone principal <span class="text-danger">*</span></label><input class="form-control" formControlName="telephonePrincipal" placeholder="Ex. +223 70 12 34 56"></div>
+                <div class="col-md-6"><label class="form-label">Téléphone secondaire</label><input class="form-control" formControlName="telephoneSecondaire" placeholder="Ex. +223 65 12 34 56"></div>
+                <div class="col-12"><label class="form-label">Adresse</label><input class="form-control" formControlName="adresse" placeholder="Ex. Quartier Médine, Kayes"></div>
+                <div class="col-12"><label class="form-label">Certificat de mariage <span class="text-danger">*</span></label><input class="form-control" type="file" accept=".pdf,image/*" (change)="onFamilyFileSelected($event, conjoint, 'acteDeMariage')"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="adherent-form-card mb-4">
+        <div class="adherent-form-card__heading">
+          <span class="adherent-section-icon"><i class="fas fa-users" aria-hidden="true"></i></span>
+          <div><h2>Descendants</h2><p>Enfants et personnes à charge.</p></div>
+          <button class="btn btn-outline-success ms-auto" type="button" (click)="ajouterDescendant()">
+            <i class="fas fa-plus me-1" aria-hidden="true"></i>Ajouter
+          </button>
+        </div>
+        <div formArrayName="descendants">
+          @for (descendant of descendants.controls; track $index) {
+            <div class="family-form" [formGroupName]="$index">
+              <div class="family-form__heading"><h3>Descendant {{ $index + 1 }}</h3>
+                <button class="btn btn-sm btn-outline-danger" type="button" (click)="retirerDescendant($index)"><i class="bi bi-trash me-2" aria-hidden="true"></i>Retirer</button>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Nom <span class="text-danger">*</span></label><input class="form-control" formControlName="nom" placeholder="Ex. SANGARÉ"></div>
+                <div class="col-md-6"><label class="form-label">Prénom <span class="text-danger">*</span></label><input class="form-control" formControlName="prenom" placeholder="Ex. Boubacar"></div>
+                <div class="col-md-4"><label class="form-label">Date de naissance <span class="text-danger">*</span></label><input class="form-control" type="date" formControlName="dateNaissance" placeholder="Date de naissance"></div>
+                <div class="col-md-4"><label class="form-label">Lieu de naissance <span class="text-danger">*</span></label><input class="form-control" formControlName="lieuNaissance" placeholder="Ex. Ségou"></div>
+                <div class="col-md-4"><label class="form-label">Genre <span class="text-danger">*</span></label><select class="form-select" formControlName="genre"><option value="HOMME">Homme</option><option value="FEMME">Femme</option></select></div>
+                <div class="col-md-6"><label class="form-label">Téléphone principal</label><input class="form-control" formControlName="telephonePrincipal" placeholder="Ex. +223 76 12 34 56"></div>
+                <div class="col-md-6"><label class="form-label">Téléphone secondaire</label><input class="form-control" formControlName="telephoneSecondaire" placeholder="Ex. +223 66 12 34 56"></div>
+                <div class="col-12"><label class="form-label">Adresse</label><input class="form-control" formControlName="adresse" placeholder="Ex. Quartier Hamdallaye, Ségou"></div>
+                <div class="col-md-6"><label class="form-label">Acte de naissance</label><input class="form-control" type="file" (change)="onFamilyFileSelected($event, descendant, 'acteDeNaissance')"></div>
+                <div class="col-md-6"><label class="form-label">Certificat de vie collectif</label><input class="form-control" type="file" (change)="onFamilyFileSelected($event, descendant, 'certificatVieCollectif')"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <div class="d-flex justify-content-end gap-2 mb-4">
+      <a class="btn btn-outline-secondary" routerLink="/dashboard/adherents"><i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler</a>
+      <button class="btn btn-success px-4" type="submit" [disabled]="isSaving()"><i class="bi bi-check-lg me-2" aria-hidden="true"></i>
+        @if (isSaving()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+        {{ isEditing() ? 'Enregistrer les modifications' : 'Enregistrer l’adhérent' }}
+      </button>
+    </div>
+  </form>
+</main>

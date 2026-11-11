@@ -1,0 +1,121 @@
+<main class="encaissement-form-page">
+  <header class="encaissement-form-heading">
+    <div>
+      <span class="encaissement-form-eyebrow">Trésorerie</span>
+      <h1>{{ isEditing ? 'Modifier l\'encaissement' : 'Nouvel encaissement' }}</h1>
+      <p>{{ isEditing ? 'Mettez à jour les informations de l\'encaissement.' : 'Enregistrez un versement, un don, un legs ou un intérêt de placement.' }}</p>
+    </div>
+    <a class="btn btn-light fw-semibold" routerLink="/dashboard/encaissements">
+      <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Retour
+    </a>
+  </header>
+
+  <section class="encaissement-form-content">
+    @if (isLoading()) {
+      <div class="encaissement-form-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement de l'encaissement…
+      </div>
+    } @else {
+      @if (errorMessages().length > 0 && !isSubmitting()) {
+        <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+          <ul class="mb-0">
+            @for (msg of errorMessages(); track msg) {
+              <li>{{ msg }}</li>
+            }
+          </ul>
+        </div>
+      }
+      @if (successMessage()) {
+        <div class="alert alert-success position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{ successMessage() }}</div>
+      }
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="typeEncaissement" class="form-label">Type d'encaissement <span class="text-danger">*</span></label>
+            <select id="typeEncaissement" class="form-select" formControlName="typeEncaissement"
+                    [class.is-invalid]="form.controls.typeEncaissement.touched && form.controls.typeEncaissement.invalid">
+              <option value="" disabled>Sélectionner un type d'encaissement</option>
+              <option value="VERSEMENT">Versement</option>
+              <option value="DONS_LEG_INTERET">Dons, legs, intérêts des placements</option>
+            </select>
+            @if (form.controls.typeEncaissement.touched && form.controls.typeEncaissement.invalid) {
+              <div class="invalid-feedback d-block">Le type d'encaissement est obligatoire.</div>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label for="dateEncaissement" class="form-label">Date d'encaissement <span class="text-danger">*</span></label>
+            <input id="dateEncaissement" type="date" class="form-control" formControlName="dateEncaissement" placeholder="Date d'encaissement"
+                   [class.is-invalid]="form.controls.dateEncaissement.touched && form.controls.dateEncaissement.invalid">
+            @if (form.controls.dateEncaissement.touched && form.controls.dateEncaissement.invalid) {
+              <div class="invalid-feedback d-block">La date d'encaissement est obligatoire.</div>
+            }
+          </div>
+
+          @if (isVersement) {
+            <div class="col-md-6">
+              <label for="dateDebutPeriode" class="form-label">Date de début de période</label>
+              <input id="dateDebutPeriode" type="date" class="form-control" formControlName="dateDebutPeriode" placeholder="Date de début">
+            </div>
+
+            <div class="col-md-6">
+              <label for="dateFinPeriode" class="form-label">Date de fin de période</label>
+              <input id="dateFinPeriode" type="date" class="form-control" formControlName="dateFinPeriode" placeholder="Date de fin">
+            </div>
+          }
+
+          <div class="col-md-6">
+            <label for="montant" class="form-label">Montant (FCFA) <span class="text-danger">*</span></label>
+            <input id="montant" type="number" min="0" class="form-control" formControlName="montant" placeholder="Montant en FCFA"
+                   [class.is-invalid]="form.controls.montant.touched && form.controls.montant.invalid">
+            @if (form.controls.montant.touched && form.controls.montant.invalid) {
+              <div class="invalid-feedback d-block">Le montant est obligatoire.</div>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label for="typeBudget" class="form-label">Région / type de budget</label>
+            <select id="typeBudget" class="form-select" formControlName="typeBudget">
+              <option value="">Sélectionner un budget régional</option>
+              @for (region of typesBudget; track region) {
+                <option [value]="'Budget de ' + region">Budget de {{ region }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-12">
+            <label for="observation" class="form-label">Observation</label>
+            <textarea id="observation" class="form-control" rows="3" formControlName="observation"
+                      maxlength="2000" placeholder="Observation optionnelle"></textarea>
+          </div>
+
+          <div class="col-12">
+            <label for="justificatif" class="form-label">Justificatif (fichier)</label>
+            <input #fileInput id="justificatif" type="file" class="form-control" (change)="onFileSelected($event)"
+                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+            @if (selectedFile()) {
+              <div class="form-text">Fichier sélectionné : {{ selectedFile()?.name }} ({{ getFileSize() }})</div>
+            }
+            @if (existingFilename() && !selectedFile()) {
+              <div class="form-text text-muted"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Fichier existant : {{ existingFilename() }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="encaissement-form-actions">
+          <button class="btn btn-outline-secondary" type="button" (click)="annuler()" [disabled]="isSubmitting()">
+            <i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler
+          </button>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting()"><i class="bi bi-pencil me-2" aria-hidden="true"></i>
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            }
+            {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>

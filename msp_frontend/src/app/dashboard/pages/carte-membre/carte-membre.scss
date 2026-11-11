@@ -1,0 +1,1060 @@
+:host {
+  display: block;
+}
+
+.carte-page {
+  padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+.carte-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  color: #fff;
+  background: linear-gradient(120deg, #145c3a, #23965f);
+  border-radius: 1rem;
+  box-shadow: 0 0.8rem 2rem rgb(20 92 58 / 15%);
+
+  h1 {
+    margin: 0.2rem 0;
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    font-weight: 750;
+  }
+
+  p {
+    color: rgb(255 255 255 / 80%);
+    font-size: 0.92rem;
+  }
+}
+
+.carte-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* SIDEBAR / CONTROLS */
+.confection-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.confection-card {
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #e5ece7;
+  border-radius: 0.85rem;
+  box-shadow: 0 0.2rem 0.6rem rgb(25 53 42 / 4%);
+}
+
+.confection-card__title {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #19352a;
+  display: flex;
+  align-items: center;
+}
+
+.adherent-selector-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #eef3ef;
+  border-radius: 0.6rem;
+  background: #fafcfa;
+}
+
+.adherent-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #f0f4f1;
+  transition: background-color 150ms ease;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: #edf7f0;
+  }
+
+  &.is-active {
+    background: #e1f3e7;
+    font-weight: 600;
+  }
+}
+
+.adh-avatar {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: #dbeef0;
+  color: #145c3a;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.adh-avatar-img {
+  width: 2.2rem;
+  height: 2.2rem;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.adh-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+
+  .adh-name {
+    font-size: 0.85rem;
+    color: #19352a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .adh-sub {
+    font-size: 0.75rem;
+    color: #6d7f75;
+  }
+}
+
+.theme-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.theme-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.35rem;
+  background: #f8faf8;
+  border: 1.5px solid #e1e9e3;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    border-color: #8cc4a0;
+  }
+
+  &.is-selected {
+    border-color: #145c3a;
+    background: #edf7f1;
+    box-shadow: 0 0 0 2px rgb(20 92 58 / 20%);
+  }
+
+  .theme-sample {
+    width: 1.8rem;
+    height: 1.2rem;
+    border-radius: 0.3rem;
+
+    &--classic {
+      background: linear-gradient(135deg, #0c4a2b, #23965f);
+    }
+    &--navy {
+      background: linear-gradient(135deg, #0e2a47, #1e5288);
+    }
+    &--prestige {
+      background: linear-gradient(135deg, #092113, #a28330);
+    }
+  }
+
+  .theme-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #2b4538;
+    text-align: center;
+  }
+}
+
+.badge-photo-preview {
+  width: 4rem;
+  height: 5rem;
+  border-radius: 0.5rem;
+  border: 1.5px dashed #bccdc2;
+  background: #f3f7f4;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  i {
+    font-size: 2rem;
+    color: #8da496;
+  }
+}
+
+/* APERÇU CONTAINER */
+.preview-container {
+  padding: 1.5rem;
+  background: #f4f7f5;
+  border: 1px solid #dfe7e2;
+  border-radius: 1rem;
+}
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid #e1ebe4;
+}
+
+.card-loading-placeholder,
+.card-empty-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  background: #fff;
+  border: 1px dashed #cedbd2;
+  border-radius: 1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.badges-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+
+  &.show-front-only,
+  &.show-back-only {
+    justify-content: center;
+  }
+}
+
+.id-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.card-side-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #5c7468;
+  text-transform: uppercase;
+}
+
+/* ========================================================== */
+/*                DESIGN DU BADGE CR-80 OFFICIEL              */
+/* ========================================================== */
+.id-card-badge {
+  position: relative;
+  width: 500px;
+  height: 315px; /* Ratio standard ~85.6mm x 54mm */
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px -5px rgb(16 58 37 / 18%), 0 0 0 1px rgb(0 0 0 / 8%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #1a2e24;
+
+  /* Fond de sécurité Guilloche / Watermark filigrané */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 50%, rgb(20 92 58 / 3%) 0%, transparent 70%),
+      repeating-linear-gradient(45deg, rgb(20 92 58 / 1.5%) 0px, rgb(20 92 58 / 1.5%) 2px, transparent 2px, transparent 10px);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* 1. Ruban couleurs nationales Mali */
+.national-stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4.5px;
+  display: flex;
+  z-index: 5;
+
+  .stripe-green { flex: 1; background: #148045; }
+  .stripe-gold  { flex: 1; background: #fcd116; }
+  .stripe-red   { flex: 1; background: #ce1126; }
+}
+
+/* 2. En-tête du Recto */
+.card-header-badge {
+  position: relative;
+  z-index: 2;
+  padding: 9px 12px 6px;
+  background: linear-gradient(135deg, #093c22 0%, #145c3a 100%);
+  color: #ffffff;
+  border-bottom: 2px solid #d4af37;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-header-badge__republic {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #f7e6a7;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgb(255 255 255 / 15%);
+  padding-bottom: 2px;
+}
+
+.republic-motto {
+  font-size: 0.58rem;
+  font-style: italic;
+  font-weight: 500;
+  color: rgb(255 255 255 / 85%);
+  text-transform: none;
+}
+
+.card-header-badge__entity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.entity-logo-box {
+  width: 26px;
+  height: 26px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  box-shadow: 0 0 0 1px #d4af37;
+  flex-shrink: 0;
+
+  .entity-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.entity-names {
+  display: flex;
+  flex-direction: column;
+
+  .entity-main {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+
+  .entity-sub {
+    font-size: 0.55rem;
+    color: #d1ebd8;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* 3. Bannière Titre */
+.card-badge-banner {
+  position: relative;
+  z-index: 2;
+  background: #fcd116;
+  color: #0b3d22;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid #d4af37;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+
+/* 4. Corps du Recto */
+.card-front-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  padding: 8px 12px;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-photo-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 92px;
+  flex-shrink: 0;
+}
+
+.card-photo-frame {
+  width: 92px;
+  height: 114px;
+  border-radius: 6px;
+  border: 2px solid #145c3a;
+  background: #eaf3ed;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+  overflow: hidden;
+
+  .card-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: #145c3a;
+    font-size: 3.5rem;
+    background: linear-gradient(180deg, #d8ebd9, #b9ddbe);
+  }
+}
+
+.card-chip-graphic {
+  width: 32px;
+  height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #d4af37 0%, #fae69e 50%, #b8911e 100%);
+  border: 1px solid #8d6c08;
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 60%), 0 1px 2px rgb(0 0 0 / 20%);
+  position: relative;
+  overflow: hidden;
+
+  .chip-lines {
+    position: absolute;
+    inset: 3px 5px;
+    border: 1px solid #785a03;
+    border-radius: 2px;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: -5px;
+      right: -5px;
+      height: 1px;
+      background: #785a03;
+    }
+  }
+}
+
+.card-info-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+
+  .info-label {
+    font-size: 0.52rem;
+    font-weight: 700;
+    color: #63776b;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .info-value {
+    font-size: 0.72rem;
+    color: #12291d;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--strong {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #0b3d22;
+      letter-spacing: 0.02em;
+    }
+
+    &--code {
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+      color: #145c3a;
+      letter-spacing: 0.04em;
+    }
+
+    &--badge {
+      display: inline-block;
+      padding: 1px 6px;
+      background: #e1f2e5;
+      color: #0d5630;
+      font-size: 0.64rem;
+      font-weight: 750;
+      border-radius: 3px;
+      border: 1px solid #b8e0c2;
+    }
+  }
+
+  .info-value-sm {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #274033;
+  }
+}
+
+.info-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.card-validity-row {
+  background: #f1f7f3;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border-left: 3px solid #145c3a;
+}
+
+/* 5. Bas de page du Recto (Signatures / Cachet) */
+.card-front-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 3px 12px 6px;
+  background: #f7faf8;
+  border-top: 1px solid #dbe6de;
+  margin-top: auto;
+}
+
+.sig-block {
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+
+  .sig-label {
+    font-size: 0.5rem;
+    color: #63776b;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .sig-line {
+    height: 1px;
+    background: #9cb1a5;
+    margin-top: 14px;
+  }
+
+  .sig-signature-stamp {
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .sig-simulated {
+      font-family: 'Brush Script MT', 'Dancing Script', cursive, sans-serif;
+      font-size: 0.85rem;
+      color: #0b3d22;
+      font-weight: bold;
+      transform: rotate(-3deg);
+    }
+  }
+}
+
+.official-seal {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border: 1.5px dashed #145c3a;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgb(20 92 58 / 6%);
+  box-shadow: 0 0 0 1px rgb(20 92 58 / 25%);
+
+  .seal-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+
+    .seal-text-top {
+      font-size: 0.32rem;
+      font-weight: 800;
+      color: #145c3a;
+      letter-spacing: 0.04em;
+    }
+
+    .seal-star {
+      font-size: 0.42rem;
+      font-weight: 800;
+      color: #d4af37;
+      margin: 1px 0;
+    }
+
+    .seal-text-bot {
+      font-size: 0.32rem;
+      font-weight: 800;
+      color: #145c3a;
+    }
+  }
+}
+
+.security-hologram {
+  position: absolute;
+  right: 8px;
+  bottom: 28px;
+  padding: 2px 5px;
+  background: linear-gradient(135deg, rgb(255 255 255 / 80%) 0%, rgb(200 230 210 / 80%) 50%, rgb(255 255 255 / 80%) 100%);
+  border: 1px solid rgb(20 92 58 / 20%);
+  border-radius: 3px;
+  font-size: 0.45rem;
+  font-weight: 800;
+  color: rgb(20 92 58 / 70%);
+  letter-spacing: 0.08em;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ========================================================== */
+/*                DESIGN DU VERSO (BACK)                      */
+/* ========================================================== */
+.card-mag-stripe {
+  position: relative;
+  z-index: 2;
+  height: 38px;
+  background: linear-gradient(180deg, #1b1b1b 0%, #2e2e2e 50%, #111111 100%);
+  margin-top: 10px;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 60%);
+}
+
+.card-back-body {
+  position: relative;
+  z-index: 2;
+  padding: 8px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.legal-notice-box {
+  background: #fbfdfc;
+  border: 1px solid #e1ebe4;
+  border-radius: 5px;
+  padding: 6px 8px;
+
+  .legal-title {
+    margin: 0 0 3px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: #145c3a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .legal-text {
+    margin: 0 0 2px;
+    font-size: 0.5rem;
+    line-height: 1.25;
+    color: #384d41;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: #0b3d22;
+    }
+  }
+}
+
+.back-footer-grid {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.qr-code-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #cfe0d5;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+  flex-shrink: 0;
+
+  .qr-svg-wrapper {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+
+  .qr-caption {
+    font-size: 0.44rem;
+    font-weight: 700;
+    color: #145c3a;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+}
+
+.contacts-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .contacts-title {
+    margin: 0 0 2px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: #145c3a;
+  }
+
+  .contact-item {
+    font-size: 0.52rem;
+    color: #334d3f;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    i {
+      color: #145c3a;
+      font-size: 0.56rem;
+    }
+  }
+}
+
+.card-back-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 14px 6px;
+  background: #f3f7f4;
+  border-top: 1px solid #e1ebe4;
+}
+
+.serial-number {
+  font-family: 'Consolas', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #556c60;
+  letter-spacing: 0.06em;
+}
+
+.barcode-visual {
+  display: flex;
+  align-items: center;
+  gap: 1.5px;
+  height: 12px;
+
+  span {
+    display: block;
+    width: 1.5px;
+    height: 100%;
+    background: #111111;
+
+    &:nth-child(2n) { width: 2.5px; }
+    &:nth-child(3n) { width: 1px; }
+    &:nth-child(5n) { width: 3px; }
+  }
+}
+
+/* ========================================================== */
+/*                THEMES CUSTOMISÉS                           */
+/* ========================================================== */
+[data-theme='navy'] {
+  .card-header-badge {
+    background: linear-gradient(135deg, #091f36 0%, #143e69 100%);
+    border-bottom-color: #8bb2d9;
+  }
+  .card-header-badge__republic {
+    color: #c5dcfa;
+  }
+  .card-badge-banner {
+    background: #1a4f85;
+    color: #ffffff;
+    border-bottom-color: #0e2e50;
+  }
+  .card-photo-frame {
+    border-color: #143e69;
+  }
+  .info-row .info-value--code {
+    color: #143e69;
+  }
+  .info-row .info-value--badge {
+    background: #e3effa;
+    color: #103b66;
+    border-color: #b8d7f2;
+  }
+  .card-validity-row {
+    border-left-color: #143e69;
+  }
+  .official-seal {
+    border-color: #143e69;
+    box-shadow: 0 0 0 1px rgb(20 62 105 / 25%);
+    .seal-text-top, .seal-text-bot { color: #143e69; }
+    .seal-star { color: #143e69; }
+  }
+  .legal-notice-box .legal-title,
+  .contacts-box .contacts-title,
+  .contacts-box .contact-item i,
+  .qr-caption {
+    color: #143e69;
+  }
+}
+
+[data-theme='prestige'] {
+  .card-header-badge {
+    background: linear-gradient(135deg, #04180d 0%, #123d24 100%);
+    border-bottom-color: #d4af37;
+  }
+  .card-header-badge__republic {
+    color: #f7e6a7;
+  }
+  .card-badge-banner {
+    background: linear-gradient(90deg, #9a761e, #d4af37, #9a761e);
+    color: #052111;
+  }
+  .card-photo-frame {
+    border-color: #9a761e;
+  }
+}
+
+/* ========================================================== */
+/*                MEDIA PRINT (IMPRESSION CR-80 & A4)         */
+/* ========================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .no-print,
+  app-sidebar,
+  .dashboard-header,
+  .carte-header,
+  .preview-toolbar,
+  .confection-sidebar,
+  .card-side-label {
+    display: none !important;
+  }
+
+  .carte-page {
+    padding: 0 !important;
+  }
+
+  .preview-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .badges-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8mm !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    padding-top: 5mm !important;
+  }
+
+  .id-card-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .id-card-badge {
+    width: 85.6mm !important;
+    height: 53.98mm !important;
+    border-radius: 3.18mm !important;
+    border: 0.2mm solid #cccccc !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ajustements d'échelle pour l'impression millimétrique */
+  .card-header-badge {
+    padding: 1.5mm 2.5mm 1mm !important;
+  }
+  .card-header-badge__republic {
+    font-size: 5.5pt !important;
+  }
+  .republic-motto {
+    font-size: 4.8pt !important;
+  }
+  .entity-logo-box {
+    width: 5.5mm !important;
+    height: 5.5mm !important;
+  }
+  .entity-names .entity-main {
+    font-size: 6.8pt !important;
+  }
+  .entity-names .entity-sub {
+    font-size: 4.5pt !important;
+  }
+  .card-badge-banner {
+    font-size: 5.8pt !important;
+    padding: 0.5mm 0 !important;
+  }
+  .card-front-body {
+    padding: 1.5mm 2.5mm !important;
+    gap: 2.5mm !important;
+  }
+  .card-photo-column {
+    width: 17mm !important;
+    gap: 1mm !important;
+  }
+  .card-photo-frame {
+    width: 17mm !important;
+    height: 22mm !important;
+  }
+  .card-chip-graphic {
+    width: 7mm !important;
+    height: 5mm !important;
+  }
+  .info-row .info-label {
+    font-size: 4.2pt !important;
+  }
+  .info-row .info-value {
+    font-size: 5.8pt !important;
+  }
+  .info-row .info-value--strong {
+    font-size: 6.8pt !important;
+  }
+  .info-row .info-value-sm {
+    font-size: 5.2pt !important;
+  }
+  .card-front-footer {
+    padding: 0.8mm 2.5mm 1mm !important;
+  }
+  .sig-block {
+    width: 25mm !important;
+  }
+  .sig-block .sig-label {
+    font-size: 4.2pt !important;
+  }
+  .sig-block .sig-signature-stamp .sig-simulated {
+    font-size: 6.5pt !important;
+  }
+  .official-seal {
+    width: 9mm !important;
+    height: 9mm !important;
+  }
+  .card-mag-stripe {
+    height: 7.5mm !important;
+    margin-top: 1.5mm !important;
+  }
+  .card-back-body {
+    padding: 1.5mm 2.5mm !important;
+  }
+  .legal-notice-box {
+    padding: 1mm 1.5mm !important;
+  }
+  .legal-notice-box .legal-title {
+    font-size: 4.8pt !important;
+  }
+  .legal-notice-box .legal-text {
+    font-size: 4pt !important;
+    line-height: 1.15 !important;
+  }
+  .qr-code-box .qr-svg-wrapper {
+    width: 12mm !important;
+    height: 12mm !important;
+  }
+  .qr-caption {
+    font-size: 3.8pt !important;
+  }
+  .contacts-box .contacts-title {
+    font-size: 4.8pt !important;
+  }
+  .contacts-box .contact-item {
+    font-size: 4.2pt !important;
+  }
+  .card-back-footer {
+    padding: 0.8mm 2.5mm 1mm !important;
+  }
+  .serial-number {
+    font-size: 4.8pt !important;
+  }
+  .barcode-visual {
+    height: 2.5mm !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .id-card-badge {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    min-height: 290px;
+  }
+}

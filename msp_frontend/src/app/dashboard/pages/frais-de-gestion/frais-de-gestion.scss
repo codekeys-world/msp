@@ -1,0 +1,43 @@
+@use '../../ordre-missions/ordre-mission/ordre-mission' as *;
+
+.frais-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.35rem;
+  color: #19352a;
+  background: #fff;
+  border: 1px solid #e5eee8;
+  border-radius: 1rem;
+  box-shadow: 0 .35rem 1.25rem rgb(24 65 44 / 6%);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  &:hover { transform: translateY(-3px); border-color: #c8dfd0; box-shadow: 0 .75rem 1.8rem rgb(24 65 44 / 11%); }
+}
+.frais-card__header,
+.frais-card__footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.frais-card__eyebrow { color: #73847a; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.frais-card__title { margin: .35rem 0 .25rem; color: #176640; font-size: 1.12rem; font-weight: 700; }
+.frais-card__icon,
+.frais-card__document-icon { display: grid; flex: 0 0 auto; place-items: center; color: #16804e; background: #eaf6ee; border-radius: .8rem; }
+.frais-card__icon { width: 2.8rem; height: 2.8rem; font-size: 1.35rem; }
+.frais-card__total { display: flex; flex-direction: column; gap: .2rem; margin: 1.1rem 0; padding: .9rem 1rem; background: #f5f9f6; border: 1px solid #edf3ee; border-radius: .8rem; span { color: #73847a; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; } strong { color: #176640; font-size: 1.25rem; } }
+.frais-card__metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; margin: 0 0 1.25rem; }
+.frais-card__metrics > div { min-width: 0; }
+.frais-card__metrics dt { margin-bottom: .25rem; color: #73847a; font-size: .78rem; font-weight: 600; i { margin-right: .3rem; color: #16804e; } }
+.frais-card__metrics dd { margin: 0; color: #263d31; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; }
+.frais-card__metrics .frais-card__balance--negative { color: #b42318; }
+.frais-card__observation { grid-column: 1 / -1; }
+.frais-card__footer { align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid #edf1ee; }
+.frais-card__document { display: flex; min-width: 0; align-items: center; gap: .6rem; }
+.frais-card__document-icon { width: 2.2rem; height: 2.2rem; font-size: 1rem; }
+.frais-card__document-name { overflow: hidden; color: #52645a; font-size: .82rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 575.98px) {
+  .frais-card { padding: 1rem; }
+  .frais-card__metrics { grid-template-columns: 1fr; }
+  .frais-card__observation { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frais-card { transition: none; }
+}

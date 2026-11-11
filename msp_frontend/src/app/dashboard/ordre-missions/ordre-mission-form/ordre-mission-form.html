@@ -1,0 +1,186 @@
+<div class="container-fluid py-3 py-lg-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-9 col-xxl-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white p-4">
+          <div class="d-flex align-items-center gap-3">
+            <span class="bg-white bg-opacity-25 rounded-3 p-3">
+              <i class="fas fa-plane-departure fs-4" aria-hidden="true"></i>
+            </span>
+            <div>
+              <h1 class="h4 mb-1">{{ isEditing ? "Modifier l'ordre de mission" : "Nouvel ordre de mission" }}</h1>
+              <p class="mb-0 text-white-50">
+                {{ isEditing ? "Mettez à jour les informations de la mission." : "Renseignez les informations et joignez le document officiel." }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-3 p-md-4 p-lg-5">
+          @if (isLoading()) {
+            <div class="alert alert-info d-flex align-items-center gap-2 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              Chargement de l'ordre de mission…
+            </div>
+          }
+
+          @if (message()) {
+            <div class="alert alert-success d-flex align-items-center gap-2 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+              <span>{{ message() }}</span>
+            </div>
+          }
+
+          @if (errorMessages().length) {
+            <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+              <div class="fw-semibold mb-1">L'opération n'a pas pu aboutir :</div>
+              <ul class="mb-0 ps-3">
+                @for (error of errorMessages(); track $index) {
+                  <li>{{ error }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          <form [formGroup]="ordreMissionForm" (ngSubmit)="onOrdreMissionSubmit()" novalidate>
+            <fieldset [disabled]="isLoading() || submiting()">
+              <div class="mb-4">
+                <h2 class="h6 text-success fw-bold mb-3">
+                  <i class="fas fa-info-circle me-2" aria-hidden="true"></i>Informations générales
+                </h2>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="libelle" class="form-label">Libellé <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="libelle" formControlName="libelle"
+                           placeholder="Ex. Ordre de mission N°013/MJDH-DGAP"
+                           [class.is-invalid]="ordreMissionForm.controls.libelle.touched && ordreMissionForm.controls.libelle.invalid">
+                    @if (ordreMissionForm.controls.libelle.touched && ordreMissionForm.controls.libelle.invalid) {
+                      <div class="invalid-feedback">Le libellé est obligatoire.</div>
+                    }
+                  </div>
+
+                  <div class="col-12">
+                    <label for="objet" class="form-label">Objet de la mission <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="objet" formControlName="objet"
+                           placeholder="Ex. Mission d'évaluation alimentaire"
+                           [class.is-invalid]="ordreMissionForm.controls.objet.touched && ordreMissionForm.controls.objet.invalid">
+                    @if (ordreMissionForm.controls.objet.touched && ordreMissionForm.controls.objet.invalid) {
+                      <div class="invalid-feedback">L'objet est obligatoire.</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h2 class="h6 text-success fw-bold mb-3">
+                  <i class="fas fa-map-marker-alt me-2" aria-hidden="true"></i>Itinéraire et dates
+                </h2>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="itineraire" class="form-label">Itinéraire <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="itineraire" formControlName="itineraire"
+                           placeholder="Ex. Bamako - Dioïla - Fana - Bamako"
+                           [class.is-invalid]="ordreMissionForm.controls.itineraire.touched && ordreMissionForm.controls.itineraire.invalid">
+                    @if (ordreMissionForm.controls.itineraire.touched && ordreMissionForm.controls.itineraire.invalid) {
+                      <div class="invalid-feedback">L'itinéraire est obligatoire.</div>
+                    }
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="dateDepart" class="form-label">Date de départ <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="dateDepart" formControlName="dateDepart" placeholder="Date de départ"
+                           title="Sélectionnez la date de départ de Bamako ou de votre lieu de mission"
+                           [class.is-invalid]="ordreMissionForm.controls.dateDepart.touched && ordreMissionForm.controls.dateDepart.invalid">
+                    @if (ordreMissionForm.controls.dateDepart.touched && ordreMissionForm.controls.dateDepart.invalid) {
+                      <div class="invalid-feedback">La date de départ est obligatoire.</div>
+                    }
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="dateRetour" class="form-label">Date de retour <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="dateRetour" formControlName="dateRetour" placeholder="Date de retour"
+                           title="Sélectionnez la date de retour prévue au Mali"
+                           [class.is-invalid]="ordreMissionForm.controls.dateRetour.touched && ordreMissionForm.controls.dateRetour.invalid">
+                    @if (ordreMissionForm.controls.dateRetour.touched && ordreMissionForm.controls.dateRetour.invalid) {
+                      <div class="invalid-feedback">La date de retour est obligatoire.</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h2 class="h6 text-success fw-bold mb-3">
+                  <i class="fas fa-wallet me-2" aria-hidden="true"></i>Organisation et budget
+                </h2>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label for="imputationBudgetaire" class="form-label">Imputation budgétaire <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="imputationBudgetaire" formControlName="imputationBudgetaire"
+                           placeholder="Ex. PNUD-PROMED"
+                           [class.is-invalid]="ordreMissionForm.controls.imputationBudgetaire.touched && ordreMissionForm.controls.imputationBudgetaire.invalid">
+                    @if (ordreMissionForm.controls.imputationBudgetaire.touched && ordreMissionForm.controls.imputationBudgetaire.invalid) {
+                      <div class="invalid-feedback">L'imputation budgétaire est obligatoire.</div>
+                    }
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label for="moyenDeplacement" class="form-label">Moyen de déplacement <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="moyenDeplacement" formControlName="moyenDeplacement"
+                           placeholder="Ex. Véhicule de service"
+                           [class.is-invalid]="ordreMissionForm.controls.moyenDeplacement.touched && ordreMissionForm.controls.moyenDeplacement.invalid">
+                    @if (ordreMissionForm.controls.moyenDeplacement.touched && ordreMissionForm.controls.moyenDeplacement.invalid) {
+                      <div class="invalid-feedback">Le moyen de déplacement est obligatoire.</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h2 class="h6 text-success fw-bold mb-3">
+                  <i class="fas fa-paperclip me-2" aria-hidden="true"></i>Document et observations
+                </h2>
+                <div class="mb-3">
+                  <label for="ordreMission" class="form-label">
+                    Document de mission
+                    @if (!isEditing) { <span class="text-danger">*</span> }
+                  </label>
+                  <input #fileInput type="file" class="form-control" id="ordreMission" accept=".pdf,image/*"
+                         [required]="!isEditing" (change)="onOrdreMissionSelected($event)">
+                  <div class="form-text">
+                    @if (ordreMission(); as fichier) {
+                      Fichier sélectionné : {{ fichier.name }}
+                    } @else if (existingFilename()) {
+                      Document actuel : {{ existingFilename() }}. Sélectionnez un nouveau fichier uniquement pour le remplacer.
+                    } @else {
+                      Exemple : ordre de mission N°013/2026/DRH, au format PDF ou image. Un fichier est obligatoire à la création.
+                    }
+                  </div>
+                </div>
+                <div>
+                  <label for="observation" class="form-label">Observations</label>
+                  <textarea class="form-control" id="observation" rows="3" formControlName="observation"
+                            placeholder="Ex. Déplacement à Ségou pour une réunion avec la Direction régionale"></textarea>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2 border-top pt-4">
+              <button type="button" class="btn btn-outline-secondary" (click)="retourListe()">
+                <i class="fas fa-arrow-left me-1" aria-hidden="true"></i>Retour à la liste
+              </button>
+              <button type="submit" class="btn btn-success px-4"
+                      [disabled]="isLoading() || submiting() || ordreMissionForm.invalid">
+                @if (submiting()) {
+                  <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                } @else {
+                  <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
+                }
+                {{ submiting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : "Créer l'ordre de mission") }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

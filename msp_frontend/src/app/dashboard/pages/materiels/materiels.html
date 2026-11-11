@@ -1,0 +1,163 @@
+<section class="materiels-page">
+  <header class="materiels-heading">
+    <div>
+      <span class="materiels-heading__eyebrow">Inventaire</span>
+      <h1>Gestion du matériel</h1>
+      <p>Suivi des équipements et des biens de la trésorerie.</p>
+    </div>
+    @if (canAdd) {
+      <button class="btn materiels-heading__action" type="button" (click)="ouvrirCreation()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>Nouveau matériel
+      </button>
+    }
+  </header>
+
+  <section class="materiels-list" aria-labelledby="materiels-list-title">
+    <div class="materiels-list__heading">
+      <div>
+        <h2 id="materiels-list-title">Matériels enregistrés</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} équipement(s) dans l’inventaire</p>
+      </div>
+      @if (totalPages > 0) {
+        <span class="materiels-list__page-indicator">Page {{ page() + 1 }} / {{ totalPages }}</span>
+      }
+    </div>
+
+    <form class="materiels-search input-group mb-4" role="search" (submit)="$event.preventDefault()">
+      <label class="visually-hidden" for="materiel-search">Rechercher un matériel</label>
+      <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+      <input id="materiel-search" class="form-control" type="search" [value]="searchTerm()"
+             (input)="onSearchInput($event)"
+             placeholder="Nom, catégorie, emplacement ou fournisseur…">
+      @if (searchTerm()) {
+        <button class="btn btn-outline-secondary" type="button"
+                (click)="effacerRecherche()">
+          <i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer
+        </button>
+      }
+    </form>
+
+    @if (isLoading()) {
+      <div class="materiels-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement de l’inventaire…
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-3" role="alert">
+        <span>{{ errorMessage() }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="load()">
+          <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    } @else if (!materiels.length) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4" role="status">
+        <i class="bi bi-box-seam fs-2" aria-hidden="true"></i>
+        <strong>Aucun matériel trouvé.</strong>
+        <p class="mb-0">Modifiez votre recherche ou ajoutez le premier matériel à l’inventaire.</p>
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (materiel of materiels; track materiel.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="materiel-card h-100">
+              <header class="materiel-card__header">
+                <div class="materiel-card__heading">
+                  <span class="materiel-card__eyebrow">{{ materiel.categorie }}</span>
+                  <h3 class="materiel-card__title">{{ materiel.nom }}</h3>
+                </div>
+                <span class="materiel-card__icon" aria-hidden="true">
+                  <i class="bi bi-box-seam"></i>
+                </span>
+              </header>
+
+              <div class="materiel-card__summary">
+                <div>
+                  <span>Quantité</span>
+                  <strong>{{ materiel.quantite }}</strong>
+                </div>
+                <span class="badge rounded-pill" [ngClass]="statutClass(materiel.statut)">
+                  {{ statutLabel(materiel.statut) }}
+                </span>
+              </div>
+
+              <dl class="materiel-card__details">
+                <div>
+                  <dt><i class="bi bi-cash" aria-hidden="true"></i> Prix unitaire</dt>
+                  <dd>{{ materiel.prixUnitaire | number:'1.0-0' }} FCFA</dd>
+                </div>
+                <div>
+                  <dt><i class="bi bi-geo-alt" aria-hidden="true"></i> Emplacement</dt>
+                  <dd>{{ materiel.emplacement }}</dd>
+                </div>
+                @if (materiel.fournisseur) {
+                  <div>
+                    <dt><i class="bi bi-truck" aria-hidden="true"></i> Fournisseur</dt>
+                    <dd>{{ materiel.fournisseur }}</dd>
+                  </div>
+                }
+                @if (materiel.dateAcquisition) {
+                  <div>
+                    <dt><i class="bi bi-calendar3" aria-hidden="true"></i> Acquisition</dt>
+                    <dd>{{ materiel.dateAcquisition | date:'dd/MM/yyyy' }}</dd>
+                  </div>
+                }
+                @if (materiel.numeroSerie) {
+                  <div>
+                    <dt><i class="bi bi-upc-scan" aria-hidden="true"></i> N° de série</dt>
+                    <dd>{{ materiel.numeroSerie }}</dd>
+                  </div>
+                }
+                @if (materiel.observation) {
+                  <div class="materiel-card__observation">
+                    <dt><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observation</dt>
+                    <dd>{{ materiel.observation }}</dd>
+                  </div>
+                }
+              </dl>
+
+              @if (canEdit || canDelete) {
+                <footer class="materiel-card__footer">
+                  <span></span>
+                  <div class="d-flex align-items-center gap-2">
+                    @if (canEdit) {
+                      <button class="btn btn-outline-success btn-sm" type="button"
+                              (click)="modifier(materiel)" title="Modifier"
+                              aria-label="Modifier le matériel">
+                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                      </button>
+                    }
+                    @if (canDelete) {
+                      <button class="btn btn-outline-danger btn-sm" type="button"
+                              (click)="supprimer(materiel)" title="Supprimer"
+                              aria-label="Supprimer le matériel"
+                              [disabled]="deletingSlug() === materiel.slug">
+                        @if (deletingSlug() === materiel.slug) {
+                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        } @else {
+                          <i class="bi bi-trash" aria-hidden="true"></i>
+                        }
+                      </button>
+                    }
+                  </div>
+                </footer>
+              }
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="materiels-pagination" aria-label="Pagination du matériel">
+          <button class="materiels-pagination__button" type="button" (click)="goToPage(page() - 1)"
+                  [disabled]="isLoading() || premierePage" aria-label="Page précédente">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span>
+          </button>
+          <span class="materiels-pagination__current">Page {{ page() + 1 }} / {{ totalPages }}</span>
+          <button class="materiels-pagination__button" type="button" (click)="goToPage(page() + 1)"
+                  [disabled]="isLoading() || dernierePage" aria-label="Page suivante">
+            <span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</section>

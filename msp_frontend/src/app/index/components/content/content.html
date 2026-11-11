@@ -1,0 +1,184 @@
+<main>
+    <div class="landing-hero border-bottom">
+        <section class="landing-hero__inner">
+            <div class="container landing-container">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-12 col-lg-7">
+                        <span class="badge text-bg-primary p-2 mb-4 rounded-pill">
+                            <i class="fa-regular fa-circle-check"></i>
+                            Solidarité — Prévoyance — Entraide
+                        </span>
+                        <h1 class="landing-title text-uppercase fw-bold ">
+                            mutuelle des Surveillants
+                        </h1>
+                        <h1 class="landing-title landing-title--accent text-uppercase fw-bold"> de Prison du Mali</h1>
+                        <h3 class="landing-subtitle mt-4">
+                            Gérez vos cotisations, sollicitez une aide sociale, demandez un prêt et restez informé des assemblées générales — depuis votre espace adhérent sécurisé.
+                        </h3>
+                    </div>
+                    <div class="col-12 col-lg-5 mt-5 mt-lg-0">
+                        <div class="landing-stats">
+                            <div class="landing-stats__icon">
+                                <i class="fa-solid fa-user-shield fa-8x text-primary text-white"></i>
+                            </div>
+                            <div class="row g-3 mt-3">
+                                <div class="col-12">
+                                    <div class="landing-stat landing-stat--total">
+                                        <span class="landing-stat__value">
+                                            @if (statistiquesLoading()) { <span class="placeholder col-3" aria-label="Chargement"></span> }
+                                            @else if (statistiquesError()) { — }
+                                            @else { {{ statistiques()?.total | number }} }
+                                        </span>
+                                        <span class="landing-stat__label">Adhérents</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="landing-stat">
+                                        <span class="landing-stat__value">
+                                            @if (statistiquesLoading()) { <span class="placeholder col-5" aria-label="Chargement"></span> }
+                                            @else if (statistiquesError()) { — }
+                                            @else { {{ statistiques()?.hommes | number }} }
+                                        </span>
+                                        <span class="landing-stat__label">Hommes</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="landing-stat">
+                                        <span class="landing-stat__value">
+                                            @if (statistiquesLoading()) { <span class="placeholder col-5" aria-label="Chargement"></span> }
+                                            @else if (statistiquesError()) { — }
+                                            @else { {{ statistiques()?.femmes | number }} }
+                                        </span>
+                                        <span class="landing-stat__label">Femmes</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (statistiquesError()) {
+                                <p class="landing-stats__error mb-0 mt-3" role="status">Les statistiques sont momentanément indisponibles.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
+                        <button class="btn btn-primary landing-primary-button" (click)="goToLogin()">
+                            Accéder à mon espace <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <a href="#services" class="btn btn-white border landing-secondary-button">
+                            <i class="bi bi-compass me-2" aria-hidden="true"></i>
+                            Découvrir les services
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Section service aux adhérents-->
+    <div class="border-bottom" id="services">
+        <section class="landing-container">
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center align-items-center text-center mb-4">
+                        <div >
+                            <h1 class="fw-bold">Nos services aux adhérents</h1>
+                            <p class="text-secondary">Quatre piliers au service de la communauté</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gy-4 gy-md-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card service-card p-4 rounded-4">
+                            <i class="fa-regular fa-circle-check fa-2x text-primary rounded-2 d-inline-flex align-items-center justify-content-center  p-2" style="width:60px; background-color: #DCF7E2;"></i>
+                            <h3 class="mt-3 fw-semibold">Cotisations</h3>
+                            <h6 class="fw-light">
+                                Suivez vos paiements mensuels et historique en toute transparence.
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card service-card p-4 rounded-4">
+                            <i class="fa-regular fa-handshake fa-2x text-primary d-inline-flex align-items-center justify-content-center rounded-2 p-2" style="width:60px; background-color: #DCF7E2;"></i>
+                            <h3 class="mt-3 fw-semibold">Prestations</h3>
+                            <h6 class="fw-light">
+                                Aides en cas de maladie, décès, mariage ou naissance.
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card service-card p-4 rounded-4">
+                            <i class="fa-regular fa-money-bill-1 fa-2x text-primary  d-inline-flex align-items-center justify-content-center rounded-2 p-2" style="width:60px; background-color: #DCF7E2;"></i>
+                            <h3 class="mt-3 fw-semibold">Demander Prêts</h3>
+                            <h6 class="fw-light">
+                                Demandez un prêt à conditions favorables avec échéancier clair.
+                            </h6>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card service-card p-4 rounded-4">
+                            <i class="fa-solid fa-user-group fa-2x text-primary d-inline-flex align-items-center justify-content-center rounded-2 p-2 btn-outline-primary" style="width:60px; background-color: #DCF7E2;"></i>
+                            <h3 class="mt-3 fw-semibold">Vie associative</h3>
+                            <h6 class="fw-light">
+                                Restez informé des AG, événements et documents officiels.
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Section Mission -->
+    <div class="landing-missions border-bottom py-5" id="missions">
+        <section class="landing-container">
+            <div class="container my-5">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="mb-4 ">
+                            <h1 class="fw-bold">Nos missions</h1>
+                        </div>
+                        <p class="text-secondary">
+                            La MSP rassemble les surveillants de prison du Mali autour d'une démarche solidaire de protection sociale, d'entraide financière et de cohésion professionnelle.
+                        </p>
+                        <p class="fw-light">
+
+                            <i class="fa-regular fa-circle-check text-primary"></i>
+                            Sécuriser financièrement les adhérents et leurs familles
+                        </p>
+                        <p class="fw-light">
+                            <i class="fa-regular fa-circle-check text-primary"></i>
+                            Faciliter l'accès aux prestations sociales et aux prêts
+                        </p>
+                        <p class="fw-light">
+                            <i class="fa-regular fa-circle-check text-primary"></i>
+                            Renforcer la cohésion par des événements et l'information
+                        </p>
+                        <p class="fw-light">
+                            <i class="fa-regular fa-circle-check text-primary"></i>
+                            Garantir une gestion transparente et tracée
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-6 mt-5 mb-4">
+                        <div class="card landing-join-card p-4 p-md-5">
+                            <h3 class="fw-bold mb-2">Devenir adhérent</h3>
+                            <p>
+                                Rejoignez la MSP en quelques minutes. Inscription en ligne, validation par l'administration, accès immédiat à votre tableau de bord.
+                            </p>
+                            <div class="d-grid d-md-block">
+                                <button class="btn btn-primary" type="button">
+                                  <i class="fa fa-phone"></i>
+                                  Contacter l'administrateur
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>

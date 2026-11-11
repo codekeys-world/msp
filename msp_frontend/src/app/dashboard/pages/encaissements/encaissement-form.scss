@@ -1,0 +1,17 @@
+﻿:host { display: block; }
+.encaissement-form-page { padding: clamp(1rem, 2.5vw, 2rem); }
+.encaissement-form-heading {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  margin-bottom: 1.5rem; padding: clamp(1.5rem, 3vw, 2.25rem); color: #fff;
+  background: linear-gradient(120deg, #145c3a 0%, #17804e 58%, #23965f 100%); border-radius: 1.1rem;
+  box-shadow: 0 .8rem 2rem rgb(20 92 58 / 15%);
+  h1 { margin: .4rem 0; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 750; }
+  p { margin: 0; color: rgb(255 255 255 / 78%); }
+}
+.encaissement-form-eyebrow { color: rgb(255 255 255 / 72%); font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.encaissement-form-content { padding: clamp(1.5rem, 3vw, 2.5rem); background: #fff; border: 1px solid #e9efea; border-radius: 1.1rem; }
+.encaissement-form-state { display: flex; min-height: 12rem; align-items: center; justify-content: center; gap: .75rem; color: #65766b; }
+.encaissement-form-actions { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #edf1ee; }
+.form-label { color: #19352a; font-weight: 600; }
+.form-select, .form-control { color: #19352a; border-color: #d5e0d9; &:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); } }
+@media (max-width: 575.98px) { .encaissement-form-page { padding: .75rem; } .encaissement-form-heading { align-items: flex-start; flex-direction: column; } .encaissement-form-actions { flex-direction: column; } .encaissement-form-actions button { width: 100%; } }

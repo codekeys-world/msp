@@ -1,0 +1,449 @@
+<div class="carte-page">
+  <!-- EN-TÊTE DE LA PAGE (Masqué à l'impression) -->
+  <header class="carte-header no-print">
+    <div class="carte-header__title-group">
+      <nav aria-label="Fil d'Ariane">
+        <ol class="breadcrumb mb-1 small text-white-50">
+          <li class="breadcrumb-item"><a routerLink="/dashboard/adherents" class="text-white-50 text-decoration-none">Adhérents</a></li>
+          <li class="breadcrumb-item active text-white" aria-current="page">Confection de carte</li>
+        </ol>
+      </nav>
+      <h1>Confection de Carte de Membre</h1>
+      <p class="mb-0">Générez et imprimez les cartes d'adhérent officielles de la Mutuelle des Surveillants de Prison.</p>
+    </div>
+
+    <div class="carte-header__actions">
+      @if (adherent()) {
+        <a class="btn btn-outline-light d-inline-flex align-items-center gap-2"
+           [routerLink]="['/dashboard/adherent', adherent()!.slug]">
+          <i class="fas fa-id-card"></i>
+          <span>Voir le dossier</span>
+        </a>
+      }
+      <button type="button" class="btn btn-light text-success fw-bold d-inline-flex align-items-center gap-2"
+              (click)="imprimerCarte()" [disabled]="!adherent() || isLoading()">
+        <i class="fas fa-print"></i>
+        <span>Imprimer la carte</span>
+      </button>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2 my-3 no-print position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+      <i class="fas fa-exclamation-triangle flex-shrink-0"></i>
+      <div>{{ errorMessage() }}</div>
+    </div>
+  }
+
+  <div class="row g-4 mt-1">
+    <!-- COLONNE CONTRÔLES / OPTIONS (Masqué à l'impression) -->
+    <div class="col-12 col-lg-4 col-xl-4 no-print">
+      <div class="confection-sidebar">
+
+        <!-- 1. Sélection de l'Adhérent -->
+        <section class="confection-card mb-4">
+          <h2 class="confection-card__title">
+            <i class="fas fa-user-circle text-success me-2"></i>Adhérent sélectionné
+          </h2>
+
+          <div class="mb-3">
+            <label for="searchAdherentInput" class="form-label small fw-semibold text-muted">Rechercher un adhérent</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input type="text" id="searchAdherentInput" class="form-control"
+                     [(ngModel)]="searchAdherentQuery" (input)="filterAdherents()"
+                     placeholder="Nom, prénom ou matricule...">
+            </div>
+          </div>
+
+          <div class="adherent-selector-list">
+            @for (adh of filteredAdherents(); track adh.slug) {
+              <button type="button" class="adherent-item-btn"
+                      [class.is-active]="adherent()?.slug === adh.slug"
+                      (click)="selectAdherent(adh)">
+                @if (adh.profileImage && adh.profileImageType) {
+                  <img [src]="getAdherentPhoto(adh)" alt="Photo" class="adh-avatar-img">
+                } @else {
+                  <span class="adh-avatar">
+                    <i class="fas fa-user"></i>
+                  </span>
+                }
+                <span class="adh-info">
+                  <strong class="adh-name">{{ adh.prenom }} {{ adh.nom }}</strong>
+                  <small class="adh-sub">Mat: {{ adh.matricule }} · N° {{ adh.numeroInscription }}</small>
+                </span>
+                @if (adherent()?.slug === adh.slug) {
+                  <i class="fas fa-check-circle text-success ms-auto"></i>
+                }
+              </button>
+            } @empty {
+              <div class="text-center py-3 text-muted small">
+                Aucun adhérent ne correspond à la recherche.
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- 2. Thème & Modèle -->
+        <section class="confection-card mb-4">
+          <h2 class="confection-card__title">
+            <i class="fas fa-palette text-success me-2"></i>Thème visuel du badge
+          </h2>
+
+          <div class="theme-buttons-grid">
+            <button type="button" class="theme-btn" [class.is-selected]="selectedTheme() === 'classic'"
+                    (click)="setTheme('classic')"><i class="bi bi-palette me-2" aria-hidden="true"></i>
+              <span class="theme-sample theme-sample--classic"></span>
+              <span class="theme-label">Vert Officiel MSP</span>
+            </button>
+            <button type="button" class="theme-btn" [class.is-selected]="selectedTheme() === 'navy'"
+                    (click)="setTheme('navy')"><i class="bi bi-palette me-2" aria-hidden="true"></i>
+              <span class="theme-sample theme-sample--navy"></span>
+              <span class="theme-label">Bleu Sécurité</span>
+            </button>
+            <button type="button" class="theme-btn" [class.is-selected]="selectedTheme() === 'prestige'"
+                    (click)="setTheme('prestige')"><i class="bi bi-palette me-2" aria-hidden="true"></i>
+              <span class="theme-sample theme-sample--prestige"></span>
+              <span class="theme-label">Élégance Or & Vert</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 3. Dates & Période de Validité -->
+        <section class="confection-card mb-4">
+          <h2 class="confection-card__title">
+            <i class="fas fa-calendar-check text-success me-2"></i>Validité de la carte
+          </h2>
+
+          <div class="mb-2">
+            <label for="dateDelivranceInput" class="form-label small text-muted">Délivrance</label>
+            <input type="date" id="dateDelivranceInput" class="form-control form-control-sm"
+                   [(ngModel)]="dateDelivrance" placeholder="Date de délivrance">
+          </div>
+        </section>
+
+        <!-- 4. Photo pour le Badge -->
+        <section class="confection-card mb-4">
+          <h2 class="confection-card__title">
+            <i class="fas fa-camera text-success me-2"></i>Photo d'identité du badge
+          </h2>
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="badge-photo-preview">
+              @if (memberPhoto()) {
+                <img [src]="memberPhoto()" alt="Photo adhérent">
+              } @else {
+                <i class="fas fa-user"></i>
+              }
+            </div>
+            <div class="d-flex flex-column gap-2 flex-grow-1">
+              <label class="btn btn-sm btn-outline-secondary mb-0 w-100 text-center">
+                <i class="fas fa-upload me-1"></i>Téléverser photo
+                <input type="file" accept="image/*" class="d-none" (change)="onPhotoUploaded($event)">
+              </label>
+              @if (customPhotoUrl()) {
+                <button type="button" class="btn btn-sm btn-outline-danger w-100" (click)="resetPhoto()">
+                  <i class="fas fa-times-circle me-1"></i>Réinitialiser
+                </button>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Options d'affichage -->
+        <section class="confection-card mb-4">
+          <h2 class="confection-card__title">
+            <i class="fas fa-sliders-h text-success me-2"></i>Options d'éléments
+          </h2>
+
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" id="showQrSwitch"
+                   [checked]="showQrCode()" (change)="showQrCode.set(!showQrCode())">
+            <label class="form-check-label small" for="showQrSwitch">QR Code de vérification</label>
+          </div>
+
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" id="showSealSwitch"
+                   [checked]="showOfficialSeal()" (change)="showOfficialSeal.set(!showOfficialSeal())">
+            <label class="form-check-label small" for="showSealSwitch">Tampon officiel MSP</label>
+          </div>
+
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="showSignaturesSwitch"
+                   [checked]="showSignatures()" (change)="showSignatures.set(!showSignatures())">
+            <label class="form-check-label small" for="showSignaturesSwitch">Signatures officielles</label>
+          </div>
+        </section>
+
+        <!-- 6. Mode de vue -->
+        <section class="confection-card">
+          <h2 class="confection-card__title">
+            <i class="fas fa-eye text-success me-2"></i>Vue à l'écran
+          </h2>
+
+          <div class="btn-group w-100" role="group">
+            <button type="button" class="btn btn-sm"
+                    [class.btn-success]="displayMode() === 'both'"
+                    [class.btn-outline-secondary]="displayMode() !== 'both'"
+                    (click)="setDisplayMode('both')"><i class="bi bi-person-vcard me-2" aria-hidden="true"></i>Recto & Verso</button>
+            <button type="button" class="btn btn-sm"
+                    [class.btn-success]="displayMode() === 'front'"
+                    [class.btn-outline-secondary]="displayMode() !== 'front'"
+                    (click)="setDisplayMode('front')"><i class="bi bi-person-vcard me-2" aria-hidden="true"></i>Recto Seul</button>
+            <button type="button" class="btn btn-sm"
+                    [class.btn-success]="displayMode() === 'back'"
+                    [class.btn-outline-secondary]="displayMode() !== 'back'"
+                    (click)="setDisplayMode('back')"><i class="bi bi-person-vcard me-2" aria-hidden="true"></i>Verso Seul</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- COLONNE APERÇU ET ZONE D'IMPRESSION -->
+    <div class="col-12 col-lg-8 col-xl-8">
+      @if (isLoading()) {
+        <div class="card-loading-placeholder no-print">
+          <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+          <p class="mt-2 text-muted">Préparation de la carte de membre...</p>
+        </div>
+      } @else if (!adherent()) {
+        <div class="card-empty-placeholder no-print">
+          <i class="fas fa-id-card text-muted display-4"></i>
+          <h3 class="mt-3">Aucun adhérent sélectionné</h3>
+          <p class="text-muted">Veuillez choisir un adhérent dans la liste pour confectionner sa carte.</p>
+        </div>
+      } @else {
+        <!-- ZONE DE PRÉVISUALISATION INTERACTIVE & IMPRESSION -->
+        <div class="preview-container" [attr.data-theme]="selectedTheme()">
+
+          <div class="preview-toolbar no-print">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-semibold">
+                <i class="fas fa-check-circle me-1"></i>Format Standard CR-80 (85.6mm × 53.98mm)
+              </span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1"
+                    (click)="imprimerCarte()">
+              <i class="fas fa-print"></i>Imprimer
+            </button>
+          </div>
+
+          <!-- CONTENEUR DES BADGES -->
+          <div class="badges-layout" [class.show-front-only]="displayMode() === 'front'"
+               [class.show-back-only]="displayMode() === 'back'" #printContainerRef>
+
+            <!-- ============================================== -->
+            <!--                  RECTO (FRONT)                 -->
+            <!-- ============================================== -->
+            @if (displayMode() === 'both' || displayMode() === 'front') {
+              <div class="id-card-wrapper">
+                <div class="id-card-badge id-card-badge--front" #cardFrontRef>
+                  <!-- Ruban Couleurs Nationales (Mali) -->
+                  <div class="national-stripe">
+                    <span class="stripe-green"></span>
+                    <span class="stripe-gold"></span>
+                    <span class="stripe-red"></span>
+                  </div>
+
+                  <!-- En-tête officiel -->
+                  <header class="card-header-badge">
+                    <div class="card-header-badge__republic">
+                      <span class="republic-title">RÉPUBLIQUE DU MALI</span>
+                      <span class="republic-motto">Un Peuple - Un But - Une Foi</span>
+                    </div>
+                    <div class="card-header-badge__entity">
+                      <div class="entity-logo-box">
+                        <img src="/logo_msp_vf.png" alt="Logo MSP" class="entity-logo" onerror="this.src='/logo_msp.png'">
+                      </div>
+                      <div class="entity-names">
+                        <span class="entity-main">MUTUELLE DES SURVEILLANTS DE PRISON</span>
+                        <span class="entity-sub">MSP - SOLIDARITÉ · ENTRAIDE · DIGNITÉ</span>
+                      </div>
+                    </div>
+                  </header>
+
+                  <!-- Titre de la carte -->
+                  <div class="card-badge-banner">
+                    <span class="badge-title-text">CARTE DE MEMBRE ADHÉRENT</span>
+                  </div>
+
+                  <!-- Corps du Recto -->
+                  <div class="card-front-body">
+                    <!-- Photo & Puce -->
+                    <div class="card-photo-column">
+                      <div class="card-photo-frame">
+                        @if (memberPhoto()) {
+                          <img [src]="memberPhoto()" alt="Photo du membre" class="card-photo-img">
+                        } @else {
+                          <div class="card-photo-placeholder">
+                            <i class="fas fa-user"></i>
+                          </div>
+                        }
+                      </div>
+                      <div class="card-chip-graphic">
+                        <span class="chip-lines"></span>
+                      </div>
+                    </div>
+
+                    <!-- Informations Adhérent -->
+                    <div class="card-info-column">
+                      <div class="info-row info-row--name">
+                        <span class="info-label">NOM & PRÉNOM</span>
+                        <strong class="info-value info-value--strong">{{ adherent()!.nom | uppercase }} {{ adherent()!.prenom }}</strong>
+                      </div>
+
+                      <div class="info-grid-2">
+                        <div class="info-row">
+                          <span class="info-label">MATRICULE</span>
+                          <span class="info-value info-value--code">{{ adherent()!.matricule }}</span>
+                        </div>
+                        <div class="info-row">
+                          <span class="info-label">N° ADHÉSION</span>
+                          <span class="info-value info-value--code">{{ adherent()!.numeroInscription }}</span>
+                        </div>
+                      </div>
+
+                      <div class="info-grid-2">
+                        <div class="info-row">
+                          <span class="info-label">NÉ(E) LE / À</span>
+                          <span class="info-value">
+                            {{ adherent()!.dateNaissance ? (adherent()!.dateNaissance | date:'dd/MM/yyyy') : '—' }}
+                            @if (adherent()!.lieuNaissance) {
+                              à {{ adherent()!.lieuNaissance }}
+                            }
+                          </span>
+                        </div>
+                        <div class="info-row">
+                          <span class="info-label">GENRE</span>
+                          <span class="info-value">{{ adherent()!.genre === 'HOMME' ? 'Masculin' : 'Féminin' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="info-grid-2">
+                        <div class="info-row">
+                          <span class="info-label">TÉLÉPHONE</span>
+                          <span class="info-value">{{ adherent()!.telephonePrincipal || '—' }}</span>
+                        </div>
+                        <div class="info-row">
+                          <span class="info-label">QUALITÉ</span>
+                          <span class="info-value info-value--badge">MEMBRE ADHÉRENT</span>
+                        </div>
+                      </div>
+
+                      <div class="info-row card-validity-row">
+                        <span class="info-label">DÉLIVRANCE</span>
+                        <span class="info-value-sm">{{ dateDelivrance | date:'dd/MM/yyyy' }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Bas du Recto : Signatures & Sceau -->
+                  <footer class="card-front-footer">
+                    @if (showSignatures()) {
+                      <div class="sig-block sig-block--holder">
+                        <span class="sig-label">Signature du titulaire</span>
+                        <div class="sig-line"></div>
+                      </div>
+                    }
+
+                    @if (showOfficialSeal()) {
+                      <div class="official-seal">
+                        <div class="seal-inner">
+                          <span class="seal-text-top">MUTUELLE DES SURVEILLANTS</span>
+                          <span class="seal-star">★ MSP ★</span>
+                          <span class="seal-text-bot">SCEAU OFFICIEL</span>
+                        </div>
+                      </div>
+                    }
+
+                    @if (showSignatures()) {
+                      <div class="sig-block sig-block--authority">
+                        <span class="sig-label">Le Président du Bureau</span>
+                        <div class="sig-signature-stamp">
+                          <span class="sig-simulated">P/O Le Président</span>
+                        </div>
+                      </div>
+                    }
+                  </footer>
+
+                  <!-- Hologramme de sécurité décoratif -->
+                  <div class="security-hologram">
+                    <span>MSP AUTHENTIC</span>
+                  </div>
+                </div>
+                <div class="card-side-label no-print">RECTO (Face avant)</div>
+              </div>
+            }
+
+            <!-- ============================================== -->
+            <!--                  VERSO (BACK)                  -->
+            <!-- ============================================== -->
+            @if (displayMode() === 'both' || displayMode() === 'back') {
+              <div class="id-card-wrapper">
+                <div class="id-card-badge id-card-badge--back" #cardBackRef>
+                  <!-- Bande magnétique stylisée -->
+                  <div class="card-mag-stripe"></div>
+
+                  <!-- Corps du Verso -->
+                  <div class="card-back-body">
+                    <!-- Mentions légales & Consignes -->
+                    <div class="legal-notice-box">
+                      <h3 class="legal-title">DISPOSITIONS ET CONDITIONS D'USAGE</h3>
+                      <p class="legal-text">
+                        1. Cette carte est strictement <strong>personnelle et incessible</strong>. Elle atteste de l'affiliation régulière de son titulaire à la <strong>Mutuelle des Surveillants de Prison (MSP)</strong>.
+                      </p>
+                      <p class="legal-text">
+                        2. Le titulaire bénéficie des droits, assistances et prestations accordés par les statuts et règlements intérieurs de la MSP.
+                      </p>
+                      <p class="legal-text">
+                        3. En cas de perte, de vol ou de détérioration, le titulaire est tenu d'en aviser immédiatement le bureau exécutif de la MSP.
+                      </p>
+                      <p class="legal-text">
+                        4. Toute personne trouvant cette carte est priée de la déposer au siège de la mutuelle ou au poste de sécurité le plus proche.
+                      </p>
+                    </div>
+
+                    <!-- Bloc QR Code & Informations Siège -->
+                    <div class="back-footer-grid">
+                      @if (showQrCode()) {
+                        <div class="qr-code-box">
+                          <div class="qr-svg-wrapper" [innerHTML]="qrCodeSvg()"></div>
+                          <span class="qr-caption">Vérification numérique</span>
+                        </div>
+                      }
+
+                      <div class="contacts-box">
+                        <h4 class="contacts-title">MUTUELLE DES SURVEILLANTS DE PRISON</h4>
+                        <div class="contact-item"><i class="fas fa-map-marker-alt"></i> Siège Social : Bamako, République du Mali</div>
+                        <div class="contact-item"><i class="fas fa-phone"></i> Tél : (+223) 79 73 27 80 / 63 84 18 49</div>
+                        <div class="contact-item"><i class="fas fa-envelope"></i> Email : contact@msp-mali.org</div>
+                        <div class="contact-item"><i class="fas fa-shield-alt"></i> Agrément Officiel MSP / Ministère de la Justice</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Code-barres décoratif & Numéro de série -->
+                  <footer class="card-back-footer">
+                    <span class="serial-number">MSP-{{ adherent()!.matricule }}-{{ adherent()!.numeroInscription }}</span>
+                    <div class="barcode-visual">
+                      <span></span><span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                  </footer>
+                </div>
+                <div class="card-side-label no-print">VERSO (Face arrière)</div>
+              </div>
+            }
+
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<main class="login-page">
+  <div class="login-layout">
+    <aside class="login-decoration" aria-label="Mutuelle des Surveillants de Prison du Mali">
+      <div class="decoration-copy">
+        <span class="decoration-kicker">BIENVENUE</span>
+        <h2>Votre mutuelle,<br>à vos côtés.</h2>
+        <p>Accédez à votre espace personnel pour retrouver les services et informations de la MSP.</p>
+      </div>
+
+      <div class="decoration-mark decoration-mark--large" aria-hidden="true"></div>
+      <div class="decoration-mark decoration-mark--small" aria-hidden="true"></div>
+      <div class="decoration-bottom">
+        <span class="decoration-bottom__icon"><i class="fa-solid fa-user-lock" aria-hidden="true"></i></span>
+        <span>Un espace sécurisé réservé aux adhérents</span>
+      </div>
+    </aside>
+
+    <div class="login-content">
+      <a routerLink="" class="login-back">
+        <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>
+        Retour à l'accueil
+      </a>
+
+      <section class="login-card" aria-labelledby="login-title">
+        <div class="login-heading">
+          <a routerLink="" class="login-brand login-brand--form">
+            <img src="./logo_msp.png" alt="">
+            <span>
+              <strong>MSP</strong>
+              <small>Mutuelle des Surveillants de Prison du Mali</small>
+            </span>
+          </a>
+          <h1 id="login-title">Espace adhérent</h1>
+          <p>Connectez-vous à votre espace sécurisé.</p>
+        </div>
+
+        @if (errorMessage().length) {
+          <div class="alert alert-danger position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+            @for (error of errorMessage(); track $index) {
+              <div>{{ error }}</div>
+            }
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="username">Identifiant</label>
+            <div class="input-group login-input">
+              <span class="input-group-text" aria-hidden="true"><i class="fa fa-user"></i></span>
+              <input id="username" type="text" name="username" formControlName="username"
+                     class="form-control" autocomplete="username"
+                     placeholder="Téléphone, matricule ou adresse e-mail"
+                     [class.is-invalid]="loginForm.controls.username.invalid &&
+                       (loginForm.controls.username.touched || loginForm.controls.username.dirty)">
+            </div>
+            @if (loginForm.controls.username.invalid &&
+                 (loginForm.controls.username.touched || loginForm.controls.username.dirty)) {
+              <small class="text-danger">Votre identifiant est requis.</small>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="password">Mot de passe</label>
+            <div class="input-group login-input">
+              <span class="input-group-text" aria-hidden="true"><i class="fa fa-lock"></i></span>
+              <input id="password" type="password" name="password" formControlName="password"
+                     class="form-control" autocomplete="current-password"
+                     placeholder="Saisissez votre mot de passe"
+                     [class.is-invalid]="loginForm.controls.password.invalid &&
+                       (loginForm.controls.password.touched || loginForm.controls.password.dirty)">
+            </div>
+            @if (loginForm.controls.password.hasError('required') &&
+                 (loginForm.controls.password.touched || loginForm.controls.password.dirty)) {
+              <small class="text-danger">Le mot de passe est requis.</small>
+            }
+            @if (loginForm.controls.password.hasError('minlength') &&
+                 (loginForm.controls.password.touched || loginForm.controls.password.dirty)) {
+              <small class="text-danger">Le mot de passe doit contenir au moins 6 caractères.</small>
+            }
+          </div>
+
+          <div class="login-options">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="seSouvenir">
+              <label class="form-check-label" for="seSouvenir">Se souvenir de moi</label>
+            </div>
+            <button class="login-forgot btn btn-link p-0" type="button" (click)="showForgotPassword.set(!showForgotPassword())"><i class="bi bi-key me-2" aria-hidden="true"></i>Mot de passe oublié ?</button>
+          </div>
+
+          <button type="submit" [disabled]="submiting()" class="btn btn-primary login-submit w-100">
+            @if (submiting()) {
+              <i class="fa fa-spinner fa-spin me-2" aria-hidden="true"></i>Connexion en cours…
+            } @else {
+              Se connecter <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i>
+            }
+          </button>
+
+          <div class="login-divider"><span>ou</span></div>
+          <button type="button" class="btn btn-outline-secondary login-google w-100" disabled>
+            <i class="fa-brands fa-google me-2" aria-hidden="true"></i>Se connecter avec Google
+          </button>
+        </form>
+        @if (showForgotPassword()) {
+          <form class="mt-3" (submit)="$event.preventDefault(); sendResetLink()">
+            <label class="form-label" for="forgot-email">Adresse e-mail du compte</label>
+            <input id="forgot-email" class="form-control mb-2" type="email" [formControl]="forgotEmail" autocomplete="email">
+            @if (forgotMessage()) { <div class="alert alert-info py-2 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{forgotMessage()}}</div> }
+            <button class="btn btn-success w-100" type="submit" [disabled]="forgotLoading()"><i class="bi bi-key me-2" aria-hidden="true"></i>
+              @if (forgotLoading()) { Envoi en cours… } @else { Envoyer le lien de réinitialisation }
+            </button>
+          </form>
+        }
+      </section>
+
+      <p class="login-footer">© 2026 — Mutuelle des Surveillants de Prison du Mali</p>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,14 @@
+<div class="dashboard-theme">
+    <app-sidebar [collapsed]="sidebarCollapsed" />
+    <!-- MAIN CONTENT -->
+    <div class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+        <!-- TOP BAR -->
+        <app-navbar (toggleSidebar)="toggleSidebar()" />
+       
+
+        <!-- CONTENT -->
+        <div class="content-area fade-in">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

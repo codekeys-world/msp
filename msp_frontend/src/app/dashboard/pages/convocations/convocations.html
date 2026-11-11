@@ -1,0 +1,124 @@
+<main class="convocations-page">
+  <header class="convocations-heading">
+    <div>
+      <span class="convocations-eyebrow">Gestion des convocations</span>
+      <h1>Convocations</h1>
+      <p>Consultez et gérez les convocations et leurs documents associés.</p>
+    </div>
+    @if (canAdd) {
+      <button class="btn btn-light fw-semibold" type="button" (click)="ajouter()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouvelle convocation
+      </button>
+    }
+  </header>
+
+  <section class="convocations-content" aria-labelledby="convocations-list-title">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <div>
+        <h2 id="convocations-list-title">Liste des convocations</h2>
+        <p>{{ pageResponse()?.donnees?.resultat?.totalElements ?? 0 }} convocation(s) enregistrée(s)</p>
+      </div>
+      @if (totalPages > 0) { <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span> }
+    </div>
+
+    @if (canList) {
+      <form class="convocations-search input-group mb-4" role="search" (submit)="$event.preventDefault(); submitSearch()">
+        <label for="convocation-search" class="visually-hidden">Rechercher une convocation</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="convocation-search" class="form-control" type="search" [value]="searchTerm()"
+               (input)="onSearchInput($event)" placeholder="Description, date, rédacteur ou document…">
+        @if (searchTerm() || activeSearchTerm) {
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+        }
+      </form>
+    }
+
+    @if (isLoading()) {
+      <div class="convocations-state" role="status"><span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>Chargement des convocations…</div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span>{{ errorMessage() }}</span>
+        @if (canList) { <button class="btn btn-outline-danger btn-sm" type="button" (click)="load()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button> }
+      </div>
+    } @else if (convocations.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-folder2-open fs-2" aria-hidden="true"></i>
+        <strong>{{ activeSearchTerm ? 'Aucun résultat : la liste est vide.' : 'La liste des convocations est vide.' }}</strong>
+        <p class="mb-0">{{ activeSearchTerm ? 'Aucune convocation ne correspond à cette recherche.' : 'Les convocations enregistrées apparaîtront ici.' }}</p>
+        @if (activeSearchTerm) { <button class="btn btn-outline-success" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer la recherche</button> }
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (convocation of convocations; track convocation.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="convocation-card">
+              <header class="convocation-card__header">
+                <div class="convocation-card__heading">
+                  <span class="convocation-card__eyebrow">Convocation</span>
+                  <h3>{{ reference(convocation) }}</h3>
+                  <p>{{ convocation.description }}</p>
+                </div>
+                <span class="convocation-card__icon" aria-hidden="true"><i class="bi bi-calendar2-event"></i></span>
+              </header>
+              <div class="convocation-card__summary">
+                <div><span class="convocation-card__label">Date de la convocation</span>
+                  <strong><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>{{ convocation.dateConvocation | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <span class="badge" [class.text-bg-success]="convocation.dateValidation"
+                      [class.text-bg-danger]="convocation.dateRefus"
+                      [class.text-bg-warning]="!convocation.dateValidation && !convocation.dateRefus">{{ statut(convocation) }}</span>
+              </div>
+              <dl class="convocation-card__details">
+                <div><dt><i class="bi bi-person me-1" aria-hidden="true"></i>Enregistrée par</dt><dd>{{ convocation.creerPar || 'Non renseigné' }}</dd></div>
+                @if (convocation.messageValidation) {
+                  <div><dt><i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Commentaire de suivi</dt><dd>{{ convocation.messageValidation }}</dd></div>
+                }
+              </dl>
+              <footer class="convocation-card__footer">
+                <div class="convocation-card__document">
+                  <span class="convocation-card__document-icon" aria-hidden="true"><i class="bi bi-paperclip"></i></span>
+                  <span class="convocation-card__filename" [title]="convocation.nomFichierConvocation">{{ convocation.nomFichierConvocation || 'Aucun document joint' }}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  @if (convocation.documentConvocation) {
+                    <app-document-viewer [pdfBase64]="convocation.documentConvocation"
+                                         [filename]="convocation.nomFichierConvocation || reference(convocation)"
+                                         [contentType]="convocation.typeFichierConvocation" />
+                  }
+                  @if (canEdit) {
+                    <button class="btn btn-outline-success btn-sm" type="button" title="Modifier"
+                            [attr.aria-label]="'Modifier la convocation ' + reference(convocation)" (click)="modifier(convocation)">
+                      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </button>
+                  }
+                  @if (canDelete) {
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Supprimer"
+                            [attr.aria-label]="'Supprimer la convocation ' + reference(convocation)"
+                            [disabled]="deletingSlug() === convocation.slug" (click)="supprimer(convocation)">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="convocations-pagination" aria-label="Pagination des convocations">
+          <button class="convocations-pagination__button" type="button" (click)="goToPage(page() - 1)" [disabled]="isLoading() || isFirstPage" aria-label="Page précédente"><i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span></button>
+          <div class="convocations-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button class="convocations-pagination__number" type="button" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber" [disabled]="isLoading()"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null">{{ pageNumber + 1 }}</button>
+            }
+          </div>
+          <button class="convocations-pagination__button" type="button" (click)="goToPage(page() + 1)" [disabled]="isLoading() || isLastPage" aria-label="Page suivante"><span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+        </nav>
+      }
+    }
+  </section>
+</main>

@@ -1,0 +1,120 @@
+<main class="adherents-page">
+  <header class="adherents-heading">
+    <div>
+      <span class="adherents-eyebrow">Espace membres</span>
+      <h1>Adhérents</h1>
+      <p>Consultez les profils et leur composition familiale.</p>
+    </div>
+    <div class="d-flex gap-2">
+      @if (canExport) {
+        <button class="btn btn-light fw-semibold" type="button" (click)="exportToExcel()">
+          <i class="bi bi-file-earmark-excel me-2" aria-hidden="true"></i>Exporter en Excel
+        </button>
+      }
+      @if (canManage) {
+        <a class="btn btn-light fw-semibold" routerLink="/dashboard/adherent/create">
+          <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Nouvel adhérent
+        </a>
+      }
+    </div>
+  </header>
+
+  <section class="adherents-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div><h2>Liste des adhérents</h2>
+        <p>{{ adherents()?.donnees?.resultat?.totalElements ?? 0 }} membre(s) enregistré(s)</p></div>
+      @if (totalPages > 0) { <span class="badge rounded-pill text-bg-success">Page {{ page() + 1 }} / {{ totalPages }}</span> }
+    </div>
+
+    <form class="adherents-search input-group mb-4" role="search"
+          (submit)="$event.preventDefault(); searchAdherents()">
+      <label class="visually-hidden" for="adherent-search">Rechercher un adhérent</label>
+      <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+      <input id="adherent-search" class="form-control" type="search" [value]="searchTerm()"
+             (input)="onSearchInput($event)"
+             placeholder="Nom, prénom, matricule, téléphone, conjoint, descendant…">
+      @if (searchTerm() || activeSearchTerm) {
+        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button>
+      }
+    </form>
+
+    @if (isLoading()) {
+      <div class="adherents-state" role="status"><span class="spinner-border spinner-border-sm text-success"></span>Chargement…</div>
+    } @else if (errorMessage()) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        {{ errorMessage() }} <button class="btn btn-outline-danger btn-sm" (click)="loadAdherents()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button>
+      </div>
+    } @else if (!adherents()?.donnees?.resultat?.content?.length) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <i class="bi bi-people fs-2" aria-hidden="true"></i>
+        @if (activeSearchTerm) {
+          <strong>Aucun résultat</strong><p class="mb-0">La liste est vide pour « {{ activeSearchTerm }} » : aucun adhérent ne correspond à votre recherche.</p>
+          <button class="btn btn-outline-success" type="button" (click)="clearSearch()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer la recherche</button>
+        } @else {
+          <strong>La liste des adhérents est vide.</strong><p class="mb-0">Les profils enregistrés apparaîtront ici.</p>
+        }
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (adherent of adherents()?.donnees?.resultat?.content; track adherent.slug) {
+          <div class="col-12 col-xl-6">
+            <article class="member-card">
+              <div class="member-card__main-row">
+                <button class="member-card__summary" type="button" (click)="view(adherent)"
+                        [attr.aria-label]="'Consulter le dossier de ' + adherent.prenom + ' ' + adherent.nom">
+                  @if (getPhotoUrl(adherent); as photoUrl) {
+                    <img [src]="photoUrl" alt="Photo" class="member-avatar-img">
+                  } @else {
+                    <span class="member-avatar"><i class="bi bi-person" aria-hidden="true"></i></span>
+                  }
+                  <span class="member-main">
+                    <strong>{{ adherent.prenom }} {{ adherent.nom }}</strong>
+                    <span class="member-number"><i class="bi bi-person-vcard" aria-hidden="true"></i> {{ adherent.matricule }}</span>
+                    <span class="member-contact"><i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ adherent.telephonePrincipal || 'Téléphone non renseigné' }}</span>
+                    <span class="member-gender">
+                      <i class="bi" [class.bi-gender-male]="adherent.genre === 'HOMME'"
+                         [class.bi-gender-female]="adherent.genre === 'FEMME'" aria-hidden="true"></i>
+                      {{ adherent.genre === 'HOMME' ? 'Homme' : 'Femme' }}
+                    </span>
+                  </span>
+                  <span class="member-family">
+                    <span><i class="bi bi-heart" aria-hidden="true"></i> {{ adherent.conjoints.length }}</span>
+                    <span><i class="bi bi-people" aria-hidden="true"></i> {{ adherent.descendants.length }}</span>
+                  </span>
+                  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+        }
+      </div>
+      @if (totalPages > 1) {
+        <nav class="adherents-pagination" aria-label="Pagination des adhérents">
+          <button type="button" class="adherents-pagination__button" (click)="goToPreviousPage()"
+                  aria-label="Page précédente" [disabled]="isLoading() || isFirstPage">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            <span>Précédent</span>
+          </button>
+          <div class="adherents-pagination__pages">
+            @for (pageNumber of pageNumbers; track pageNumber) {
+              <button type="button" class="adherents-pagination__number" (click)="goToPage(pageNumber)"
+                      [class.is-active]="page() === pageNumber"
+                      [attr.aria-current]="page() === pageNumber ? 'page' : null"
+                      [attr.aria-label]="'Page ' + (pageNumber + 1)"
+                      [disabled]="isLoading()">
+                {{ pageNumber + 1 }}
+              </button>
+            }
+          </div>
+          <button type="button" class="adherents-pagination__button" (click)="goToNextPage()"
+                  aria-label="Page suivante" [disabled]="isLoading() || isLastPage">
+            <span>Suivant</span>
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+      }
+    }
+  </section>
+</main>

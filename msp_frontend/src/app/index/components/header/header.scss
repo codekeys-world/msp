@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.landing-nav {
+  min-height: 4.75rem;
+  padding-block: .65rem;
+  background: rgb(255 255 255 / 94%) !important;
+  box-shadow: 0 .2rem 1rem rgb(25 53 42 / 5%);
+  backdrop-filter: blur(12px);
+}
+
+.landing-brand {
+  color: #19352a;
+  white-space: normal;
+}
+
+.landing-brand__logo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.landing-brand p:last-child {
+  font-size: clamp(.7rem, 1.7vw, .9rem) !important;
+}
+
+.landing-nav .navbar-nav {
+  align-items: center;
+  gap: .4rem;
+}
+
+.landing-nav .nav-link {
+  padding: .6rem .9rem;
+  color: #42584b;
+  font-weight: 600;
+}
+
+.landing-nav .nav-link:hover {
+  color: #0f7d4b;
+}
+
+.landing-nav .landing-login-link {
+  padding-inline: 1.1rem;
+  background: #0f7d4b;
+}
+
+.landing-nav .landing-login-link:hover {
+  color: #fff;
+  background: #0b653c;
+}
+
+@media (max-width: 767.98px) {
+  .landing-nav .navbar-nav {
+    align-items: stretch;
+    padding-top: .75rem;
+  }
+}

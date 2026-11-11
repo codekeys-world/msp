@@ -1,0 +1,26 @@
+# --- Fichiers Git et Docker ---
+.git
+.gitignore
+Dockerfile
+.dockerignore
+README.md
+
+# --- Fichiers système et IDEs ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.log
+
+
+# --- Frontend : Angular / Node.js ---
+**/node_modules/
+**/dist/
+**/.angular/
+**/out-tsc/
+**/coverage/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env

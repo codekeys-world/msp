@@ -1,0 +1,108 @@
+<div class="container-fluid py-3 py-lg-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-9 col-xxl-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white p-4">
+          <div class="d-flex align-items-center gap-3">
+            <span class="bg-white bg-opacity-25 rounded-3 p-3">
+              <i class="bi bi-receipt fs-4" aria-hidden="true"></i>
+            </span>
+            <div>
+              <h1 class="h4 mb-1">{{ slug ? "Modifier la dépense" : "Nouvelle dépense" }}</h1>
+              <p class="mb-0 text-white-50">
+                {{ slug ? "Mettez à jour les informations de la dépense." : "Renseignez les détails de la dépense à engager." }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-3 p-md-4 p-lg-5">
+            @if (loading) {
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            } @else {
+                <form [formGroup]="form" (ngSubmit)="soumettre()">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Libellé <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" formControlName="libelle"
+                                   placeholder="Description de la dépense"
+                                   [class.is-invalid]="form.get('libelle')?.invalid && form.get('libelle')?.touched">
+                            @if (form.get('libelle')?.errors?.['required']) {
+                                <div class="invalid-feedback">Le libellé est obligatoire.</div>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Date de dépense <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" formControlName="dateDepense"
+                                   placeholder="Sélectionner la date"
+                                   [class.is-invalid]="form.get('dateDepense')?.invalid && form.get('dateDepense')?.touched">
+                            @if (form.get('dateDepense')?.errors?.['required']) {
+                                <div class="invalid-feedback">La date est obligatoire.</div>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Montant (FCFA) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" formControlName="montant"
+                                   placeholder="Montant de la dépense"
+                                   [class.is-invalid]="form.get('montant')?.invalid && form.get('montant')?.touched">
+                            @if (form.get('montant')?.errors?.['required']) {
+                                <div class="invalid-feedback">Le montant est obligatoire.</div>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Frais de gestion <span class="text-danger">*</span></label>
+                            <select class="form-select" formControlName="fraisDeGestionSlug"
+                                    [class.is-invalid]="form.get('fraisDeGestionSlug')?.invalid && form.get('fraisDeGestionSlug')?.touched">
+                                <option value="">Sélectionner un frais de gestion</option>
+                                @for (fdg of fraisDeGestions; track fdg.slug) {
+                                    <option [value]="fdg.slug">
+                                        {{ fdg.annee }} — {{ fdg.montantTotal?.toLocaleString('fr-FR') }} FCFA
+                                    </option>
+                                }
+                            </select>
+                            @if (form.get('fraisDeGestionSlug')?.errors?.['required']) {
+                                <div class="invalid-feedback">Le frais de gestion est obligatoire.</div>
+                            }
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Observation</label>
+                            <textarea class="form-control" rows="3" formControlName="observation"
+                                      placeholder="Observation facultative..."></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Justificatif (fichier)</label>
+                            <input type="file" class="form-control" (change)="onFichierChange($event)"
+                                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                            @if (fichierSelectionne) {
+                                <small class="text-muted">Fichier sélectionné : {{ fichierSelectionne }}</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2 border-top pt-4">
+                      <button type="button" class="btn btn-outline-secondary" (click)="annuler()" [disabled]="submitting">
+                        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Retour à la liste
+                      </button>
+                      <button type="submit" class="btn btn-success px-4" [disabled]="submitting || form.invalid">
+                        @if (submitting) {
+                          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                        } @else {
+                          <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                        }
+                        {{ submitting ? 'Enregistrement…' : (slug ? 'Enregistrer les modifications' : 'Engager la dépense') }}
+                      </button>
+                    </div>
+                </form>
+            }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

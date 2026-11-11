@@ -1,0 +1,166 @@
+<section class="missions-page">
+  <header class="missions-heading">
+    <div>
+      <span class="missions-heading__eyebrow">Rapport financier</span>
+      <h1>Situation des décaissements</h1>
+      <p>Rapport mensuel des dépenses regroupées par libellé, statut et par mois.</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <button class="btn missions-heading__action" type="button" (click)="telecharger()"
+              [disabled]="loading || situation.length === 0">
+        <i class="bi bi-download" aria-hidden="true"></i>
+        Télécharger CSV
+      </button>
+      <a class="btn missions-heading__action" routerLink="../depenses">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+        Retour
+      </a>
+    </div>
+  </header>
+
+  <section class="missions-list" aria-labelledby="situation-title">
+    <div class="missions-list__heading">
+      <div>
+        <h2 id="situation-title">Rapport par année</h2>
+        <p>Choisissez l'année pour afficher le rapport des décaissements</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label class="form-label mb-0 fw-semibold" for="annee-select">Année :</label>
+        <select id="annee-select" class="form-select w-auto" [(ngModel)]="annee" (ngModelChange)="changerAnnee()">
+          @for (a of [2026, 2025, 2024, 2023, 2022, 2021, 2020]; track a) {
+            <option [ngValue]="a">{{ a }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="missions-state" role="status">
+        <span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>
+        Chargement du rapport…
+      </div>
+    } @else if (errorMessage) {
+      <div class="alert alert-danger d-flex justify-content-between align-items-center gap-3" role="alert">
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="charger()">
+          <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer
+        </button>
+      </div>
+    } @else if (situation.length === 0) {
+      <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4 position-relative pe-5" role="status">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+        <span class="fs-2" aria-hidden="true"><i class="bi bi-info-circle"></i></span>
+        <strong>Aucune dépense trouvée pour {{ annee }}.</strong>
+        <p class="mb-0">Le rapport s'affichera dès que des dépenses seront enregistrées.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-success">
+            <tr>
+              <th><i class="bi bi-calendar-month me-1"></i>Mois</th>
+              <th><i class="bi bi-pencil-square me-1"></i>Libellé</th>
+              <th><i class="bi bi-circle me-1"></i>Statut</th>
+              <th class="text-center"><i class="bi bi-hash me-1"></i>Nombre</th>
+              <th class="text-end"><i class="bi bi-currency-exchange me-1"></i>Montant total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of situation; track s.mois + '-' + s.libelle + '-' + s.statut) {
+              <tr>
+                <td><strong>{{ s.libelleMois }}</strong></td>
+                <td>{{ s.libelle }}</td>
+                <td>
+                  <span class="badge bg-{{ couleurStatut(s.statut) }}">
+                    {{ libelleStatut(s.statut) }}
+                  </span>
+                </td>
+                <td class="text-center">{{ s.nombre }}</td>
+                <td class="text-end fw-semibold">{{ formatMontant(s.montantTotal) }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot class="table-group-divider">
+            <tr class="fw-bold bg-light">
+              <td colspan="4" class="text-end pe-3">Total général {{ annee }} :</td>
+              <td class="text-end text-danger fs-5">{{ formatMontant(totalGeneral) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Récapitulatif par mois -->
+      @if (totauxParMois.length > 0) {
+        <div class="mt-4">
+          <h5 class="text-success mb-3">
+            <i class="bi bi-calendar-check me-2"></i>Récapitulatif par mois
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle">
+              <thead class="table-success">
+                <tr>
+                  <th><i class="bi bi-calendar-month me-1"></i>Mois</th>
+                  <th class="text-end"><i class="bi bi-currency-exchange me-1"></i>Total dépensé</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (tm of totauxParMois; track tm.mois) {
+                  <tr>
+                    <td><strong>{{ tm.libelleMois }}</strong></td>
+                    <td class="text-end">{{ formatMontant(tm.total) }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot class="table-group-divider">
+                <tr class="fw-bold bg-light">
+                  <td class="text-end pe-3">Total annuel :</td>
+                  <td class="text-end text-danger fs-6">{{ formatMontant(totalGeneral) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- Récapitulatif par statut -->
+      @if (totauxParStatut.length > 0) {
+        <div class="mt-4">
+          <h5 class="text-success mb-3">
+            <i class="bi bi-filter-circle me-2"></i>Récapitulatif par statut
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle">
+              <thead class="table-success">
+                <tr>
+                  <th><i class="bi bi-circle me-1"></i>Statut</th>
+                  <th class="text-center"><i class="bi bi-hash me-1"></i>Nombre de dépenses</th>
+                  <th class="text-end"><i class="bi bi-currency-exchange me-1"></i>Montant total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (ts of totauxParStatut; track ts.statut) {
+                  <tr>
+                    <td>
+                      <span class="badge bg-{{ ts.couleur }}">
+                        {{ ts.libelle }}
+                      </span>
+                    </td>
+                    <td class="text-center">{{ ts.nombre }}</td>
+                    <td class="text-end">{{ formatMontant(ts.total) }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot class="table-group-divider">
+                <tr class="fw-bold bg-light">
+                  <td class="text-end pe-3">Total :</td>
+                  <td class="text-center">{{ situation.reduce((sum, s) => sum + (s.nombre || 0), 0) }}</td>
+                  <td class="text-end text-danger fs-6">{{ formatMontant(totalGeneral) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      }
+    }
+  </section>
+</section>

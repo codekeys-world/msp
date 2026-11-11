@@ -1,0 +1,253 @@
+<!-- SIDEBAR -->
+<div class="sidebar" [class.collapsed]="collapsed">
+    <div class="sidebar-brand">
+    <h5><i class="bi bi-grid-1x2-fill me-2"></i><span class="link-text">GESTION APP</span></h5>
+    <small class="link-text">Tableau de bord de gestion</small>
+    </div>
+
+    <nav class="nav flex-column py-2">
+    <div class="sidebar-section">Principal</div>
+    <a class="nav-link" routerLink="home" routerLinkActive="active">
+        <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
+        <span class="link-text">Tableau de bord</span>
+    </a>
+
+    @if (hasAnyAdherentAccess()) {
+    <div class="sidebar-section">Adhérents</div>
+    @if (canListAdherents()) {
+      <a class="nav-link" routerLink="adherents" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-people"></i></span>
+          <span class="link-text">Adhérents</span>
+      </a>
+    }
+    @if (canManageAdherents()) {
+      <a class="nav-link" routerLink="adherent/create" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
+          <span class="link-text">Nouvel adhérent</span>
+      </a>
+    }
+    @if (canConfectionCard()) {
+      <a class="nav-link" routerLink="cartes-membres" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-person-vcard"></i></span>
+          <span class="link-text">Cartes de membre</span>
+      </a>
+    }
+    }
+    @if (canListPv() || canAddPv()) {
+      <div class="sidebar-section">Procès-verbaux</div>
+      @if (canListPv()) {
+        <a class="nav-link" routerLink="/dashboard/proces-verbaux" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-clipboard-check"></i></span>
+          <span class="link-text">Procès-verbaux</span>
+        </a>
+      }
+      @if (canAddPv()) {
+        <a class="nav-link" routerLink="nouveau-pv" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouveau procès-verbal</span>
+        </a>
+      }
+    }
+
+
+    @if (canListOrdreMission() || canAddOrdreMission()) {
+      <div class="sidebar-section">Ordre de mission</div>
+      @if (canListOrdreMission()) {
+        <a class="nav-link" routerLink="ordre-missions" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
+          <span class="link-text">Ordres de mission</span>
+        </a>
+      }
+      @if (canAddOrdreMission()) {
+        <a class="nav-link" routerLink="nouveau-ordre-missions" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouveau ordre de mission</span>
+        </a>
+      }
+    }
+    @if (canListConvocations() || canAddConvocation()) {
+      <div class="sidebar-section">Convocations</div>
+      @if (canListConvocations()) {
+        <a class="nav-link" routerLink="convocations" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
+          <span class="link-text">Liste des convocations</span>
+        </a>
+      }
+      @if (canAddConvocation()) {
+        <a class="nav-link" routerLink="nouvelle-convocation" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouvelle convocation</span>
+        </a>
+      }
+    }
+    @if (canListCourriers() || canAddCourrier()) {
+      <div class="sidebar-section">Courriers</div>
+      @if (canListCourriers()) {
+        <a class="nav-link" routerLink="courrier" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-envelope"></i></span>
+          <span class="link-text">Courriers</span>
+        </a>
+      }
+      @if (canAddCourrier()) {
+        <a class="nav-link" routerLink="nouveau-courrier" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouveau courrier</span>
+        </a>
+      }
+    }
+    @if (canListPlaintes() || canAddPlainte()) {
+      <div class="sidebar-section">Plaintes</div>
+      @if (canListPlaintes()) {
+        <a class="nav-link" routerLink="plaintes" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-exclamation-triangle"></i></span>
+          <span class="link-text">Liste des plaintes</span>
+        </a>
+      }
+      @if (canAddPlainte()) {
+        <a class="nav-link" routerLink="nouvelle-plainte" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouvelle plainte</span>
+        </a>
+      }
+    }
+    @if (canListCasSociaux() || canAddCasSocial()) {
+      <div class="sidebar-section">Cas sociaux</div>
+      @if (canListCasSociaux()) {
+        <a class="nav-link" routerLink="cas-sociaux" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-heart-pulse"></i></span>
+          <span class="link-text">Liste des cas sociaux</span>
+        </a>
+      }
+      @if (canAddCasSocial()) {
+        <a class="nav-link" routerLink="nouveau-cas-social" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouveau cas social</span>
+        </a>
+      }
+    }
+    @if (canListPrestations() || canAddPrestation()) {
+      <div class="sidebar-section">Prestations</div>
+      @if (canListPrestations()) {
+        <a class="nav-link" routerLink="prestations" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>
+          <span class="link-text">Liste des prestations</span>
+        </a>
+      }
+      @if (canAddPrestation()) {
+        <a class="nav-link" routerLink="nouvelle-prestation" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouvelle prestation</span>
+        </a>
+      }
+    }
+    @if (canListEncaissements() || canAddEncaissement()) {
+      <div class="sidebar-section">Encaissements</div>
+      @if (canListEncaissements()) {
+        <a class="nav-link" routerLink="encaissements" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-cash-stack"></i></span>
+          <span class="link-text">Liste des encaissements</span>
+        </a>
+      }
+      @if (canAddEncaissement()) {
+        <a class="nav-link" routerLink="nouvel-encaissement" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouvel encaissement</span>
+        </a>
+      }
+      @if (canViewSituationEncaissement()) {
+        <a class="nav-link" routerLink="situation-encaissements" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-bar-chart-line"></i></span>
+          <span class="link-text">Situation des encaissements</span>
+        </a>
+      }
+    }
+
+    @if (canListDepenses() || canAddDepense()) {
+      <div class="sidebar-section">Décaissements</div>
+      @if (canListDepenses()) {
+        <a class="nav-link" routerLink="/dashboard/frais-de-gestion" routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: true}">
+          <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
+          <span class="link-text">Frais de Gestion</span>
+        </a>
+      }
+      @if (canAddDepense()) {
+        <a class="nav-link" routerLink="depenses/nouvelle" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouvelle dépense</span>
+        </a>
+      }
+      @if (canListDepenses()) {
+        <a class="nav-link" routerLink="depenses" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="nav-icon"><i class="bi bi-receipt"></i></span>
+          <span class="link-text">Liste des dépenses</span>
+        </a>
+      }
+      @if (canListDepenses()) {
+        <a class="nav-link" routerLink="situation-depenses" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-bar-chart-line"></i></span>
+          <span class="link-text">Situation des décaissements</span>
+        </a>
+      }
+    }
+
+    @if (canViewMateriel() || canManageMateriel()) {
+      <div class="sidebar-section">Matériel</div>
+      <a class="nav-link" routerLink="materiels" routerLinkActive="active">
+        <span class="nav-icon"><i class="bi bi-box-seam"></i></span>
+        <span class="link-text">Gestion du matériel</span>
+      </a>
+      @if (canManageMateriel()) {
+        <a class="nav-link" routerLink="nouveau-materiel" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-plus-circle"></i></span>
+          <span class="link-text">Nouveau matériel</span>
+        </a>
+      }
+    }
+
+    @if (canDeleguerAdjoint()) {
+      <div class="sidebar-section">Adjoint</div>
+      <a class="nav-link" routerLink="adjoints" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
+          <span class="link-text">Désignation des adjoints</span>
+      </a>
+    }
+
+    @if (canListArchive()) {
+      <div class="sidebar-section">Documents</div>
+      <a class="nav-link" routerLink="archives" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-archive"></i></span>
+          <span class="link-text">Archives</span>
+      </a>
+    }
+
+    @if (canViewControle()) {
+      <div class="sidebar-section">Contrôle & Traçabilité</div>
+      <a class="nav-link" routerLink="journal-actions" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-shield-check"></i></span>
+          <span class="link-text">Commission de Contrôle</span>
+      </a>
+    }
+
+    @if (canManageAdministration()) {
+    <div class="sidebar-section">Administration</div>
+    <a class="nav-link" routerLink="utilisateurs" routerLinkActive="active">
+        <span class="nav-icon"><i class="bi bi-person-gear"></i></span>
+        <span class="link-text">Utilisateurs</span>
+    </a>
+    }
+
+    <div class="sidebar-section">Systeme</div>
+    @if (canViewControle()) {
+      <a class="nav-link" routerLink="journal-actions" routerLinkActive="active">
+          <span class="nav-icon"><i class="bi bi-activity"></i></span>
+          <span class="link-text">Logs Utilisateurs</span>
+      </a>
+    }
+    <a class="nav-link" routerLink="profil" routerLinkActive="active">
+        <span class="nav-icon"><i class="bi bi-person-circle"></i></span>
+        <span class="link-text">Profil</span>
+    </a>
+
+    </nav>
+</div>

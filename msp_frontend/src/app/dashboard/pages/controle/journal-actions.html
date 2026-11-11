@@ -1,0 +1,473 @@
+<div class="audit-container">
+
+  <!-- HERO HEADER -->
+  <div class="audit-hero">
+    <div class="audit-hero__content">
+      <div class="audit-hero__badge">
+        <i class="bi bi-shield-lock-fill"></i>
+        <span>Commission de Contrôle & Audit</span>
+      </div>
+      <h1 class="audit-hero__title">Journal de Contrôle et de Traçabilité des Actions</h1>
+      <p class="audit-hero__subtitle">
+        Contrôle interne et externe du fonctionnement de l'application : traçabilité complète de l'ensemble des opérations réalisées par les utilisateurs de la mutuelle.
+      </p>
+    </div>
+    <div class="audit-hero__actions">
+      <button type="button" class="btn btn-outline-success btn-refresh" (click)="resetFilters()" [disabled]="isLoading()">
+        <i class="bi bi-arrow-clockwise" [class.spin]="isLoading()"></i>
+        <span>Actualiser</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- STATS CARDS -->
+  @if (stats()) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--primary">
+          <i class="bi bi-activity"></i>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__label">Total des actions</span>
+          <span class="stat-card__value">{{ stats()?.totalActions ?? 0 }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--success">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__label">Actions aujourd'hui</span>
+          <span class="stat-card__value">{{ stats()?.actionsAujourdhui ?? 0 }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--info">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__label">Utilisateurs actifs</span>
+          <span class="stat-card__value">{{ stats()?.totalUtilisateursDistincts ?? 0 }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+        <div class="stat-card__info">
+          <span class="stat-card__label">Opérations réussies</span>
+          <span class="stat-card__value text-success">{{ stats()?.totalSucces ?? 0 }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- FILTERS & SEARCH TOOLBAR -->
+  <div class="filter-panel">
+    <div class="filter-panel__row">
+      <!-- Search input -->
+      <div class="filter-panel__search">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Rechercher par nom, prénom, rôle, IP, client, action..."
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+          (keydown.enter)="submitSearch()"
+        />
+        @if (searchTerm()) {
+          <button type="button" class="btn-clear" (click)="clearSearch()">
+            <i class="bi bi-x-circle-fill"></i>
+          </button>
+        }
+      </div>
+
+      <!-- Module selector -->
+      <div class="filter-panel__select">
+        <select class="form-select" [value]="selectedModule()" (change)="onModuleChange($event)">
+          <option value="">Tous les modules</option>
+          <option value="AUTHENTIFICATION">Authentification</option>
+          <option value="ADHÉRENTS">Adhérents</option>
+          <option value="CARTES_MEMBRES">Cartes de membre</option>
+          <option value="COURRIERS">Courriers</option>
+          <option value="PROCÈS_VERBAUX">Procès-verbaux</option>
+          <option value="CONVOCATIONS">Convocations</option>
+          <option value="PLAINTES">Plaintes</option>
+          <option value="CAS_SOCIAUX">Cas sociaux</option>
+          <option value="ADMINISTRATION">Administration</option>
+          <option value="COMMISSION_CONTROLE">Commission Contrôle</option>
+          <option value="SYSTÈME">Système</option>
+        </select>
+      </div>
+
+      <!-- Statut selector -->
+      <div class="filter-panel__select filter-panel__select--sm">
+        <select class="form-select" [value]="selectedStatut()" (change)="onStatutChange($event)">
+          <option value="">Tous statuts</option>
+          <option value="SUCCES">Succès</option>
+          <option value="ECHEC">Échecs</option>
+        </select>
+      </div>
+
+      <!-- Date Presets -->
+      <div class="filter-panel__date-pills">
+        <button
+          type="button"
+          class="date-pill"
+          [class.active]="selectedDateRange() === 'all'"
+          (click)="onDateRangeChange('all')"
+        ><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>
+          Toutes
+        </button>
+        <button
+          type="button"
+          class="date-pill"
+          [class.active]="selectedDateRange() === 'today'"
+          (click)="onDateRangeChange('today')"
+        ><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>
+          Aujourd'hui
+        </button>
+        <button
+          type="button"
+          class="date-pill"
+          [class.active]="selectedDateRange() === '7days'"
+          (click)="onDateRangeChange('7days')"
+        ><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>
+          7 derniers jours
+        </button>
+        <button
+          type="button"
+          class="date-pill"
+          [class.active]="selectedDateRange() === '30days'"
+          (click)="onDateRangeChange('30days')"
+        ><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>
+          30 jours
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERROR ALERT -->
+  @if (errorMessage()) {
+    <div class="alert alert-danger d-flex align-items-center gap-3 my-3 position-relative pe-5" role="alert">
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>
+      <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+      <div>{{ errorMessage() }}</div>
+    </div>
+  }
+
+  <!-- DATA TABLE -->
+  <div class="table-card">
+    <div class="table-card__header">
+      <div class="table-card__title">
+        <i class="bi bi-list-columns-reverse text-success me-2"></i>
+        <span>Journal des activités</span>
+        <span class="badge bg-light text-dark border ms-2">{{ totalElements }} enregistrement(s)</span>
+      </div>
+      @if (isLoading()) {
+        <div class="table-card__loading">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+          <span class="ms-2">Chargement des données...</span>
+        </div>
+      }
+    </div>
+
+    @if (isLoading() && actions.length === 0) {
+      <div class="empty-state py-5">
+        <div class="spinner-border text-success mb-3" role="status"></div>
+        <h5>Chargement du journal d'audit...</h5>
+        <p class="text-muted">Récupération des actions réalisées dans le système.</p>
+      </div>
+    } @else if (actions.length === 0) {
+      <div class="empty-state py-5">
+        <i class="bi bi-clipboard-x display-4 text-muted mb-3"></i>
+        <h5>Aucune action trouvée</h5>
+        <p class="text-muted">Aucun enregistrement ne correspond aux critères de recherche actuels.</p>
+        <button type="button" class="btn btn-outline-success btn-sm mt-2" (click)="resetFilters()">
+          <i class="bi bi-check-lg me-2" aria-hidden="true"></i>Réinitialiser les filtres
+        </button>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table audit-table align-middle">
+          <thead>
+            <tr>
+              <th scope="col" style="min-width: 170px;">Date & Heure</th>
+              <th scope="col" style="min-width: 220px;">Personne (Auteur)</th>
+              <th scope="col" style="min-width: 140px;">Rôle</th>
+              <th scope="col" style="min-width: 260px;">Action réalisée</th>
+              <th scope="col" style="min-width: 180px;">Client (Navigateur/OS)</th>
+              <th scope="col" style="min-width: 150px;">Adresse IP</th>
+              <th scope="col" style="min-width: 100px;">Statut</th>
+              <th scope="col" class="text-end" style="min-width: 90px;">Détails</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (action of actions; track action.slug) {
+              <tr class="audit-row" [class.audit-row--error]="action.statut === 'ECHEC'">
+                <!-- Date & Heure -->
+                <td>
+                  <div class="audit-time">
+                    <span class="audit-time__date">{{ action.dateAction | date:'dd/MM/yyyy' }}</span>
+                    <span class="audit-time__hour">{{ action.dateAction | date:'HH:mm:ss' }}</span>
+                  </div>
+                </td>
+
+                <!-- Personne -->
+                <td>
+                  <div class="user-cell">
+                    <div class="user-cell__avatar">
+                      {{ (action.prenom ? action.prenom.charAt(0) : '') + (action.nom ? action.nom.charAt(0) : 'U') }}
+                    </div>
+                    <div class="user-cell__meta">
+                      <div class="user-cell__name">
+                        {{ action.prenom }} {{ action.nom }}
+                      </div>
+                      @if (action.matricule) {
+                        <small class="user-cell__mat">{{ action.matricule }}</small>
+                      }
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Rôle -->
+                <td>
+                  <span class="badge-role" [ngClass]="getRoleBadgeClass(action.role)">
+                    {{ action.role }}
+                  </span>
+                </td>
+
+                <!-- Action réalisée -->
+                <td>
+                  <div class="action-cell">
+                    <div class="action-cell__desc" [title]="action.action">
+                      {{ action.action }}
+                    </div>
+                    @if (action.module) {
+                      <span class="badge-module" [ngClass]="getModuleBadgeClass(action.module)">
+                        {{ action.module }}
+                      </span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Client / Navigateur -->
+                <td>
+                  <div class="client-cell">
+                    <i class="bi fs-5" [ngClass]="getClientIcon(action.client)"></i>
+                    <span class="client-cell__text" [title]="action.client">{{ action.client }}</span>
+                  </div>
+                </td>
+
+                <!-- Adresse IP -->
+                <td>
+                  <div class="ip-cell">
+                    <span class="ip-badge">{{ action.adresseIp }}</span>
+                    <button
+                      type="button"
+                      class="btn-copy-ip"
+                      (click)="copyToClipboard(action.adresseIp)"
+                      title="Copier l'adresse IP"
+                    >
+                      <i class="bi bi-copy"></i>
+                    </button>
+                  </div>
+                </td>
+
+                <!-- Statut -->
+                <td>
+                  @if (action.statut === 'SUCCES') {
+                    <span class="badge-statut badge-statut--success">
+                      <i class="bi bi-check-circle-fill me-1"></i>Succès
+                    </span>
+                  } @else {
+                    <span class="badge-statut badge-statut--error">
+                      <i class="bi bi-x-circle-fill me-1"></i>Échec
+                    </span>
+                  }
+                </td>
+
+                <!-- Bouton Détails -->
+                <td class="text-end">
+                  <button
+                    type="button"
+                    class="btn-detail"
+                    (click)="openDetail(action)"
+                    title="Voir les détails complets de cette action"
+                  >
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      @if (totalPages > 1) {
+        <div class="pagination-footer">
+          <div class="pagination-info">
+            Affichage de la page <strong>{{ page() + 1 }}</strong> sur <strong>{{ totalPages }}</strong> (Total : {{ totalElements }} actions)
+          </div>
+          <ul class="pagination pagination-sm m-0">
+            <li class="page-item" [class.disabled]="isFirstPage">
+              <button class="page-link" (click)="goToPage(page() - 1)">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+            </li>
+            @for (p of pageNumbers; track p) {
+              <li class="page-item" [class.active]="p === page()">
+                <button class="page-link" (click)="goToPage(p)"><i class="bi bi-check-lg me-2" aria-hidden="true"></i>{{ p + 1 }}</button>
+              </li>
+            }
+            <li class="page-item" [class.disabled]="isLastPage">
+              <button class="page-link" (click)="goToPage(page() + 1)">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- DETAIL MODAL / DRAWER -->
+  @if (selectedActionDetail()) {
+    <div class="modal-backdrop fade show" (click)="closeDetail()"></div>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content detail-modal">
+          <div class="modal-header">
+            <div class="d-flex align-items-center gap-2">
+              <div class="detail-modal__icon">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <div>
+                <h5 class="modal-title mb-0">Détails de l'Action & Audit</h5>
+                <small class="text-muted">Identifiant unique : {{ selectedActionDetail()?.slug }}</small>
+              </div>
+            </div>
+            <button type="button" class="btn-close" (click)="closeDetail()" aria-label="Fermer"></button>
+          </div>
+
+          <div class="modal-body p-4">
+            <div class="row g-4">
+              <!-- Section 1 : Auteur de l'action -->
+              <div class="col-md-6">
+                <div class="detail-card">
+                  <div class="detail-card__heading">
+                    <i class="bi bi-person-badge-fill me-2 text-success"></i>
+                    <span>Personne ayant réalisé l'action</span>
+                  </div>
+                  <div class="detail-card__body">
+                    <div class="detail-field">
+                      <span class="detail-field__label">Nom & Prénom :</span>
+                      <span class="detail-field__value fw-bold text-dark">
+                        {{ selectedActionDetail()?.prenom }} {{ selectedActionDetail()?.nom }}
+                      </span>
+                    </div>
+                    <div class="detail-field">
+                      <span class="detail-field__label">Rôle dans le système :</span>
+                      <span class="badge-role" [ngClass]="getRoleBadgeClass(selectedActionDetail()?.role || '')">
+                        {{ selectedActionDetail()?.role }}
+                      </span>
+                    </div>
+                    <div class="detail-field">
+                      <span class="detail-field__label">Matricule / Identifiant :</span>
+                      <span class="detail-field__value">
+                        {{ selectedActionDetail()?.matricule || 'Non spécifié / Administrateur' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2 : Environnement & Réseau -->
+              <div class="col-md-6">
+                <div class="detail-card">
+                  <div class="detail-card__heading">
+                    <i class="bi bi-hdd-network-fill me-2 text-success"></i>
+                    <span>Environnement technique & Réseau</span>
+                  </div>
+                  <div class="detail-card__body">
+                    <div class="detail-field">
+                      <span class="detail-field__label">Adresse IP :</span>
+                      <span class="ip-badge">{{ selectedActionDetail()?.adresseIp }}</span>
+                    </div>
+                    <div class="detail-field">
+                      <span class="detail-field__label">Client / Navigateur :</span>
+                      <span class="detail-field__value">
+                        <i class="bi me-1" [ngClass]="getClientIcon(selectedActionDetail()?.client || '')"></i>
+                        {{ selectedActionDetail()?.client }}
+                      </span>
+                    </div>
+                    <div class="detail-field">
+                      <span class="detail-field__label">Statut de l'opération :</span>
+                      @if (selectedActionDetail()?.statut === 'SUCCES') {
+                        <span class="badge-statut badge-statut--success">
+                          <i class="bi bi-check-circle-fill me-1"></i>Succès
+                        </span>
+                      } @else {
+                        <span class="badge-statut badge-statut--error">
+                          <i class="bi bi-x-circle-fill me-1"></i>Échec
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3 : Action réalisée -->
+              <div class="col-12">
+                <div class="detail-card">
+                  <div class="detail-card__heading">
+                    <i class="bi bi-file-earmark-check-fill me-2 text-success"></i>
+                    <span>Détails de l'Action Réalisée</span>
+                  </div>
+                  <div class="detail-card__body">
+                    <div class="detail-field mb-2">
+                      <span class="detail-field__label">Action :</span>
+                      <span class="detail-field__value fw-semibold text-dark fs-6">
+                        {{ selectedActionDetail()?.action }}
+                      </span>
+                    </div>
+                    <div class="detail-field mb-2">
+                      <span class="detail-field__label">Module concerné :</span>
+                      <span class="badge-module" [ngClass]="getModuleBadgeClass(selectedActionDetail()?.module)">
+                        {{ selectedActionDetail()?.module }}
+                      </span>
+                    </div>
+                    <div class="detail-field mb-2">
+                      <span class="detail-field__label">Date & Heure précises :</span>
+                      <span class="detail-field__value text-success fw-bold">
+                        {{ selectedActionDetail()?.dateAction | date:'dd MMMM yyyy à HH:mm:ss' }}
+                      </span>
+                    </div>
+                    @if (selectedActionDetail()?.details) {
+                      <div class="detail-field flex-column align-items-start mt-2">
+                        <span class="detail-field__label mb-1">Détails complémentaires / Paramètres :</span>
+                        <div class="detail-code-box">
+                          {{ selectedActionDetail()?.details }}
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" (click)="closeDetail()"><i class="bi bi-x-lg me-2" aria-hidden="true"></i>Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

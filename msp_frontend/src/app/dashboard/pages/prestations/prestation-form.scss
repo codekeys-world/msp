@@ -1,0 +1,22 @@
+﻿:host { display: block; }
+.prestation-form-page { min-height: 100%; padding: clamp(.75rem, 2.5vw, 2rem); background: #f8faf8; }
+.prestation-form-card { max-width: 64rem; margin: 0 auto; padding: clamp(1rem, 3vw, 2rem); background: #fff; border: 1px solid #e5ece7; border-radius: 1rem; box-shadow: 0 .5rem 1.75rem rgb(33 63 45 / 8%); }
+.prestation-form-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #e9efea; }
+.prestation-form-heading > div > span { color: #197044; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.prestation-form-heading h1 { margin: .35rem 0; color: #1d382a; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 750; }
+.prestation-form-heading p { margin: 0; color: #75847a; font-size: .9rem; }
+.prestation-form-heading .btn { flex: 0 0 auto; }
+.pr-form-section { margin: 0 0 1.25rem; padding: 1.1rem; background: #fbfdfb; border: 1px solid #e8efe9; border-radius: .85rem; }
+.pr-form-section h2 { margin: 0 0 1rem; color: #176640; font-size: 1rem; font-weight: 700; }
+.form-label { color: #354b3d; font-weight: 600; }
+.form-control:focus, .form-select:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); }
+.pr-adherent-results { display: grid; max-height: 14rem; overflow-y: auto; margin-top: .3rem; background: #fff; border: 1px solid #dfe9e2; border-radius: .65rem; box-shadow: 0 .4rem 1rem rgb(31 65 45 / 8%); }
+.pr-adherent-option { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem .8rem; color: #263d31; text-align: left; background: #fff; border: 0; border-bottom: 1px solid #edf2ee; &:last-child { border-bottom: 0; } &:hover { background: #f1f8f3; } strong { font-size: .9rem; } span { color: #73847a; font-size: .8rem; } }
+.pr-selected-adherent { margin-top: .55rem; color: #176640; font-size: .85rem; font-weight: 600; }
+.pr-prestation-note { padding: .8rem 1rem; color: #516459; font-size: .88rem; background: #f1f8f3; border: 1px solid #dcece1; border-radius: .7rem; }
+.pr-prestation-note i { color: #176640; }
+@media (max-width: 575.98px) {
+  .prestation-form-heading { flex-direction: column; }
+  .pr-form-section { padding: .85rem; }
+  .pr-adherent-option { align-items: flex-start; flex-direction: column; gap: .2rem; }
+}
