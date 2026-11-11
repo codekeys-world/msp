@@ -51,3 +51,5 @@ jobs:
             cd msp_backend
             chmod +x ./mvnw
             ./mvnw clean test
+          env:
+            ACTIVE_PROFILE: prod
