@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - msp_backend/**
+      - documentation/**
       - docker/backend/**
       - docker-compose.yml
       - .github/workflows/backend-pipeline.yml
@@ -35,17 +36,24 @@ jobs:
   test-unitaire:
     name: Test unitaire du projet
     runs-on: ubuntu-latest
+    env:
+      ACTIVE_PROFILE: test
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_NAME: msp_test_db
+      DB_USERNAME: msp_user
+      DB_PASSWORD: test_password
     services:
       postgres:
         image: postgres:15
         env:
           POSTGRES_DB: msp_test_db
-          POSTGRES_USER: msp_user        # Modifié ici
+          POSTGRES_USER: msp_user
           POSTGRES_PASSWORD: test_password
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U msp_user -d msp_test_db"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -61,14 +69,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Exécution des tests unitaires
+        working-directory: msp_backend
         run: |
-          cd msp_backend
           chmod +x ./mvnw
-          ./mvnw clean test
-        env:
-          ACTIVE_PROFILE: test
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_NAME: msp_test_db
-          DB_USERNAME: msp_user    # Modifié ici
-          DB_PASSWORD: test_password
+          ./mvnw --batch-mode --no-transfer-progress -Dspring.profiles.active=test clean test
+      - name: Rapports des tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: msp_backend/target/surefire-reports/
+          if-no-files-found: ignore

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Sql(scripts = {"classpath:db/migration/V29__seed_roles_and_authorisations.sql", "classpath:sql/test-data.sql"},
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class MspBackendApplicationTests {
 
 	@Autowired
@@ -164,7 +167,7 @@ class MspBackendApplicationTests {
 	}
 
 	@Test
-	void devProfileSeedsTwentyComplaints() {
+	void testFixturesProvideTwentyComplaints() {
 		for (int index = 1; index <= 20; index++) {
 			assertTrue(plainteRepository.findBySlug("TEST-PLAINTE-" + String.format("%03d", index)).isPresent());
 		}
@@ -205,7 +208,7 @@ class MspBackendApplicationTests {
 	}
 
 	@Test
-	void convocationSearchIsBoundedAndDevProfileSeedsTwentyRecords() {
+	void convocationSearchIsBoundedAndTestFixturesProvideTwentyRecords() {
 		for (int index = 1; index <= 20; index++) {
 			assertTrue(convocationRepository.findBySlug(
 					"TEST-CONVOCATION-" + String.format("%03d", index)).isPresent());
@@ -243,11 +246,11 @@ class MspBackendApplicationTests {
 
 	@Test
 	@Transactional
-	void casSocialPermissionsAreGrantedToTheAdministratorSysadminAndTreasurer() {
+	void casSocialPermissionsMatchTheSecurityReferenceData() {
 		var managementAuthorities = java.util.Set.of(
 				"AJOUTER_CAS_SOCIAUX", "MODIFIER_CAS_SOCIAUX", "SUPPRIMER_CAS_SOCIAUX",
 				"LISTER_CAS_SOCIAUX", "RECHERCHER_CAS_SOCIAUX");
-		for (String roleName : java.util.List.of("ADMINISTRATEUR", "SYSADMIN", "TRESORIER")) {
+		for (String roleName : java.util.List.of("ADMINISTRATEUR", "SYSADMIN")) {
 			var authorities = roleRepository.findByNom(roleName).orElseThrow().getAuthorisations().stream()
 					.map(authorisation -> authorisation.getNom())
 					.collect(java.util.stream.Collectors.toSet());
@@ -256,6 +259,9 @@ class MspBackendApplicationTests {
 		var presidentAuthorities = roleRepository.findByNom("PRESIDENT").orElseThrow().getAuthorisations().stream()
 				.map(authorisation -> authorisation.getNom()).collect(java.util.stream.Collectors.toSet());
 		assertTrue(java.util.Collections.disjoint(presidentAuthorities, managementAuthorities));
+		var treasurerAuthorities = roleRepository.findByNom("TRESORIER").orElseThrow().getAuthorisations().stream()
+				.map(authorisation -> authorisation.getNom()).collect(java.util.stream.Collectors.toSet());
+		assertTrue(java.util.Collections.disjoint(treasurerAuthorities, managementAuthorities));
 	}
 
 	@Test
@@ -310,12 +316,13 @@ class MspBackendApplicationTests {
 	void casSocialSearchFiltersCasesAndReturnsOnlyAdherentsForSelection() {
 		assertTrue(casSocialService.lister(0, 5, "terme-inexistant").getContent().isEmpty());
 		var adherents = casSocialService.rechercherAdherents("TEST-MALI-001");
+		assertEquals(1, adherents.size());
 		assertTrue(adherents.stream().allMatch(adherent ->
 				adherent.numeroInscription().equals("MSP-TEST-001")));
 	}
 
 	@Test
-	void devProfileSeedsTwentyCourriersAndStatisticsReflectPersistedRecords() {
+	void testFixturesProvideTwentyCourriersAndStatisticsReflectPersistedRecords() {
 		for (int index = 1; index <= 20; index++) {
 			assertTrue(courrierRepository.existsByNomIgnoreCase("TEST-COURRIER-" + String.format("%03d", index)));
 		}
@@ -359,14 +366,14 @@ class MspBackendApplicationTests {
 	}
 
 	@Test
-	void devProfileSeedsTwentyMalianTestAdherents() {
+	void testFixturesProvideTwentyAdherents() {
 		for (int index = 1; index <= 20; index++) {
 			assertTrue(utilisateurRepository.existsByMatricule("TEST-MALI-" + String.format("%03d", index)));
 		}
 	}
 
 	@Test
-	void devProfileSeedsTwentyMalianTestProcesVerbaux() {
+	void testFixturesProvideTwentyProcesVerbaux() {
 		for (int index = 1; index <= 20; index++) {
 			assertTrue(pvRepository.existsByNumeroIgnoreCase("TEST-PV-" + String.format("%03d", index)));
 		}
