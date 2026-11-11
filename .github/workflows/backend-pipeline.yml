@@ -1,0 +1,32 @@
+name: Pipeline de déploiement du backend du projet de la mutuelle des surveillants de prison du Mali
+on:
+  push:
+    branches:
+      - develop
+      - ci
+    paths:
+      - msp_backend/**
+      - docker/backend/**
+      - docker-compose.yml
+      - .github/workflows/backend-pipeline.yml
+
+jobs:
+    compilation:
+      runs-on: ubuntu-latest
+      name: Compilation du projet
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: '0'
+            clean: true
+        - name: Setup JDK
+          uses: actions/setup-java@v5
+          with:
+            distribution: 'temurin'
+            java-version: '17'
+        - name: Complilation du projet
+          run: |
+            cd msp_backend
+            chmod +x ./mvnw
+            ./mvnw clean compile
