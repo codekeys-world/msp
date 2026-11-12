@@ -75,7 +75,7 @@ jobs:
           ./mvnw --batch-mode --no-transfer-progress -Dspring.profiles.active=test clean test
       - name: Rapports des tests
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: backend-test-reports
           path: msp_backend/target/surefire-reports/
@@ -105,7 +105,7 @@ jobs:
 
   build-image:
     runs-on: ubuntu-latest
-    name: Build de l'image docker du backend
+    name: Build et push de l'image docker du backend
     needs:
       - build-project
     steps:
@@ -130,14 +130,15 @@ jobs:
           VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Connection à Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push image to Docker Hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/backend/Dockerfile
           platforms: linux/amd64
+          push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/msp-api:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/msp-api:latest
