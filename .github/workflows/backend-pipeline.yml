@@ -144,7 +144,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/msp-api:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/msp-api:latest
 
   deploiement:
-    name: Deploiement du backend
+    name: Déploiement du backend
     needs:
       - build-image
     runs-on: self-hosted
