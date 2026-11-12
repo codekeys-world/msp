@@ -18,7 +18,7 @@ jobs:
     name: Compilation du projet
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
           clean: true
@@ -59,7 +59,7 @@ jobs:
           --health-retries 5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
           clean: true
@@ -88,7 +88,7 @@ jobs:
       - test-unitaire
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
           clean: true
@@ -102,3 +102,42 @@ jobs:
         run: |
           chmod +x ./mvnw
           ./mvnw --batch-mode --no-transfer-progress clean package -DskipTests
+
+  build-image:
+    runs-on: ubuntu-latest
+    name: Build de l'image docker du backend
+    needs:
+      - build-project
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: '0'
+          clean: true
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build du projet
+        working-directory: msp_backend
+        run: |
+          chmod +x ./mvnw
+          ./mvnw --batch-mode --no-transfer-progress clean package -DskipTests
+      - name: Extraire la version du projet
+        run: |
+          cd msp_backend
+          VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+      - name: Connection à Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push image to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          context: msp_backend
+          file: docker/backend/Dockerfile
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/msp-api:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/msp-api:latest
