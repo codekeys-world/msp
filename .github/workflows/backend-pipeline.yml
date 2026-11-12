@@ -80,3 +80,25 @@ jobs:
           name: backend-test-reports
           path: msp_backend/target/surefire-reports/
           if-no-files-found: ignore
+  build-project:
+    runs-on: ubuntu-latest
+    name: Build du projet backend
+    needs:
+      - compilation
+      - test-unitaire
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+          clean: true
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build du projet
+        working-directory: msp_backend
+        run: |
+          chmod +x ./mvnw
+          ./mvnw --batch-mode --no-transfer-progress clean package -DskipTests
