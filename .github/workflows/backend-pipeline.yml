@@ -142,3 +142,25 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/msp-api:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/msp-api:latest
+
+  deploiement:
+    name: Deploiement du backend
+    needs:
+      - build-image
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: '0'
+          clean: true
+      - name: Copie du fichier docker-compose
+        run: scp docker-compose.yml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:msp-project/docker-compose.yml
+
+      - name: Déploiement du backend
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}
+          cd msp-project
+          docker compose -f docker-compose.yml down
+          docker compose -f docker-compose.yml pull -q 
+          docker compose -f docker-compose.yml up -d --force-recreate
