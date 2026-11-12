@@ -75,7 +75,7 @@ jobs:
           ./mvnw --batch-mode --no-transfer-progress -Dspring.profiles.active=test clean test
       - name: Rapports des tests
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: backend-test-reports
           path: msp_backend/target/surefire-reports/
@@ -137,7 +137,7 @@ jobs:
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          context: msp
+          context: .
           file: docker/backend/Dockerfile
           platforms: linux/amd64
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/msp-api:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/msp-api:latest
