@@ -164,11 +164,13 @@ jobs:
         run: |
           ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} "mkdir -p ~/msp-project"
           scp docker-compose.yml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:~/msp-project/docker-compose.yml
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} << 'EOF'
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} << EOF
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           cd ~/msp-project
           docker compose -f docker-compose.yml down
           docker compose -f docker-compose.yml pull -q
           docker compose -f docker-compose.yml up -d --force-recreate
+          docker logout
           EOF
         
 
