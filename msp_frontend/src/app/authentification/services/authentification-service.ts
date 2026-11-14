@@ -121,6 +121,11 @@ export class AuthentificationService {
     return ['ROLE_ADMINISTRATEUR', 'ROLE_SYSADMIN'].some(role => roles.includes(role));
   }
 
+  canManageAssemblees(): boolean {
+    return ['ROLE_SECRETAIRE_ADMINISTRATIF', 'ROLE_ADMINISTRATEUR', 'ROLE_SYSADMIN']
+      .some(role => (this.getRoles() ?? []).includes(role));
+  }
+
   canListAdherents(): boolean {
     const roles = this.getRoles() ?? [];
     return ['ROLE_SECRETAIRE_ADMINISTRATIF', 'ROLE_ADMINISTRATEUR', 'ROLE_SYSADMIN', 'ROLE_PRESIDENT', 'ROLE_COMMISSION_CONTROLE']

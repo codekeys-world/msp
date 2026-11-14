@@ -1,0 +1,7 @@
+:host { display: block; }
+.assemblees-page { max-width: 1100px; margin: auto; }
+.assemblees-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.assemblee-card { padding: 20px; border: 1px solid #e5ece7; border-radius: 18px; background: #fff; overflow-wrap: anywhere; }
+.assemblee-card h2 { color: #19352a; }
+.assemblee-card p { color: #64766b; }
+@media (max-width: 768px) { .assemblees-page { padding-top: 12px; } }

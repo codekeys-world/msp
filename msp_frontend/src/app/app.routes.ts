@@ -1,4 +1,6 @@
-import { Routes } from '@angular/router';
+import { Router, Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthentificationService } from './authentification/services/authentification-service';
 import { authentificationGuardGuard } from './authentification/guards/authentification-guard-guard';
 
 export const routes: Routes = [
@@ -11,6 +13,11 @@ export const routes: Routes = [
         loadComponent : () => import('./dashboard/dashboard/dashboard').then(c =>c.Dashboard),
         canActivate : [authentificationGuardGuard],
         children : [
+            {
+                path: 'assemblees',
+                canActivate: [() => inject(AuthentificationService).canManageAssemblees() || inject(Router).createUrlTree(['/dashboard/home'])],
+                loadComponent: () => import('./dashboard/pages/assemblees/assemblees').then(c => c.Assemblees),
+            },
             {
                 path: '', redirectTo: 'home', pathMatch: 'full',
             },

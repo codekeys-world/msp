@@ -8,7 +8,7 @@
     <div class="home-hero__ornament" aria-hidden="true"><i class="bi bi-grid-1x2-fill"></i></div>
   </header>
 
-  <section class="card border-0 shadow-sm p-4 mb-4" aria-labelledby="manuels-title">
+  <section class="home-manuals card border-0 shadow-sm p-4 mb-4" aria-labelledby="manuels-title">
     <h2 id="manuels-title" class="h5">Manuels d’utilisation</h2>
     <p class="text-muted">Téléchargez les guides PDF correspondant à votre rôle.</p>
     @if (manuelsLoading()) { <p role="status">Chargement de vos manuels…</p> }
@@ -83,10 +83,12 @@
       <i class="bi bi-arrow-up-right overview-card__arrow" aria-hidden="true"></i>
     </a>
     }
-    <article class="overview-card overview-card--static">
+    <a class="overview-card" [class.overview-card--static]="!canManageAssemblees" [routerLink]="canManageAssemblees ? '/dashboard/assemblees' : null">
       <span class="overview-card__icon overview-card__icon--assembly"><i class="bi bi-building-fill" aria-hidden="true"></i></span>
-      <span class="overview-card__content"><span class="overview-card__label">Assemblées</span><strong>12</strong><span class="overview-card__hint">Réunions organisées</span></span>
-    </article>
+      <span class="overview-card__content"><span class="overview-card__label">Assemblées</span><strong>{{ assembleesLoading() || assembleesError() ? '—' : assembleesTotal() }}</strong><span class="overview-card__hint">Réunions enregistrées</span>
+        @if (assembleesError()) { <button type="button" class="btn btn-sm btn-outline-danger" (click)="$event.preventDefault(); $event.stopPropagation(); chargerStatistiquesAssemblees()">Réessayer</button> }
+      </span>
+    </a>
     @if (canViewCourrierStats) {
     <a class="overview-card" routerLink="/dashboard/courrier">
       <span class="overview-card__icon overview-card__icon--mail"><i class="bi bi-envelope-paper-fill" aria-hidden="true"></i></span>

@@ -1,0 +1,24 @@
+.dashboard-home-link { display: none; }
+
+@media (max-width: 768px) {
+  .dashboard-navbar-title { display: none; }
+
+  .dashboard-menu-toggle,
+  .dashboard-home-link,
+  .user-dropdown > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid #e5eae6;
+    border-radius: 16px;
+    background: #fff;
+    color: #19352a;
+    box-shadow: 0 3px 12px rgb(25 53 42 / 3%);
+    text-decoration: none;
+  }
+
+  .dashboard-home-link { font-size: 1.25rem; }
+  .user-dropdown > button::after { display: none; }
+}

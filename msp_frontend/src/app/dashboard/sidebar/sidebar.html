@@ -1,5 +1,5 @@
 <!-- SIDEBAR -->
-<div class="sidebar" [class.collapsed]="collapsed">
+<div id="dashboard-sidebar" class="sidebar" [class.collapsed]="collapsed">
     <div class="sidebar-brand">
     <h5><i class="bi bi-grid-1x2-fill me-2"></i><span class="link-text">GESTION APP</span></h5>
     <small class="link-text">Tableau de bord de gestion</small>
@@ -7,6 +7,12 @@
 
     <nav class="nav flex-column py-2">
     <div class="sidebar-section">Principal</div>
+    @if (auth.canManageAssemblees()) {
+      <a class="nav-link" routerLink="/dashboard/assemblees" routerLinkActive="active">
+        <span class="nav-icon"><i class="bi bi-building" aria-hidden="true"></i></span>
+        <span class="link-text">Assemblées</span>
+      </a>
+    }
     <a class="nav-link" routerLink="home" routerLinkActive="active">
         <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
         <span class="link-text">Tableau de bord</span>

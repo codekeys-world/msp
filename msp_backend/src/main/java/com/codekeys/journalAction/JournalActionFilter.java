@@ -83,6 +83,7 @@ public class JournalActionFilter extends OncePerRequestFilter {
         if (path.contains("/adherent")) return "ADHÉRENTS";
         if (path.contains("/carte")) return "CARTES_MEMBRES";
         if (path.contains("/courrier")) return "COURRIERS";
+        if (path.contains("/assemblees")) return "ASSEMBLEES";
         if (path.contains("/proces-verbaux") || path.contains("/pv")) return "PROCÈS_VERBAUX";
         if (path.contains("/convocation")) return "CONVOCATIONS";
         if (path.contains("/plainte")) return "PLAINTES";
@@ -106,6 +107,7 @@ public class JournalActionFilter extends OncePerRequestFilter {
         if (path.contains("/adherents") && method.equals("PUT")) return "Modification d'un adhérent";
         if (path.contains("/adherents") && method.equals("DELETE")) return "Suppression d'un adhérent";
         if (path.contains("/carte")) return "Génération ou impression de carte de membre";
+        if (path.contains("/assemblees")) return actionVerbe + " d'assemblée";
         if (path.contains("/courriers") && method.equals("POST")) return "Enregistrement d'un nouveau courrier";
         if (path.contains("/courriers") && method.equals("PUT")) return "Mise à jour d'un courrier";
         if (path.contains("/courriers") && method.equals("DELETE")) return "Suppression d'un courrier";

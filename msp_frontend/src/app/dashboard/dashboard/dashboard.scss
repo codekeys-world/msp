@@ -408,23 +408,65 @@
 ========================================= */
 
 @media (max-width: 768px) {
+  .dashboard-theme {
+    --header-height: 82px;
+    --body-bg: #f5f4f2;
+  }
 
-  .dashboard-theme .main-content {
+  .dashboard-theme .main-content,
+  .dashboard-theme .main-content.sidebar-collapsed {
     margin-left: 0;
+    min-width: 0;
+  }
+
+  .dashboard-theme .content-area {
+    padding: 16px;
+  }
+
+  .dashboard-theme .top-bar {
+    padding: 16px;
+    background: var(--body-bg);
+    border-bottom: 0;
+    gap: 12px;
+  }
+
+  .dashboard-theme .top-bar > :first-child {
+    min-width: 0;
+  }
+
+  .dashboard-theme .top-bar .btn,
+  .dashboard-theme .top-bar > :last-child {
+    flex-shrink: 0;
+  }
+
+  .dashboard-theme .top-bar h6 {
+    font-size: .9rem;
+  }
+
+  .dashboard-theme .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1150;
+    border: 0;
+    background: rgb(0 0 0 / 35%);
   }
 
   .dashboard-theme .sidebar {
+    top: 0;
+    height: 100dvh;
+    width: min(82vw, 340px);
+    max-width: calc(100vw - 48px);
     transform: translateX(-100%);
-    z-index: 1050;
+    z-index: 1200;
   }
 
   .dashboard-theme .sidebar.collapsed {
-    width: var(--sidebar-width) !important;
+    width: min(82vw, 340px) !important;
     transform: translateX(0) !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    height: 100vh !important;
+    height: 100dvh !important;
     display: flex !important;
     flex-direction: column !important;
     visibility: visible !important;
@@ -489,6 +531,7 @@
     }
 
     .nav-link {
+      min-height: 48px;
       width: auto !important;
       height: auto !important;
       padding: 10px 20px !important;
@@ -508,6 +551,17 @@
     }
   }
 
+}
+
+@media (max-width: 768px) {
+  .dashboard-theme .sidebar .nav-link.active {
+    border-left: 4px solid #f6d451;
+    border-radius: 14px;
+  }
+  .dashboard-theme .sidebar .nav-link { white-space: normal; }
+  .dashboard-theme .sidebar .nav-icon { flex-shrink: 0; }
+  .dashboard-theme .sidebar:not(.collapsed) { visibility: hidden; }
+  .dashboard-theme .content-area { padding: 0 12px 20px; }
 }
 
 /* =========================================

@@ -1,9 +1,12 @@
 <div class="dashboard-theme">
-    <app-sidebar [collapsed]="sidebarCollapsed" />
+    <app-sidebar [collapsed]="isMobile ? mobileMenuOpen : sidebarCollapsed" />
+    @if (isMobile && mobileMenuOpen) {
+        <button class="sidebar-backdrop" type="button" aria-label="Fermer le menu" (click)="closeMobileMenu()"></button>
+    }
     <!-- MAIN CONTENT -->
-    <div class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <div class="main-content" [class.sidebar-collapsed]="!isMobile && sidebarCollapsed">
         <!-- TOP BAR -->
-        <app-navbar (toggleSidebar)="toggleSidebar()" />
+        <app-navbar [menuOpen]="isMobile ? mobileMenuOpen : !sidebarCollapsed" (toggleSidebar)="toggleSidebar()" />
        
 
         <!-- CONTENT -->
