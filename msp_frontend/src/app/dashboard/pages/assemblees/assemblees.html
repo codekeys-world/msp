@@ -1,59 +1,92 @@
 @if (!autorise) {
   <div class="alert alert-warning" role="alert">Vous n’avez pas accès à la gestion des assemblées.</div>
+} @else if (formVisible()) {
+  <section class="container-fluid py-4">
+    <div class="card shadow-sm border-0"><div class="card-body p-4">
+      <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div><h1 class="h2 mb-1">{{ edition() ? 'Modifier l’assemblée' : 'Nouvelle assemblée' }}</h1><p class="text-muted mb-0">Renseignez les informations de la réunion de la mutuelle.</p></div>
+        <button class="btn btn-outline-secondary" type="button" [disabled]="saving()" (click)="formVisible.set(false)">Retour</button>
+      </header>
+      <form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
+        @if (erreurForm()) { <div class="alert alert-danger" role="alert">{{ erreurForm() }}</div> }
+        <p class="text-muted small">Les champs marqués d’un <span class="text-danger">*</span> sont obligatoires.</p>
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="assemblee-nom" class="form-label">Nom <span class="text-danger">*</span></label>
+            <input id="assemblee-nom" class="form-control" formControlName="nom" maxlength="200" placeholder="Ex. Assemblée générale ordinaire" required [class.is-invalid]="form.controls.nom.touched && form.controls.nom.invalid" [attr.aria-invalid]="form.controls.nom.touched && form.controls.nom.invalid" aria-describedby="assemblee-nom-error">
+            <div id="assemblee-nom-error" class="invalid-feedback">Saisissez un nom (200 caractères maximum).</div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="assemblee-date" class="form-label">Date <span class="text-danger">*</span></label>
+            <input id="assemblee-date" type="date" class="form-control" formControlName="date" placeholder="Date de l’assemblée" required [class.is-invalid]="form.controls.date.touched && form.controls.date.invalid" [attr.aria-invalid]="form.controls.date.touched && form.controls.date.invalid" aria-describedby="assemblee-date-help assemblee-date-error">
+            <div id="assemblee-date-help" class="form-text">Sélectionnez la date de la réunion (jour/mois/année).</div>
+            <div id="assemblee-date-error" class="invalid-feedback">La date est obligatoire.</div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="assemblee-lieu" class="form-label">Lieu <span class="text-danger">*</span></label>
+            <input id="assemblee-lieu" class="form-control" formControlName="lieu" maxlength="255" placeholder="Ex. Salle de réunion de la MSP, Bamako" required [class.is-invalid]="form.controls.lieu.touched && form.controls.lieu.invalid" [attr.aria-invalid]="form.controls.lieu.touched && form.controls.lieu.invalid" aria-describedby="assemblee-lieu-error">
+            <div id="assemblee-lieu-error" class="invalid-feedback">Saisissez un lieu (255 caractères maximum).</div>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
+          <button class="btn btn-outline-secondary" type="button" [disabled]="saving()" (click)="formVisible.set(false)">Annuler</button>
+          <button class="btn btn-success" type="submit" [disabled]="saving()">
+            @if (saving()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
+            {{ saving() ? 'Enregistrement…' : (edition() ? 'Enregistrer les modifications' : 'Créer l’assemblée') }}
+          </button>
+        </div>
+      </form>
+    </div></div>
+  </section>
 } @else {
   <section class="assemblees-page">
-    <header class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
-      <div><h1 class="h4">Assemblées</h1><p>Gérez les réunions de la mutuelle.</p></div>
-      <button class="btn btn-primary" (click)="ouvrir()" [disabled]="saving()"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Nouvelle assemblée</button>
+    <header class="assemblees-heading">
+      <div><span class="assemblees-heading__eyebrow">Vie de la mutuelle</span><h1>Gestion des assemblées</h1><p>Suivi des réunions et des assemblées de la MSP.</p></div>
+      <button class="btn assemblees-heading__action" type="button" (click)="ouvrir()" [disabled]="saving() || deleting()"><i class="bi bi-plus-lg" aria-hidden="true"></i>Nouvelle assemblée</button>
     </header>
-    @if (succes()) { <div class="alert alert-success" role="status">{{ succes() }}</div> }
-    @if (erreur()) { <div class="alert alert-danger" role="alert">{{ erreur() }} <button class="btn btn-sm btn-outline-danger" (click)="charger()">Réessayer</button></div> }
-    @if (formVisible()) {
-      <section class="card card-body" aria-labelledby="assemblee-form-title">
-        <h2 id="assemblee-form-title" class="h5">{{ edition() ? 'Modifier l’assemblée' : 'Nouvelle assemblée' }}</h2>
-        <form [formGroup]="form" (ngSubmit)="enregistrer()">
-          @if (erreurForm()) { <div class="alert alert-danger" role="alert">{{ erreurForm() }}</div> }
-          <div class="row g-3">
-            <div class="col-12"><label for="assemblee-nom" class="form-label">Nom</label><input id="assemblee-nom" class="form-control" formControlName="nom" maxlength="200" required>
-              @if (form.controls.nom.touched && form.controls.nom.invalid) { <small class="text-danger">Saisissez un nom (200 caractères maximum).</small> }
-            </div>
-            <div class="col-12 col-md-6"><label for="assemblee-date" class="form-label">Date</label><input id="assemblee-date" type="date" class="form-control" formControlName="date" required>
-              @if (form.controls.date.touched && form.controls.date.invalid) { <small class="text-danger">La date est obligatoire.</small> }
-            </div>
-            <div class="col-12 col-md-6"><label for="assemblee-lieu" class="form-label">Lieu</label><input id="assemblee-lieu" class="form-control" formControlName="lieu" maxlength="255" required>
-              @if (form.controls.lieu.touched && form.controls.lieu.invalid) { <small class="text-danger">Saisissez un lieu (255 caractères maximum).</small> }
-            </div>
-          </div>
-          <div class="d-flex flex-wrap gap-2 mt-3"><button class="btn btn-primary" type="submit" [disabled]="saving()">{{ saving() ? 'Enregistrement…' : 'Enregistrer' }}</button><button class="btn btn-outline-secondary" type="button" [disabled]="saving()" (click)="formVisible.set(false)">Annuler</button></div>
-        </form>
-      </section>
-    }
-    @if (aSupprimer(); as assemblee) {
-      <div class="alert alert-warning" role="alert">
-        <p>Supprimer l’assemblée « {{ assemblee.nom }} » ?</p>
-        <div class="d-flex gap-2"><button class="btn btn-danger" [disabled]="deleting()" (click)="supprimer()">{{ deleting() ? 'Suppression…' : 'Confirmer la suppression' }}</button><button class="btn btn-outline-secondary" [disabled]="deleting()" (click)="aSupprimer.set(null)">Annuler</button></div>
+    <section class="assemblees-list" aria-labelledby="assemblees-list-title">
+      <div class="assemblees-list__heading">
+        <div><h2 id="assemblees-list-title">Assemblées enregistrées</h2><p>{{ resultats()?.totalElements ?? 0 }} réunion(s) enregistrée(s)</p></div>
+        @if (resultats(); as page) { @if (page.totalPages > 0) { <span class="assemblees-list__page-indicator">Page {{ page.number + 1 }} / {{ page.totalPages }}</span> } }
       </div>
-    }
-    <form class="d-flex gap-2 mb-3" (submit)="$event.preventDefault(); recherche = rechercheInput.value; charger()">
-      <input #rechercheInput class="form-control" aria-label="Rechercher par nom ou lieu" placeholder="Rechercher par nom ou lieu" type="search">
-      <button class="btn btn-outline-primary" type="submit" [disabled]="loading()">Rechercher</button>
-    </form>
-    @if (loading()) { <p role="status">Chargement des assemblées…</p> }
-    @if (resultats(); as page) {
-      <p class="text-muted">{{ page.totalElements }} assemblée(s)</p>
-      <div class="assemblees-list" [attr.aria-busy]="loading()">
-        @for (assemblee of page.content; track assemblee.slug) {
-          <article class="assemblee-card">
-            <div><h2 class="h5">{{ assemblee.nom }}</h2><p><i class="bi bi-calendar-event me-2" aria-hidden="true"></i>{{ assemblee.date | date:'dd/MM/yyyy' }}</p><p class="mb-0"><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>{{ assemblee.lieu }}</p></div>
-            <div class="d-flex flex-wrap gap-2 mt-3"><button class="btn btn-sm btn-outline-primary" (click)="ouvrir(assemblee)" [disabled]="saving() || deleting()">Modifier</button><button class="btn btn-sm btn-outline-danger" (click)="aSupprimer.set(assemblee)" [disabled]="saving() || deleting()">Supprimer</button></div>
-          </article>
-        } @empty { @if (!loading()) { <p>Aucune assemblée trouvée.</p> } }
-      </div>
-      <nav class="d-flex align-items-center justify-content-between gap-2 mt-3" aria-label="Pagination des assemblées">
-        <button class="btn btn-outline-primary" [disabled]="page.first || loading()" (click)="charger(page.number - 1)">Précédent</button>
-        <span>{{ page.totalPages ? page.number + 1 : 0 }} / {{ page.totalPages }}</span>
-        <button class="btn btn-outline-primary" [disabled]="page.last || loading()" (click)="charger(page.number + 1)">Suivant</button>
-      </nav>
-    }
+      <form class="assemblees-search input-group mb-4" role="search" (submit)="$event.preventDefault(); charger()">
+        <label class="visually-hidden" for="assemblee-search">Rechercher une assemblée</label>
+        <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+        <input id="assemblee-search" class="form-control" type="search" [value]="recherche" (input)="onSearchInput($event)" placeholder="Nom de l’assemblée ou lieu…">
+        @if (recherche) { <button class="btn btn-outline-secondary" type="button" (click)="effacerRecherche()"><i class="bi bi-eraser me-2" aria-hidden="true"></i>Effacer</button> }
+      </form>
+      @if (loading()) {
+        <div class="assemblees-state" role="status"><span class="spinner-border spinner-border-sm text-success" aria-hidden="true"></span>Chargement des assemblées…</div>
+      } @else if (erreur()) {
+        <div class="alert alert-danger d-flex flex-wrap justify-content-between align-items-center gap-3" role="alert"><span>{{ erreur() }}</span><button class="btn btn-sm btn-outline-danger" type="button" (click)="charger()"><i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Réessayer</button></div>
+      } @else if (!resultats()?.content?.length) {
+        <div class="alert alert-info d-flex flex-column align-items-center text-center gap-2 py-4" role="status"><i class="bi bi-building fs-2" aria-hidden="true"></i><strong>Aucune assemblée trouvée.</strong><p class="mb-0">Modifiez votre recherche ou ajoutez la première assemblée de la mutuelle.</p></div>
+      } @else if (resultats(); as page) {
+        <div class="row g-4">
+          @for (assemblee of page.content; track assemblee.slug) {
+            <div class="col-12 col-xl-6"><article class="assemblee-card h-100">
+              <header class="assemblee-card__header"><div><span class="assemblee-card__eyebrow">Assemblée</span><h3 class="assemblee-card__title">{{ assemblee.nom }}</h3></div><span class="assemblee-card__icon" aria-hidden="true"><i class="bi bi-building"></i></span></header>
+              <dl class="assemblee-card__details mt-4">
+                <div><dt><i class="bi bi-calendar3" aria-hidden="true"></i>Date de l’assemblée</dt><dd>{{ assemblee.date | date:'dd/MM/yyyy' }}</dd></div>
+                <div><dt><i class="bi bi-geo-alt" aria-hidden="true"></i>Lieu</dt><dd>{{ assemblee.lieu }}</dd></div>
+              </dl>
+              <footer class="assemblee-card__footer justify-content-end">
+                <button class="btn btn-sm btn-outline-success" type="button" title="Modifier" [attr.aria-label]="'Modifier l’assemblée ' + assemblee.nom" (click)="ouvrir(assemblee)" [disabled]="saving() || deleting()"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
+                <button class="btn btn-sm btn-outline-danger" type="button" title="Supprimer" [attr.aria-label]="'Supprimer l’assemblée ' + assemblee.nom" (click)="supprimer(assemblee)" [disabled]="saving() || deleting()">
+                  @if (deletingSlug() === assemblee.slug) { <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> } @else { <i class="bi bi-trash" aria-hidden="true"></i> }
+                </button>
+              </footer>
+            </article></div>
+          }
+        </div>
+        @if (page.totalPages > 1) {
+          <nav class="assemblees-pagination" aria-label="Pagination des assemblées">
+            <button class="assemblees-pagination__button" type="button" [disabled]="page.first || loading()" (click)="charger(page.number - 1)" aria-label="Page précédente"><i class="bi bi-chevron-left" aria-hidden="true"></i><span>Précédent</span></button>
+            <span class="assemblees-pagination__current">Page {{ page.number + 1 }} / {{ page.totalPages }}</span>
+            <button class="assemblees-pagination__button" type="button" [disabled]="page.last || loading()" (click)="charger(page.number + 1)" aria-label="Page suivante"><span>Suivant</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+          </nav>
+        }
+      }
+    </section>
   </section>
 }
