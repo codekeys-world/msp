@@ -2,7 +2,6 @@ package com.codekeys.configuration;
 
 import com.codekeys.utilisateur.Utilisateur;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

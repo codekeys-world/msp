@@ -1,6 +1,5 @@
 package com.codekeys.adjoint;
 
-import com.codekeys.utilisateur.Utilisateur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
