@@ -22,7 +22,6 @@ public class AdjointControleur {
 
     private final AdjointService adjointService;
 
-    // ==================== Endpoints par rôle spécifique ====================
     // Chaque rôle ne peut accéder qu'à ses propres adjoints
 
     // --- Secrétaire Administratif ---

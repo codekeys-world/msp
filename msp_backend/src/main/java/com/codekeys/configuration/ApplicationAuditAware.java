@@ -2,7 +2,6 @@ package com.codekeys.configuration;
 
 import com.codekeys.utilisateur.Utilisateur;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,9 @@ public class ApplicationAuditAware implements AuditorAware<@NonNull String> {
         if(authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
-        Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
+        if (!(authentication.getPrincipal() instanceof Utilisateur utilisateur)) {
+            return Optional.empty();
+        }
         return Optional.ofNullable(utilisateur.getNomComplet());
     }
 }

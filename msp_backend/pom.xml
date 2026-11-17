@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.codekeys</groupId>
 	<artifactId>msp_backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>msp_backend</name>
 	<description>Backend application de la mutuelle des surveillants de prison</description>
 	<url/>

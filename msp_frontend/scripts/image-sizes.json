@@ -1,0 +1,14 @@
+[
+  {
+    "source": "public/logo_msp.png",
+    "target": "public/logo_msp.webp",
+    "before": 684728,
+    "after": 13534
+  },
+  {
+    "source": "public/logo_msp_vf.png",
+    "target": "public/logo_msp_vf.webp",
+    "before": 72737,
+    "after": 12816
+  }
+]

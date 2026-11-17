@@ -34,7 +34,7 @@
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="row g-3">
           <div class="col-md-6">
-            <label for="typeEncaissement" class="form-label">Type d'encaissement <span class="text-danger">*</span></label>
+            <label class="form-label" for="typeEncaissement">Type d'encaissement <span class="text-danger">*</span></label>
             <select id="typeEncaissement" class="form-select" formControlName="typeEncaissement"
                     [class.is-invalid]="form.controls.typeEncaissement.touched && form.controls.typeEncaissement.invalid">
               <option value="" disabled>Sélectionner un type d'encaissement</option>
@@ -47,7 +47,7 @@
           </div>
 
           <div class="col-md-6">
-            <label for="dateEncaissement" class="form-label">Date d'encaissement <span class="text-danger">*</span></label>
+            <label class="form-label" for="dateEncaissement">Date d'encaissement <span class="text-danger">*</span></label>
             <input id="dateEncaissement" type="date" class="form-control" formControlName="dateEncaissement" placeholder="Date d'encaissement"
                    [class.is-invalid]="form.controls.dateEncaissement.touched && form.controls.dateEncaissement.invalid">
             @if (form.controls.dateEncaissement.touched && form.controls.dateEncaissement.invalid) {
@@ -57,18 +57,18 @@
 
           @if (isVersement) {
             <div class="col-md-6">
-              <label for="dateDebutPeriode" class="form-label">Date de début de période</label>
-              <input id="dateDebutPeriode" type="date" class="form-control" formControlName="dateDebutPeriode" placeholder="Date de début">
+              <label class="form-label" for="dateDebutPeriode">Date de début de période</label>
+              <input appFieldValidation id="dateDebutPeriode" type="date" class="form-control" formControlName="dateDebutPeriode" placeholder="Date de début">
             </div>
 
             <div class="col-md-6">
-              <label for="dateFinPeriode" class="form-label">Date de fin de période</label>
-              <input id="dateFinPeriode" type="date" class="form-control" formControlName="dateFinPeriode" placeholder="Date de fin">
+              <label class="form-label" for="dateFinPeriode">Date de fin de période</label>
+              <input appFieldValidation id="dateFinPeriode" type="date" class="form-control" formControlName="dateFinPeriode" placeholder="Date de fin">
             </div>
           }
 
           <div class="col-md-6">
-            <label for="montant" class="form-label">Montant (FCFA) <span class="text-danger">*</span></label>
+            <label class="form-label" for="montant">Montant (FCFA) <span class="text-danger">*</span></label>
             <input id="montant" type="number" min="0" class="form-control" formControlName="montant" placeholder="Montant en FCFA"
                    [class.is-invalid]="form.controls.montant.touched && form.controls.montant.invalid">
             @if (form.controls.montant.touched && form.controls.montant.invalid) {
@@ -77,8 +77,8 @@
           </div>
 
           <div class="col-md-6">
-            <label for="typeBudget" class="form-label">Région / type de budget</label>
-            <select id="typeBudget" class="form-select" formControlName="typeBudget">
+            <label class="form-label" for="typeBudget">Région / type de budget</label>
+            <select appFieldValidation id="typeBudget" class="form-select" formControlName="typeBudget">
               <option value="">Sélectionner un budget régional</option>
               @for (region of typesBudget; track region) {
                 <option [value]="'Budget de ' + region">Budget de {{ region }}</option>
@@ -86,13 +86,13 @@
             </select>
           </div>
           <div class="col-12">
-            <label for="observation" class="form-label">Observation</label>
-            <textarea id="observation" class="form-control" rows="3" formControlName="observation"
+            <label class="form-label" for="observation">Observation</label>
+            <textarea appFieldValidation id="observation" class="form-control" rows="3" formControlName="observation"
                       maxlength="2000" placeholder="Observation optionnelle"></textarea>
           </div>
 
           <div class="col-12">
-            <label for="justificatif" class="form-label">Justificatif (fichier)</label>
+            <label class="form-label" for="justificatif">Justificatif (fichier)</label>
             <input #fileInput id="justificatif" type="file" class="form-control" (change)="onFileSelected($event)"
                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
             @if (selectedFile()) {
@@ -108,7 +108,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="annuler()" [disabled]="isSubmitting()">
             <i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler
           </button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting()"><i class="bi bi-pencil me-2" aria-hidden="true"></i>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || form.invalid || form.pending"><i class="bi bi-pencil me-2" aria-hidden="true"></i>
             @if (isSubmitting()) {
               <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
             }

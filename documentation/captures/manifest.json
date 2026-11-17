@@ -1,0 +1,268 @@
+[
+  {
+    "file": "connexion.png",
+    "route": "authentification",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-administrateur.png",
+    "route": "dashboard/home",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-sysadmin.png",
+    "route": "dashboard/home",
+    "role": "SYSADMIN",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-secretaire_administratif.png",
+    "route": "dashboard/home",
+    "role": "SECRETAIRE_ADMINISTRATIF",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-president.png",
+    "route": "dashboard/home",
+    "role": "PRESIDENT",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-tresorier.png",
+    "route": "dashboard/home",
+    "role": "TRESORIER",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-commission_controle.png",
+    "route": "dashboard/home",
+    "role": "COMMISSION_CONTROLE",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-secretaire_organisation.png",
+    "route": "dashboard/home",
+    "role": "SECRETAIRE_ORGANISATION",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-secretaire_affaire_sociale.png",
+    "route": "dashboard/home",
+    "role": "SECRETAIRE_AFFAIRE_SOCIALE",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "accueil-adherent.png",
+    "route": "dashboard/home",
+    "role": "ADHERENT",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "profil.png",
+    "route": "dashboard/profil",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "adherents.png",
+    "route": "dashboard/adherents",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "nouvel-adherent.png",
+    "route": "dashboard/adherent/create",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "cartes.png",
+    "route": "dashboard/cartes-membres",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "utilisateurs.png",
+    "route": "dashboard/utilisateurs",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "encaissement.png",
+    "route": "dashboard/nouvel-encaissement",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "frais-gestion.png",
+    "route": "dashboard/frais-de-gestion/nouveau",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "prestation.png",
+    "route": "dashboard/nouvelle-prestation",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "cas-social.png",
+    "route": "dashboard/nouveau-cas-social",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "plainte.png",
+    "route": "dashboard/nouvelle-plainte",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "courrier.png",
+    "route": "dashboard/nouveau-courrier",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "convocation.png",
+    "route": "dashboard/nouvelle-convocation",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "pv.png",
+    "route": "dashboard/nouveau-pv",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "mission.png",
+    "route": "dashboard/nouveau-ordre-missions",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "materiel.png",
+    "route": "dashboard/nouveau-materiel",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "archives.png",
+    "route": "dashboard/archives",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "adjoints.png",
+    "route": "dashboard/adjoints",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "depense.png",
+    "route": "dashboard/depenses/nouvelle",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "depenses.png",
+    "route": "dashboard/depenses",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "controle.png",
+    "route": "dashboard/journal-actions",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "situation-encaissements.png",
+    "route": "dashboard/situation-encaissements",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "situation-depenses.png",
+    "route": "dashboard/situation-depenses",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "courrier-liste.png",
+    "route": "dashboard/courrier",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "plainte-liste.png",
+    "route": "dashboard/plaintes",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "convocation-liste.png",
+    "route": "dashboard/convocations",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "pv-liste.png",
+    "route": "dashboard/proces-verbaux",
+    "role": "ADMINISTRATEUR",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "decision.png",
+    "route": "dashboard/depenses",
+    "role": "PRESIDENT",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  },
+  {
+    "file": "securite.png",
+    "route": "dashboard/profil",
+    "role": "ADHERENT",
+    "viewport": "1440x1000",
+    "data": "fictives"
+  }
+]

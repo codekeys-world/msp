@@ -57,7 +57,7 @@
   margin-bottom: 1.25rem;
 
   h2 { margin: 0; color: #19352a; font-size: 1.2rem; font-weight: 700; }
-  p { margin: .3rem 0 0; color: #73847a; font-size: .88rem; }
+  p { margin: .3rem 0 0; color: #526259; font-size: .88rem; }
 }
 
 .materiels-list__page-indicator {
@@ -105,7 +105,7 @@
 .materiel-card__footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 
 .materiel-card__eyebrow {
-  color: #73847a;
+  color: #526259;
   font-size: .72rem;
   font-weight: 700;
   letter-spacing: .07em;
@@ -116,7 +116,7 @@
 .materiel-card__icon { display: grid; width: 2.8rem; height: 2.8rem; flex: 0 0 auto; place-items: center; color: #16804e; font-size: 1.35rem; background: #eaf6ee; border-radius: .8rem; }
 .materiel-card__summary { align-items: center; margin: 1.25rem 0; padding: .9rem 1rem; background: #f5f9f6; border: 1px solid #edf3ee; border-radius: .8rem; }
 .materiel-card__summary > div { display: flex; flex-direction: column; gap: .15rem; }
-.materiel-card__summary > div > span { color: #73847a; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.materiel-card__summary > div > span { color: #526259; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .materiel-card__summary strong { color: #176640; font-size: 1.25rem; }
 
 .materiel-card__details {
@@ -126,7 +126,7 @@
   margin: 0 0 1.25rem;
 
   > div { min-width: 0; }
-  dt { margin-bottom: .25rem; color: #73847a; font-size: .78rem; font-weight: 600; }
+  dt { margin-bottom: .25rem; color: #526259; font-size: .78rem; font-weight: 600; }
   dt i { margin-right: .3rem; color: #16804e; }
   dd { margin: 0; color: #263d31; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; }
 }

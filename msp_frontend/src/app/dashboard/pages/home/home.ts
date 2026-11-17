@@ -15,6 +15,7 @@ import {CourrierService} from '../services/courrier.service';
 import {CourrierStatistiques} from '../models/courrier';
 import {PlainteService} from '../services/plainte.service';
 import {PlainteStatistiques} from '../models/plainte';
+import {AssembleeService} from '../services/assemblee.service';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,22 @@ import {PlainteStatistiques} from '../models/plainte';
   styleUrl: './home.scss',
 })
 export class Home implements OnInit {
+  private readonly assembleeService = inject(AssembleeService);
+  readonly canManageAssemblees = inject(AuthentificationService).canManageAssemblees();
+  readonly assembleesTotal = signal<number | null>(null);
+  readonly assembleesLoading = signal(false);
+  readonly assembleesError = signal(false);
+
+  chargerStatistiquesAssemblees(): void {
+    this.assembleesLoading.set(true);
+    this.assembleesError.set(false);
+    this.assembleeService.statistiques().pipe(
+      takeUntilDestroyed(this.destroyRef), finalize(() => this.assembleesLoading.set(false))
+    ).subscribe({
+      next: r => this.assembleesTotal.set(r.donnees.resultat.total),
+      error: () => this.assembleesError.set(true)
+    });
+  }
   private readonly ordreMissionService = inject(OrdreMissionService);
   private readonly adherentService = inject(AdherentService);
   private readonly auth = inject(AuthentificationService);
@@ -115,6 +132,7 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
+    this.chargerStatistiquesAssemblees();
     this.chargerManuels();
     this.chargerStatistiquesOrdreMission();
     this.chargerStatistiquesAdherents();

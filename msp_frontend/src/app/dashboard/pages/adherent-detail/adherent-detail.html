@@ -11,7 +11,7 @@
   } @else if (adherent(); as member) {
     <header class="detail-hero">
       @if (photoUrl(); as url) {
-        <img [src]="url" alt="Photo de profil" class="detail-avatar-img">
+        <img width="96" height="96" decoding="async" loading="lazy" [src]="url" [alt]="'Photo de ' + member.prenom + ' ' + member.nom" class="detail-avatar-img">
       } @else {
         <div class="detail-avatar"><i class="fas fa-user" aria-hidden="true"></i></div>
       }
@@ -145,35 +145,35 @@
             <button class="btn-close" type="button" aria-label="Annuler" (click)="annulerEditionFamille()"></button>
           </div>
           <div class="row g-3">
-            <div class="col-12 col-md-6"><label class="form-label">Nom <span class="text-danger">*</span></label><input class="form-control" formControlName="nom" placeholder="Ex. DIALLO"></div>
-            <div class="col-12 col-md-6"><label class="form-label">Prénom <span class="text-danger">*</span></label><input class="form-control" formControlName="prenom" placeholder="Ex. Fatoumata"></div>
-            <div class="col-12 col-md-4"><label class="form-label">Date de naissance <span class="text-danger">*</span></label><input class="form-control" type="date" formControlName="dateNaissance" placeholder="Date de naissance"></div>
-            <div class="col-12 col-md-4"><label class="form-label">Lieu de naissance <span class="text-danger">*</span></label><input class="form-control" formControlName="lieuNaissance" placeholder="Ex. Mopti"></div>
+            <div class="col-12 col-md-6"><label class="form-label">Nom <span class="text-danger">*</span></label><input aria-label="Nom" appFieldValidation class="form-control" formControlName="nom" placeholder="Ex. DIALLO"></div>
+            <div class="col-12 col-md-6"><label class="form-label">Prénom <span class="text-danger">*</span></label><input aria-label="Prénom" appFieldValidation class="form-control" formControlName="prenom" placeholder="Ex. Fatoumata"></div>
+            <div class="col-12 col-md-4"><label class="form-label">Date de naissance <span class="text-danger">*</span></label><input aria-label="Date de naissance" appFieldValidation class="form-control" type="date" formControlName="dateNaissance" placeholder="Date de naissance"></div>
+            <div class="col-12 col-md-4"><label class="form-label">Lieu de naissance <span class="text-danger">*</span></label><input aria-label="Lieu de naissance" appFieldValidation class="form-control" formControlName="lieuNaissance" placeholder="Ex. Mopti"></div>
             <div class="col-12 col-md-4"><label class="form-label">Genre <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="genre">
+              <select aria-label="Genre" appFieldValidation class="form-select" formControlName="genre">
                 <option value="HOMME">Homme</option><option value="FEMME">Femme</option>
               </select>
             </div>
-            <div class="col-12 col-md-6"><label class="form-label">Téléphone principal @if (familyType === 'conjoints') { <span class="text-danger">*</span> }</label><input class="form-control" type="tel" formControlName="telephonePrincipal" placeholder="Ex. +223 70 12 34 56"></div>
-            <div class="col-12 col-md-6"><label class="form-label">Téléphone secondaire</label><input class="form-control" type="tel" formControlName="telephoneSecondaire" placeholder="Ex. +223 65 12 34 56"></div>
-            <div class="col-12"><label class="form-label">Adresse</label><input class="form-control" formControlName="adresse" placeholder="Ex. Quartier Badalabougou, Bamako"></div>
+            <div class="col-12 col-md-6"><label class="form-label">Téléphone principal @if (familyType === 'conjoints') { <span class="text-danger">*</span> }</label><input aria-label="Téléphone principal" appFieldValidation class="form-control" type="tel" formControlName="telephonePrincipal" placeholder="Ex. +223 70 12 34 56"></div>
+            <div class="col-12 col-md-6"><label class="form-label">Téléphone secondaire</label><input aria-label="Téléphone secondaire" appFieldValidation class="form-control" type="tel" formControlName="telephoneSecondaire" placeholder="Ex. +223 65 12 34 56"></div>
+            <div class="col-12"><label class="form-label">Adresse</label><input aria-label="Adresse" appFieldValidation class="form-control" formControlName="adresse" placeholder="Ex. Quartier Badalabougou, Bamako"></div>
             @if (familyType === 'conjoints') {
               <div class="col-12">
                 <label class="form-label">Certificat de mariage @if (!familyEditingSlug()) { <span class="text-danger">*</span> }</label>
-                <input class="form-control" type="file" accept=".pdf,image/*"
+                <input aria-label="Certificat de mariage" class="form-control" type="file" accept=".pdf,image/*"
                        (change)="choisirDocumentFamille($event, 'acteDeMariage')">
                 @if (familyEditingSlug()) { <small class="text-muted">Laissez vide pour conserver le document actuel.</small> }
               </div>
             } @else {
               <div class="col-12 col-md-6">
                 <label class="form-label">Acte de naissance @if (!familyEditingSlug()) { <span class="text-danger">*</span> }</label>
-                <input class="form-control" type="file" accept=".pdf,image/*"
+                <input aria-label="Acte de naissance" class="form-control" type="file" accept=".pdf,image/*"
                        (change)="choisirDocumentFamille($event, 'acteDeNaissance')">
                 @if (familyEditingSlug()) { <small class="text-muted">Laissez vide pour conserver le document actuel.</small> }
               </div>
               <div class="col-12 col-md-6">
                 <label class="form-label">Certificat de vie collectif @if (!familyEditingSlug()) { <span class="text-danger">*</span> }</label>
-                <input class="form-control" type="file" accept=".pdf,image/*"
+                <input aria-label="Certificat de vie collectif" class="form-control" type="file" accept=".pdf,image/*"
                        (change)="choisirDocumentFamille($event, 'certificatVieCollectif')">
                 @if (familyEditingSlug()) { <small class="text-muted">Laissez vide pour conserver le document actuel.</small> }
               </div>
@@ -181,7 +181,7 @@
           </div>
           <div class="d-flex justify-content-end gap-2 mt-3">
             <button class="btn btn-outline-secondary" type="button" (click)="annulerEditionFamille()"><i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler</button>
-            <button class="btn btn-success" type="submit" [disabled]="isSavingFamily()"><i class="bi bi-check-lg me-2" aria-hidden="true"></i>
+            <button class="btn btn-success" type="submit" [disabled]="isSavingFamily() || familyForm.invalid || familyForm.pending"><i class="bi bi-check-lg me-2" aria-hidden="true"></i>
               @if (isSavingFamily()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
               Enregistrer
             </button>

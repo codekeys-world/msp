@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,7 +12,7 @@ import { finalize } from 'rxjs';
 @Component({
     selector: 'app-frais-de-gestion-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [FieldValidationDirective, CommonModule, ReactiveFormsModule, RouterModule],
     templateUrl: './frais-de-gestion-form.html',
     styleUrl: './frais-de-gestion-form.scss'
 })
@@ -22,8 +24,8 @@ export class FraisDeGestionFormComponent implements OnInit {
     private readonly sweetAlert = inject(SweetAlertService);
 
     form: FormGroup = this.fb.group({
-        annee: ['', [Validators.required, Validators.min(2000), Validators.max(2100)]],
-        montantTotal: ['', [Validators.required, Validators.min(1)]],
+        annee: ['', [requiredValue, Validators.min(2000), Validators.max(2100)]],
+        montantTotal: ['', [requiredValue, Validators.min(1)]],
         observation: [''],
         justificatif: [null]
     });

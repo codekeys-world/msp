@@ -219,26 +219,12 @@ public class PrestationService {
         TypePrestation type = request.getTypePrestation();
 
         if (type == TypePrestation.DECES_ADHERENT) {
-            if (request.getDureeCotisationMois() >= DUREE_DECES_ADHERENT_MOIS) {
-                prestation.setMontantPrestation(MONTANT_DECES_ADHERENT);
-            } else {
-                prestation.setMontantRemboursement(request.getMontantCotisationsVersees());
-                prestation.setStatutPrestation(StatutPrestation.REMBOURSEMENT_COTISATIONS);
-            }
+            appliquerDecesAdherent(prestation, request);
         } else if (type == TypePrestation.DECES) {
-            if (request.getLienDefunt() == LienDefunt.ADHERENT) {
-                if (request.getDureeCotisationMois() >= DUREE_DECES_ADHERENT_MOIS) {
-                    prestation.setMontantPrestation(MONTANT_DECES_ADHERENT);
-                } else {
-                    prestation.setMontantRemboursement(request.getMontantCotisationsVersees());
-                    prestation.setStatutPrestation(StatutPrestation.REMBOURSEMENT_COTISATIONS);
-                }
-            } else {
-                prestation.setMontantPrestation(switch (request.getLienDefunt()) {
-                    case ADHERENT -> MONTANT_DECES_ADHERENT;
-                    case PERE, MERE, EPOUX, EPOUSE -> MONTANT_DECES_PARENT_OU_CONJOINT;
-                    case ENFANT -> MONTANT_DECES_ENFANT;
-                });
+            switch (request.getLienDefunt()) {
+                case ADHERENT -> appliquerDecesAdherent(prestation, request);
+                case PERE, MERE, EPOUX, EPOUSE -> prestation.setMontantPrestation(MONTANT_DECES_PARENT_OU_CONJOINT);
+                case ENFANT -> prestation.setMontantPrestation(MONTANT_DECES_ENFANT);
             }
         } else if (type == TypePrestation.REFORME_INVALIDITE) {
             prestation.setMontantPrestation(MONTANT_REFORME_INVALIDITE);
@@ -248,6 +234,15 @@ public class PrestationService {
             } else {
                 prestation.setStatutPrestation(StatutPrestation.NON_ELIGIBLE);
             }
+        }
+    }
+
+    private void appliquerDecesAdherent(Prestation prestation, PrestationRequest request) {
+        if (request.getDureeCotisationMois() >= DUREE_DECES_ADHERENT_MOIS) {
+            prestation.setMontantPrestation(MONTANT_DECES_ADHERENT);
+        } else {
+            prestation.setMontantRemboursement(request.getMontantCotisationsVersees());
+            prestation.setStatutPrestation(StatutPrestation.REMBOURSEMENT_COTISATIONS);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.codekeys.utilisateur;
 
 import com.codekeys.common.Genre;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,7 @@ public class UtilisateurReponse {
     private String matricule;
     private String telephonePrincipal;
     private String telephoneSecondaire;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateNaissance;
     private String lieuNaissance;
     private String adresse;

@@ -149,7 +149,7 @@
 
   &__label {
     font-size: 0.82rem;
-    color: #64748b;
+    color: #526259;
     font-weight: 500;
   }
 
@@ -186,7 +186,7 @@
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: #94a3b8;
+      color: #526477;
       font-size: 0.95rem;
     }
 
@@ -211,12 +211,12 @@
       transform: translateY(-50%);
       background: none;
       border: none;
-      color: #94a3b8;
+      color: #526477;
       cursor: pointer;
       padding: 0.2rem;
 
       &:hover {
-        color: #64748b;
+        color: #526259;
       }
     }
   }
@@ -256,7 +256,7 @@
       border-radius: 0.45rem;
       font-size: 0.82rem;
       font-weight: 600;
-      color: #64748b;
+      color: #526259;
       cursor: pointer;
       transition: all 0.15s ease;
 
@@ -351,7 +351,7 @@
 
   &__hour {
     font-size: 0.8rem;
-    color: #64748b;
+    color: #526259;
   }
 }
 
@@ -386,7 +386,7 @@
 
   &__mat {
     font-size: 0.78rem;
-    color: #64748b;
+    color: #526259;
   }
 }
 
@@ -514,7 +514,7 @@
 .btn-copy-ip {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #526477;
   cursor: pointer;
   padding: 0.2rem;
   font-size: 0.85rem;
@@ -589,7 +589,7 @@
 
 .pagination-info {
   font-size: 0.85rem;
-  color: #64748b;
+  color: #526259;
 }
 
 .pagination {
@@ -613,7 +613,7 @@
     }
 
     &.disabled .page-link {
-      color: #94a3b8;
+      color: #526477;
     }
   }
 }
@@ -670,7 +670,7 @@
   font-size: 0.88rem;
 
   &__label {
-    color: #64748b;
+    color: #526259;
     font-weight: 500;
   }
 

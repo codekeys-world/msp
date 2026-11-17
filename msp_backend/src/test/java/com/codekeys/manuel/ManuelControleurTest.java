@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 import java.nio.file.Files;
@@ -17,6 +18,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ManuelControleurTest {
     private final ManuelControleur controller = new ManuelControleur();
+
+    @Test void ignoresAuthoritiesWithoutANameAndRequiresAnActualRole() {
+        GrantedAuthority unnamed = () -> null;
+        var user = new UsernamePasswordAuthenticationToken("user", "", List.of(unnamed, new SimpleGrantedAuthority("ADHERENT")));
+        assertEquals(HttpStatus.FORBIDDEN, controller.telechargerManuel("ADHERENT", user).getStatusCode());
+        var response = controller.listerManuels(user);
+        assertTrue(((List<?>) java.util.Objects.requireNonNull(response.getBody()).getDonnees().get("resultat")).isEmpty());
+        var withRole = new UsernamePasswordAuthenticationToken("user", "", List.of(unnamed, new SimpleGrantedAuthority("ROLE_ADHERENT")));
+        var list = controller.listerManuels(withRole);
+        assertEquals(1, ((List<?>) java.util.Objects.requireNonNull(list.getBody()).getDonnees().get("resultat")).size());
+    }
 
     @Test
     void refusesAnonymousAndOtherRoles() {

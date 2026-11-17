@@ -51,7 +51,7 @@ class FlywayMigrationTest {
                     .run(context -> {
                         assertNull(context.getStartupFailure());
                         assertTrue(context.getBean(EntityManagerFactory.class).isOpen());
-                        assertEquals("30", context.getBean(Flyway.class).info().current().getVersion().toString());
+                        assertEquals("31", context.getBean(Flyway.class).info().current().getVersion().toString());
                     });
         } finally {
             dropTestSchema(schema);
@@ -67,11 +67,11 @@ class FlywayMigrationTest {
         String schema = createTestSchema();
         try {
             Flyway flyway = flyway(schema);
-            assertEquals(30, flyway.migrate().migrationsExecuted);
+            assertEquals(31, flyway.migrate().migrationsExecuted);
             flyway.validate();
             assertEquals(0, flyway.migrate().migrationsExecuted);
             validateHibernate(schema);
-            assertEquals(26, scalar(schema, "select count(*) from information_schema.tables "
+            assertEquals(27, scalar(schema, "select count(*) from information_schema.tables "
                     + "where table_schema = current_schema() and table_name like '\\_%' escape '\\'"));
             assertEquals(46, scalar(schema, "select count(*) from information_schema.table_constraints "
                     + "where constraint_schema = current_schema() and constraint_type = 'FOREIGN KEY'"));
@@ -86,7 +86,7 @@ class FlywayMigrationTest {
                     + "join _role r on r.id = ra.roles_id join _authorisation a on a.id = ra.authorisations_id "
                     + "where r.nom = 'PRESIDENT' and a.nom in ('ENGAGER_DEPENSE', 'SUPPRIMER_DEPENSE')"));
             for (String table : new String[]{"_courrier", "_plainte", "_convocation", "_pv",
-                    "_journal_action", "_encaissement", "_depense"}) {
+                    "_journal_action", "_encaissement", "_depense", "_assemblee"}) {
                 assertEquals(0, scalar(schema, "select count(*) from " + table));
             }
             try (Connection connection = connection(schema); var statement = connection.createStatement();
@@ -126,6 +126,8 @@ class FlywayMigrationTest {
                 for (String sql : ddl.toString().split(";")) {
                     if (!sql.isBlank()) statement.execute(sql);
                 }
+                // La table des assemblées n'existait pas dans le schéma historique V27.
+                statement.execute("drop table _assemblee");
                 statement.execute("insert into _authorisation (date_creation, slug, nom) "
                         + "values (current_timestamp, 'preserved-slug', 'PRESERVED_PERMISSION')");
             }
@@ -134,7 +136,7 @@ class FlywayMigrationTest {
                     .schemas(schema).defaultSchema(schema).createSchemas(false)
                     .baselineVersion("27").javaMigrations(seedMigration()).load();
             baseline.baseline();
-            assertEquals(3, baseline.migrate().migrationsExecuted);
+            assertEquals(4, baseline.migrate().migrationsExecuted);
             baseline.validate();
             validateHibernate(schema);
             assertEquals(1, scalar(schema, "select count(*) from _authorisation "
@@ -170,7 +172,7 @@ class FlywayMigrationTest {
                     .javaMigrations(new V30__seed_administrateur(new MockEnvironment())).load();
             assertThrows(FlywayException.class, unconfigured::migrate);
             assertEquals(0, scalar(schema, "select count(*) from _utilisateur"));
-            assertEquals(1, flyway(schema).migrate().migrationsExecuted);
+            assertEquals(2, flyway(schema).migrate().migrationsExecuted);
             assertEquals(1, scalar(schema, "select count(*) from _utilisateur"));
         } finally {
             dropTestSchema(schema);

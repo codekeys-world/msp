@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -9,7 +11,7 @@ import {AuthentificationService} from '../../../authentification/services/authen
 
 @Component({
   selector: 'app-plainte-form',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './plainte-form.html',
   styleUrl: './plainte-form.scss',
 })
@@ -30,7 +32,7 @@ export class PlainteForm implements OnInit {
   readonly existingFilename = signal<string | null>(null);
 
   readonly form = new FormGroup({
-    datePv: new FormControl('', {validators: [Validators.required], nonNullable: true}),
+    datePv: new FormControl('', {validators: [requiredValue], nonNullable: true}),
     observation: new FormControl('', {nonNullable: true}),
   });
 

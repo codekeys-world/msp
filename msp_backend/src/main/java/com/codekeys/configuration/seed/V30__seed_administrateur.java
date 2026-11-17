@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.util.UUID;
 
-/** Migration Java enregistree par Spring : aucun secret dans les scripts SQL. */
 @Component
 public class V30__seed_administrateur extends BaseJavaMigration {
     private final Environment environment;

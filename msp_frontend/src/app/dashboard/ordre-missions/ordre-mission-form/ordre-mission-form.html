@@ -45,6 +45,7 @@
             </div>
           }
 
+          @if (ordreMissionForm.hasError('dateRange')) { <p class="text-danger" role="alert">La date de retour doit être postérieure ou égale à la date de départ.</p> }
           <form [formGroup]="ordreMissionForm" (ngSubmit)="onOrdreMissionSubmit()" novalidate>
             <fieldset [disabled]="isLoading() || submiting()">
               <div class="mb-4">
@@ -53,7 +54,7 @@
                 </h2>
                 <div class="row g-3">
                   <div class="col-12">
-                    <label for="libelle" class="form-label">Libellé <span class="text-danger">*</span></label>
+                    <label class="form-label" for="libelle">Libellé <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="libelle" formControlName="libelle"
                            placeholder="Ex. Ordre de mission N°013/MJDH-DGAP"
                            [class.is-invalid]="ordreMissionForm.controls.libelle.touched && ordreMissionForm.controls.libelle.invalid">
@@ -63,7 +64,7 @@
                   </div>
 
                   <div class="col-12">
-                    <label for="objet" class="form-label">Objet de la mission <span class="text-danger">*</span></label>
+                    <label class="form-label" for="objet">Objet de la mission <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="objet" formControlName="objet"
                            placeholder="Ex. Mission d'évaluation alimentaire"
                            [class.is-invalid]="ordreMissionForm.controls.objet.touched && ordreMissionForm.controls.objet.invalid">
@@ -80,7 +81,7 @@
                 </h2>
                 <div class="row g-3">
                   <div class="col-12">
-                    <label for="itineraire" class="form-label">Itinéraire <span class="text-danger">*</span></label>
+                    <label class="form-label" for="itineraire">Itinéraire <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="itineraire" formControlName="itineraire"
                            placeholder="Ex. Bamako - Dioïla - Fana - Bamako"
                            [class.is-invalid]="ordreMissionForm.controls.itineraire.touched && ordreMissionForm.controls.itineraire.invalid">
@@ -89,7 +90,7 @@
                     }
                   </div>
                   <div class="col-12 col-md-6">
-                    <label for="dateDepart" class="form-label">Date de départ <span class="text-danger">*</span></label>
+                    <label class="form-label" for="dateDepart">Date de départ <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" id="dateDepart" formControlName="dateDepart" placeholder="Date de départ"
                            title="Sélectionnez la date de départ de Bamako ou de votre lieu de mission"
                            [class.is-invalid]="ordreMissionForm.controls.dateDepart.touched && ordreMissionForm.controls.dateDepart.invalid">
@@ -98,7 +99,7 @@
                     }
                   </div>
                   <div class="col-12 col-md-6">
-                    <label for="dateRetour" class="form-label">Date de retour <span class="text-danger">*</span></label>
+                    <label class="form-label" for="dateRetour">Date de retour <span class="text-danger">*</span></label>
                     <input type="date" class="form-control" id="dateRetour" formControlName="dateRetour" placeholder="Date de retour"
                            title="Sélectionnez la date de retour prévue au Mali"
                            [class.is-invalid]="ordreMissionForm.controls.dateRetour.touched && ordreMissionForm.controls.dateRetour.invalid">
@@ -115,7 +116,7 @@
                 </h2>
                 <div class="row g-3">
                   <div class="col-12 col-md-6">
-                    <label for="imputationBudgetaire" class="form-label">Imputation budgétaire <span class="text-danger">*</span></label>
+                    <label class="form-label" for="imputationBudgetaire">Imputation budgétaire <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="imputationBudgetaire" formControlName="imputationBudgetaire"
                            placeholder="Ex. PNUD-PROMED"
                            [class.is-invalid]="ordreMissionForm.controls.imputationBudgetaire.touched && ordreMissionForm.controls.imputationBudgetaire.invalid">
@@ -124,7 +125,7 @@
                     }
                   </div>
                   <div class="col-12 col-md-6">
-                    <label for="moyenDeplacement" class="form-label">Moyen de déplacement <span class="text-danger">*</span></label>
+                    <label class="form-label" for="moyenDeplacement">Moyen de déplacement <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="moyenDeplacement" formControlName="moyenDeplacement"
                            placeholder="Ex. Véhicule de service"
                            [class.is-invalid]="ordreMissionForm.controls.moyenDeplacement.touched && ordreMissionForm.controls.moyenDeplacement.invalid">
@@ -140,7 +141,7 @@
                   <i class="fas fa-paperclip me-2" aria-hidden="true"></i>Document et observations
                 </h2>
                 <div class="mb-3">
-                  <label for="ordreMission" class="form-label">
+                  <label class="form-label" for="ordreMission">
                     Document de mission
                     @if (!isEditing) { <span class="text-danger">*</span> }
                   </label>
@@ -157,8 +158,8 @@
                   </div>
                 </div>
                 <div>
-                  <label for="observation" class="form-label">Observations</label>
-                  <textarea class="form-control" id="observation" rows="3" formControlName="observation"
+                  <label class="form-label" for="observation">Observations</label>
+                  <textarea appFieldValidation class="form-control" id="observation" rows="3" formControlName="observation"
                             placeholder="Ex. Déplacement à Ségou pour une réunion avec la Direction régionale"></textarea>
                 </div>
               </div>

@@ -3,6 +3,7 @@ package com.codekeys.authentification;
 import com.codekeys.execption.OperationNotPermitException;
 import com.codekeys.journalAction.JournalActionService;
 import com.codekeys.securite.JwtService;
+import com.codekeys.securite.UtilisateurAuthentifie;
 import com.codekeys.token.Token;
 import com.codekeys.token.TokenRepository;
 import com.codekeys.utilisateur.Utilisateur;
@@ -37,7 +38,7 @@ public class AuthentificationService {
                         authentificationRequest.getPassword()
                 )
         );
-        Utilisateur utilisateur = (Utilisateur) authenticate.getPrincipal();
+        Utilisateur utilisateur = UtilisateurAuthentifie.exiger(authenticate);
         try {
             this.journalActionService.enregistrerDepuisRequete(
                     utilisateur,
@@ -50,10 +51,6 @@ public class AuthentificationService {
         } catch (Exception ignored) {
         }
         return getAuthentificationResponse(utilisateur);
-    }
-
-    private AuthentificationResponse getAuthentificationResponse(Authentication authenticate) {
-        return getAuthentificationResponse((Utilisateur) authenticate.getPrincipal());
     }
 
     private AuthentificationResponse getAuthentificationResponse(Utilisateur utilisateur) {
@@ -89,7 +86,7 @@ public class AuthentificationService {
     }
 
     public AuthentificationResponse getAuthenticatedUserToken() {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Utilisateur utilisateur = UtilisateurAuthentifie.exiger(SecurityContextHolder.getContext().getAuthentication());
         Token token = this.tokenRepository.findByUtilisateur(utilisateur).orElseThrow(
                 () -> new OperationNotPermitException("Aucun token n'a été trouvé !")
         );

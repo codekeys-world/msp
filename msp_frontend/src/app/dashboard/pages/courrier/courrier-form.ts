@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, DestroyRef, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -10,7 +12,7 @@ import {AuthentificationService} from '../../../authentification/services/authen
 
 @Component({
   selector: 'app-courrier-form',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './courrier-form.html',
   styleUrl: './courrier-form.scss',
 })
@@ -32,10 +34,10 @@ export class CourrierForm implements OnInit {
   readonly existingFilename = signal<string | null>(null);
 
   readonly form = new FormGroup({
-    nom: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    objet: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    typeCourrier: new FormControl<TypeCourrier>('ARRIVE', {validators: [Validators.required], nonNullable: true}),
-    description: new FormControl('', {validators: [Validators.required], nonNullable: true}),
+    nom: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    objet: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    typeCourrier: new FormControl<TypeCourrier>('ARRIVE', {validators: [requiredValue], nonNullable: true}),
+    description: new FormControl('', {validators: [requiredValue], nonNullable: true}),
     dateArrivee: new FormControl('', {nonNullable: true}),
     dateDepart: new FormControl('', {nonNullable: true}),
   });
@@ -130,8 +132,8 @@ export class CourrierForm implements OnInit {
   private updateDateValidators(): void {
     const arrival = this.form.controls.dateArrivee;
     const departure = this.form.controls.dateDepart;
-    arrival.setValidators(this.typeCourrier === 'ARRIVE' ? [Validators.required] : []);
-    departure.setValidators(this.typeCourrier === 'DEPART' ? [Validators.required] : []);
+    arrival.setValidators(this.typeCourrier === 'ARRIVE' ? [requiredValue] : []);
+    departure.setValidators(this.typeCourrier === 'DEPART' ? [requiredValue] : []);
     arrival.updateValueAndValidity({emitEvent: false});
     departure.updateValueAndValidity({emitEvent: false});
   }

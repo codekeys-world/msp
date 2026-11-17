@@ -1,6 +1,5 @@
 package com.codekeys.conjoint;
 
-import com.codekeys.fichier.FileUtils;
 import com.codekeys.fichier.GestionnaireFichier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class UtilisateurControleur {
     @GetMapping("/me")
     @Operation(summary = "Afficher mon profil", description = "Retourne le profil de l'utilisateur connecté.")
     public ResponseEntity<@NonNull ApiResponse> obtenirMonProfil() {
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ApiResponse.builder()
                 .message("Votre profil a été chargé.")
                 .developerMessage("Lecture du profil de l'utilisateur connecté.")
                 .status(HttpStatus.OK)
@@ -71,7 +72,7 @@ public class UtilisateurControleur {
     @PutMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Modifier mon profil", description = "Met à jour les informations personnelles de l'utilisateur connecté.")
     public ResponseEntity<@NonNull ApiResponse> modifierMonProfil(@RequestBody @Valid ProfilUtilisateurRequest request) {
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ApiResponse.builder()
                 .message("Votre profil a été mis à jour.")
                 .developerMessage("Modification du profil de l'utilisateur connecté.")
                 .status(HttpStatus.OK)
@@ -83,7 +84,7 @@ public class UtilisateurControleur {
     @PostMapping(value = "/me/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Modifier ma photo de profil")
     public ResponseEntity<@NonNull ApiResponse> modifierMaPhoto(@RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ApiResponse.builder()
                 .message("Votre photo de profil a été mise à jour.")
                 .developerMessage("Modification de la photo de profil de l'utilisateur connecté.")
                 .status(HttpStatus.OK)

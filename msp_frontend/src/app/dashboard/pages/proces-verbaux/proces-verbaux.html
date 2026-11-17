@@ -25,7 +25,7 @@
 
     @if (canSearch) {
       <form class="pvs-search input-group mb-4" role="search" (submit)="$event.preventDefault(); submitSearch()">
-        <label for="pv-search" class="visually-hidden">Rechercher un procès-verbal</label>
+        <label class="visually-hidden" for="pv-search">Rechercher un procès-verbal</label>
         <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
         <input id="pv-search" class="form-control" type="search" [value]="searchTerm()"
                (input)="onSearchInput($event)" placeholder="Numéro, objet, type, date, rédacteur, document…">

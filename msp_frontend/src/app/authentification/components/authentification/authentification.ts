@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import { Component, inject, signal} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
@@ -7,7 +9,7 @@ import { AuthentificationResponse } from '../../models/authentification-response
 
 @Component({
   selector: 'app-authentification',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [FieldValidationDirective, RouterLink, ReactiveFormsModule],
   templateUrl: './authentification.html',
   styleUrl: './authentification.scss',
 })
@@ -17,26 +19,27 @@ export class Authentification {
   errorMessage = signal<Array<string>>([]);
   submiting = signal<boolean>(false);
   showForgotPassword = signal(false);
-  forgotEmail = new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]});
+  forgotEmail = new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.email]});
   forgotMessage = signal('');
   forgotLoading = signal(false);
 
   sendResetLink(): void {
     this.forgotEmail.markAsTouched();
-    if (this.forgotEmail.invalid) return;
+    if (this.forgotEmail.invalid || this.forgotLoading()) return;
     this.forgotLoading.set(true);
     this.authentificationService.demanderReinitialisation(this.forgotEmail.value).subscribe({
       next: response => { this.forgotMessage.set(response.message || 'Si cette adresse est associée à un compte, un lien sera envoyé.'); this.forgotLoading.set(false); },
-      error: () => { this.forgotMessage.set('Impossible d’envoyer le lien. Vérifiez la configuration du serveur mail.'); this.forgotLoading.set(false); }
+      error: error => { this.forgotMessage.set(error?.status === 429 ? 'Trop de tentatives. Veuillez patienter avant de réessayer.' : 'Impossible d’envoyer le lien. Veuillez réessayer plus tard.'); this.forgotLoading.set(false); }
     });
   }
 
   loginForm = new FormGroup({
-    username : new FormControl('', {nonNullable : true, validators: [Validators.required]}),
-    password : new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(6)]})
+    username : new FormControl('', {nonNullable : true, validators: [requiredValue]}),
+    password : new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.minLength(6)]})
   });
 
   onSubmitLogin(){
+    if (this.submiting()) return;
     this.submiting.set(true);
     this.loginForm.markAllAsTouched();
     if(this.loginForm.invalid) {

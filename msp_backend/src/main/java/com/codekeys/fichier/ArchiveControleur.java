@@ -110,8 +110,8 @@ public class ArchiveControleur {
             try {
                 byte[] bytes = Files.readAllBytes(Path.of(document.getChemin()));
                 contenuBase64 = Base64.getEncoder().encodeToString(bytes);
-            } catch (Exception e) {
-                contenuBase64 = null;
+            } catch (Exception ignored) {
+                // An unreadable file has no preview; its archive metadata remains available.
             }
         }
 

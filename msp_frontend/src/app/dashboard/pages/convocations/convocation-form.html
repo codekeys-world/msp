@@ -47,7 +47,7 @@
         </fieldset>
         <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()"><i class="bi bi-x-lg me-1" aria-hidden="true"></i>Annuler</button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading() || form.invalid || form.pending">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             @else { <i class="bi me-2" [class.bi-pencil-square]="isEditing" [class.bi-plus-circle]="!isEditing" aria-hidden="true"></i> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer la convocation') }}

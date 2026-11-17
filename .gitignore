@@ -4,7 +4,6 @@ README.md
 .idea
 HELP.md
 target/
-documentation/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

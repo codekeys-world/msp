@@ -37,7 +37,7 @@ services:
     env_file:
       - .env
     container_name: msp_api-${APPLICATION_VERSION}
-    image: msp/msp-api:${APPLICATION_VERSION}
+    image: codekeys/msp-api:${APPLICATION_VERSION}
     restart: always
     ports:
       - "8088:8088"
@@ -61,7 +61,7 @@ services:
     env_file:
       - .env
     container_name: msp_front-${APPLICATION_VERSION}
-    image: msp/msp-front:${APPLICATION_VERSION}
+    image: codekeys/msp-front:${APPLICATION_VERSION}
     restart: always
     ports:
       - "8080:8080"

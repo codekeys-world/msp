@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,7 +13,7 @@ import { AppResponse } from '../../../app-response';
 @Component({
     selector: 'app-depense-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [FieldValidationDirective, CommonModule, ReactiveFormsModule, RouterModule],
     templateUrl: './depense-form.html',
     styleUrl: './depense-form.scss'
 })
@@ -23,10 +25,10 @@ export class DepenseFormComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
 
     form: FormGroup = this.fb.group({
-        libelle: ['', Validators.required],
-        dateDepense: ['', Validators.required],
-        montant: ['', [Validators.required, Validators.min(1)]],
-        fraisDeGestionSlug: ['', Validators.required],
+        libelle: ['', requiredValue],
+        dateDepense: ['', requiredValue],
+        montant: ['', [requiredValue, Validators.min(1)]],
+        fraisDeGestionSlug: ['', requiredValue],
         observation: ['']
     });
 

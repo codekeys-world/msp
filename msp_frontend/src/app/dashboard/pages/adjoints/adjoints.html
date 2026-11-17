@@ -113,25 +113,26 @@
 
             <!-- Date de début -->
             <div class="mb-3">
-              <label for="adjoint-date-debut" class="form-label">
+              <label class="form-label" for="adjoint-date-debut">
                 <i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>Date de début <span class="text-danger">*</span>
               </label>
               <input id="adjoint-date-debut" class="form-control" type="date"
-                     [value]="dateDebut()" (input)="onDateDebutChange($event)" required>
+                     [value]="dateDebut()" (input)="onDateDebutChange($event)" required placeholder="Sélectionnez une date">
             </div>
 
             <!-- Date de fin -->
             <div class="mb-3">
-              <label for="adjoint-date-fin" class="form-label">
+              <label class="form-label" for="adjoint-date-fin">
                 <i class="fas fa-calendar-times me-1" aria-hidden="true"></i>Date de fin (optionnelle)
               </label>
               <input id="adjoint-date-fin" class="form-control" type="date"
-                     [value]="dateFin()" (input)="onDateFinChange($event)">
+                     [min]="dateDebut()" [value]="dateFin()" (input)="onDateFinChange($event)" placeholder="Sélectionnez une date">
             </div>
 
+            @if (dateFin() && dateFin() < dateDebut()) { <p class="text-danger" role="alert">La date de fin doit être postérieure ou égale à la date de début.</p> }
             <!-- Motif -->
             <div class="mb-3">
-              <label for="adjoint-motif" class="form-label">
+              <label class="form-label" for="adjoint-motif">
                 <i class="fas fa-book me-1" aria-hidden="true"></i>Motif
               </label>
               <textarea id="adjoint-motif" class="form-control" rows="2"
@@ -143,7 +144,7 @@
               <button class="btn btn-outline-secondary" type="button" (click)="closeForm()">
                 <i class="fas fa-times me-1" aria-hidden="true"></i>Annuler
               </button>
-              <button class="btn btn-success" type="submit" [disabled]="submitting()">
+              <button class="btn btn-success" type="submit" [disabled]="submitting() || !formulaireValide">
                 @if (submitting()) {
                   <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
                 } @else {

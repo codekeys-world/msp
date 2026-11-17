@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -9,7 +11,7 @@ import {SweetAlertService} from '../../../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-encaissement-form',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './encaissement-form.html',
   styleUrl: './encaissement-form.scss',
 })
@@ -31,11 +33,11 @@ export class EncaissementForm implements OnInit {
   readonly existingFilename = signal<string | null>(null);
 
   readonly form = new FormGroup({
-    typeEncaissement: new FormControl<TypeEncaissement | ''>('', {nonNullable: true, validators: [Validators.required]}),
-    dateEncaissement: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    typeEncaissement: new FormControl<TypeEncaissement | ''>('', {nonNullable: true, validators: [requiredValue]}),
+    dateEncaissement: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     dateDebutPeriode: new FormControl('', {nonNullable: true}),
     dateFinPeriode: new FormControl('', {nonNullable: true}),
-    montant: new FormControl<number | ''>('', {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
+    montant: new FormControl<number | ''>('', {nonNullable: true, validators: [requiredValue, Validators.min(1)]}),
     typeBudget: new FormControl('', {nonNullable: true}),
     observation: new FormControl('', {nonNullable: true, validators: [Validators.maxLength(2000)]}),
   });

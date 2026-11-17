@@ -24,7 +24,7 @@
       <section class="login-card" aria-labelledby="login-title">
         <div class="login-heading">
           <a routerLink="" class="login-brand login-brand--form">
-            <img src="./logo_msp.png" alt="">
+            <img width="96" height="96" decoding="async" fetchpriority="high" src="./logo_msp.webp" alt="Logo de la Mutuelle des Surveillants de Prison du Mali">
             <span>
               <strong>MSP</strong>
               <small>Mutuelle des Surveillants de Prison du Mali</small>
@@ -88,7 +88,7 @@
             <button class="login-forgot btn btn-link p-0" type="button" (click)="showForgotPassword.set(!showForgotPassword())"><i class="bi bi-key me-2" aria-hidden="true"></i>Mot de passe oublié ?</button>
           </div>
 
-          <button type="submit" [disabled]="submiting()" class="btn btn-primary login-submit w-100">
+          <button type="submit" [disabled]="submiting() || loginForm.invalid || loginForm.pending" class="btn btn-primary login-submit w-100">
             @if (submiting()) {
               <i class="fa fa-spinner fa-spin me-2" aria-hidden="true"></i>Connexion en cours…
             } @else {
@@ -104,10 +104,10 @@
         @if (showForgotPassword()) {
           <form class="mt-3" (submit)="$event.preventDefault(); sendResetLink()">
             <label class="form-label" for="forgot-email">Adresse e-mail du compte</label>
-            <input id="forgot-email" class="form-control mb-2" type="email" [formControl]="forgotEmail" autocomplete="email">
+            <input appFieldValidation id="forgot-email" class="form-control mb-2" type="email" [formControl]="forgotEmail" autocomplete="email" placeholder="Saisissez une valeur">
             @if (forgotMessage()) { <div class="alert alert-info py-2 position-relative pe-5" role="status">
   <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fermer l’alerte"></button>{{forgotMessage()}}</div> }
-            <button class="btn btn-success w-100" type="submit" [disabled]="forgotLoading()"><i class="bi bi-key me-2" aria-hidden="true"></i>
+            <button class="btn btn-success w-100" type="submit" [disabled]="forgotLoading() || forgotEmail.invalid || forgotEmail.pending"><i class="bi bi-key me-2" aria-hidden="true"></i>
               @if (forgotLoading()) { Envoi en cours… } @else { Envoyer le lien de réinitialisation }
             </button>
           </form>

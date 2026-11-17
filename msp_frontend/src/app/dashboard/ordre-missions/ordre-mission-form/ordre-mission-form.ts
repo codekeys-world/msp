@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {dateRange, requiredValue} from '../../../shared/utils/form-validators';
 import {Component, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -8,7 +10,7 @@ import {OrdreMissionResponse} from '../models/ordre-mission-response';
 
 @Component({
   selector: 'app-ordre-mission-form',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './ordre-mission-form.html',
 })
 export class OrdreMissionForm implements OnInit {
@@ -27,15 +29,15 @@ export class OrdreMissionForm implements OnInit {
   slug = signal<string | null>(null);
 
   ordreMissionForm = new FormGroup({
-    libelle: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    objet: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    imputationBudgetaire: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    moyenDeplacement: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    itineraire: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    dateDepart: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    dateRetour: new FormControl('', {validators: [Validators.required], nonNullable: true}),
+    libelle: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    objet: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    imputationBudgetaire: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    moyenDeplacement: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    itineraire: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    dateDepart: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    dateRetour: new FormControl('', {validators: [requiredValue], nonNullable: true}),
     observation: new FormControl('', {nonNullable: true}),
-  });
+  }, {validators: dateRange('dateDepart', 'dateRetour')});
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -66,10 +68,8 @@ export class OrdreMissionForm implements OnInit {
 
   onOrdreMissionSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      this.ordreMission.set(input.files[0]);
-      this.errorMessages.set([]);
-    }
+    this.ordreMission.set(input.files?.[0] ?? null);
+    this.errorMessages.set([]);
   }
 
   onOrdreMissionSubmit(): void {
