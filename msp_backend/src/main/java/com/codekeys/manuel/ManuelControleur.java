@@ -58,7 +58,7 @@ public class ManuelControleur {
             description = "Retourne la liste des manuels PDF disponibles pour le rôle de l'utilisateur connecté"
     )
     public ResponseEntity<ApiResponse> listerManuels(Authentication authentication) {
-        if (authentication == null || authentication.getAuthorities() == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.ok(
                     ApiResponse.builder()
                             .message("Aucun manuel disponible.")
@@ -72,7 +72,9 @@ public class ManuelControleur {
 
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .map(role -> role.replace("ROLE_", ""))
+                .filter(Objects::nonNull)
+                .filter(role -> role.startsWith("ROLE_"))
+                .map(role -> role.substring("ROLE_".length()))
                 .filter(ROLE_MANUEL_MAP::containsKey)
                 .distinct()
                 .collect(Collectors.toList());
@@ -107,13 +109,10 @@ public class ManuelControleur {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        if (authentication.getAuthorities() != null) {
-            boolean hasRole = authentication.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_" + role));
-            if (!hasRole) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(null);
-            }
+        boolean hasRole = authentication.getAuthorities().stream()
+                .anyMatch(auth -> ("ROLE_" + role).equals(auth.getAuthority()));
+        if (!hasRole) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         String fichierMarkdown = ROLE_MANUEL_MAP.get(role);

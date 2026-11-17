@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,13 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<@NonNull ApiResponse> handleException(AuthenticationCredentialsNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+                .message(exception.getMessage()).status(HttpStatus.UNAUTHORIZED)
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).build());
+    }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<@NonNull ApiResponse> handleException(MethodArgumentNotValidException exception){
@@ -87,7 +95,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = IOException.class)
     public ResponseEntity<@NonNull ApiResponse> handleException(IOException exception){
-        log.info(exception.getStackTrace().toString());
+        log.error("Erreur lors de la manipulation du fichier.", exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
                         ApiResponse.builder()

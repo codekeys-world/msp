@@ -21,6 +21,7 @@ import com.codekeys.enfant.EnfantRepository;
 import com.codekeys.role.Role;
 import com.codekeys.role.RoleService;
 import com.codekeys.role.RoleRepository;
+import com.codekeys.securite.UtilisateurAuthentifie;
 import com.codekeys.authorisation.Authorisation;
 import com.codekeys.authorisation.AuthorisationRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -44,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Objects;
@@ -125,12 +127,15 @@ public class UtilisateurService implements UserDetailsService {
         if (conjoints.stream().anyMatch(conjoint -> conjoint.getGenre() != genreConjointAttendu)) {
             throw new IllegalArgumentException("Le genre du conjoint doit être opposé à celui de l'adhérent.");
         }
+        List<MultipartFile> actesMariage = new ArrayList<>();
+        List<MultipartFile> actesNaissance = new ArrayList<>();
+        List<MultipartFile> certificatsVie = new ArrayList<>();
         for (int index = 0; index < conjoints.size(); index++) {
-            this.exigerFichier(multipartRequest, "conjointActe-" + index, "L'acte de mariage de chaque conjoint est obligatoire.");
+            actesMariage.add(this.exigerFichier(multipartRequest, "conjointActe-" + index, "L'acte de mariage de chaque conjoint est obligatoire."));
         }
         for (int index = 0; index < descendants.size(); index++) {
-            this.exigerFichier(multipartRequest, "descendantActe-" + index, "L'acte de naissance de chaque descendant est obligatoire.");
-            this.exigerFichier(multipartRequest, "descendantCertificat-" + index, "Le certificat de vie collectif de chaque descendant est obligatoire.");
+            actesNaissance.add(this.exigerFichier(multipartRequest, "descendantActe-" + index, "L'acte de naissance de chaque descendant est obligatoire."));
+            certificatsVie.add(this.exigerFichier(multipartRequest, "descendantCertificat-" + index, "Le certificat de vie collectif de chaque descendant est obligatoire."));
         }
         Utilisateur utilisateur = this.utilisateurMapper.utilisateurRequestToUtilisateur(utilisateurRequest);
         MultipartFile profile = multipartRequest.getFile("profileImage");
@@ -154,7 +159,7 @@ public class UtilisateurService implements UserDetailsService {
             Conjoint conjoint = this.conjointMapper.conjointRequestToConjoint(conjoints.get(index));
             conjoint.setUtilisateur(utilisateur);
             utilisateur.ajouterConjoint(conjoint);
-            MultipartFile acte = multipartRequest.getFile("conjointActe-" + index);
+            MultipartFile acte = actesMariage.get(index);
             conjoint.setActeDeMariage(this.documentService.uploadFile(
                     acte, TypeDocument.CONJOINT, utilisateur.getSlug() + "/" + conjoint.getSlug()
             ));
@@ -165,11 +170,11 @@ public class UtilisateurService implements UserDetailsService {
             Enfant enfant = this.enfantMapper.enfantRequestToEnfant(descendants.get(index));
             enfant.setUtilisateur(utilisateur);
             utilisateur.ajouterEnfant(enfant);
-            MultipartFile acte = multipartRequest.getFile("descendantActe-" + index);
+            MultipartFile acte = actesNaissance.get(index);
             enfant.setActeDeNaissance(this.documentService.uploadFile(
                     acte, TypeDocument.DESCENDANT, utilisateur.getSlug() + "/" + enfant.getSlug()
             ));
-            MultipartFile certificat = multipartRequest.getFile("descendantCertificat-" + index);
+            MultipartFile certificat = certificatsVie.get(index);
             enfant.setCertificatVieCollectif(this.documentService.uploadFile(
                     certificat, TypeDocument.CERTIFICAT_VIE_COLLECTIF,
                     utilisateur.getSlug() + "/" + enfant.getSlug()
@@ -460,11 +465,12 @@ public class UtilisateurService implements UserDetailsService {
         return utilisateur;
     }
 
-    private void exigerFichier(MultipartHttpServletRequest request, String nom, String message) {
+    private @NonNull MultipartFile exigerFichier(MultipartHttpServletRequest request, String nom, String message) {
         MultipartFile fichier = request.getFile(nom);
         if (fichier == null || fichier.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
+        return fichier;
     }
 
     @Transactional
@@ -532,16 +538,18 @@ public class UtilisateurService implements UserDetailsService {
         return this.utilisateurMapper.utilisateurToUtilisateurReponseDetaillee(this.utilisateurRepository.save(utilisateur));
     }
 
+    @Transactional
     public boolean modifierMotDePasse(@Valid ModifierMotDePasse request) {
-        Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!this.bCryptPasswordEncoder.matches(request.getAncienMotDePasse(), utilisateur.getPassword())) {
+        Utilisateur utilisateur = this.utilisateurConnecte();
+        String passwordActuel = utilisateur.getPassword();
+        if (passwordActuel == null || !this.bCryptPasswordEncoder.matches(request.getAncienMotDePasse(), passwordActuel)) {
             throw new OperationNotPermitException("Le mot de passe actuel est incorrect.");
         }
         if(!Objects.equals(request.getNouveauMotDePasse(), request.getConfirmationPassword())){
             throw new OperationNotPermitException("Les deux mots de passe ne concordent pas.");
         }
 
-        if(this.bCryptPasswordEncoder.matches(request.getNouveauMotDePasse(), utilisateur.getPassword())){
+        if(this.bCryptPasswordEncoder.matches(request.getNouveauMotDePasse(), passwordActuel)){
             throw new OperationNotPermitException("Le nouveau mot de passe et l'ancien ne peuvent pas être les mêmes.");
         }
 
@@ -624,10 +632,7 @@ public class UtilisateurService implements UserDetailsService {
     }
 
     private Utilisateur utilisateurConnecte() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof Utilisateur utilisateur)) {
-            throw new OperationNotPermitException("Impossible d'identifier l'utilisateur connecté.");
-        }
+        Utilisateur utilisateur = UtilisateurAuthentifie.exiger(SecurityContextHolder.getContext().getAuthentication());
         return this.rechercherUtilisateurParSlug(utilisateur.getSlug());
     }
 
