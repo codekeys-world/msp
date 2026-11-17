@@ -3,7 +3,7 @@
 .profile-page { max-width: 74rem; margin: 0 auto; padding: clamp(1rem, 2.5vw, 2rem); }
 
 .profile-hero-banner {
-  background-color: #198754;
+  background-color: #146c43;
   border-radius: 1rem;
   padding: 1.5rem 2rem;
   margin-bottom: 2rem;
@@ -52,13 +52,13 @@
     flex-shrink: 0;
     border-radius: 0.5rem;
     font-weight: 600;
-    color: #198754;
+    color: #146c43;
     border-color: #fff;
     transition: background-color 0.2s, color 0.2s;
 
     &:hover:not(:disabled) {
       background-color: #fff;
-      color: #198754;
+      color: #146c43;
     }
 
     &:disabled {
@@ -81,7 +81,7 @@
 .profile-photo-controls .btn { min-height: 2.5rem; }
 .profile-card-heading { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.25rem; }
 .profile-card-heading h2 { margin: 0; color: #19352a; font-size: 1.05rem; font-weight: 700; }
-.profile-card-heading p { margin: .2rem 0 0; color: #73847a; font-size: .86rem; }
+.profile-card-heading p { margin: .2rem 0 0; color: #526259; font-size: .86rem; }
 .profile-icon { display: grid; width: 2.6rem; height: 2.6rem; flex: 0 0 auto; place-items: center; color: #176640; font-size: 1.2rem; background: #eaf6ee; border-radius: .75rem; }
 .form-control:focus, .form-select:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); }
 @media (max-width: 575.98px) { .profile-summary { align-items: flex-start; } }

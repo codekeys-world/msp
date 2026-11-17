@@ -34,19 +34,19 @@
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label" for="courrier-type">Type de courrier <span class="text-danger">*</span></label>
-              <select id="courrier-type" class="form-select" formControlName="typeCourrier">
+              <select appFieldValidation id="courrier-type" class="form-select" formControlName="typeCourrier">
                 <option value="ARRIVE">Courrier entrant</option>
                 <option value="DEPART">Courrier sortant</option>
               </select>
             </div>
             <div class="col-12">
               <label class="form-label" for="courrier-objet">Objet <span class="text-danger">*</span></label>
-              <input id="courrier-objet" class="form-control" formControlName="objet"
+              <input appFieldValidation id="courrier-objet" class="form-control" formControlName="objet"
                      placeholder="Ex. Demande de rapport annuel adressée au ministère">
             </div>
             <div class="col-12">
               <label class="form-label" for="courrier-correspondant">Expéditeur / destinataire <span class="text-danger">*</span></label>
-              <input id="courrier-correspondant" class="form-control" formControlName="description"
+              <input appFieldValidation id="courrier-correspondant" class="form-control" formControlName="description"
                      placeholder="Ex. Direction régionale de Sikasso">
               <div class="form-text">Pour un courrier entrant, indiquez l’expéditeur ; pour un courrier sortant, le destinataire.</div>
             </div>
@@ -79,7 +79,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
             <i class="fa-solid fa-xmark me-1" aria-hidden="true"></i>Annuler
           </button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading() || form.invalid || form.pending || (!isEditing && !selectedFile())">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             @else { <i class="fa-solid me-2" [class.fa-floppy-disk]="isEditing" [class.fa-plus]="!isEditing" aria-hidden="true"></i> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer le courrier') }}

@@ -50,7 +50,7 @@
           </div>
           <div class="col-12">
             <label class="form-label" for="pv-observation">Observation</label>
-            <textarea id="pv-observation" class="form-control" rows="3" formControlName="observation" placeholder="Ex. Séance tenue à Bamako, sous la présidence de…"></textarea>
+            <textarea appFieldValidation id="pv-observation" class="form-control" rows="3" formControlName="observation" placeholder="Ex. Séance tenue à Bamako, sous la présidence de…"></textarea>
           </div>
           <div class="col-12">
             <label class="form-label" for="pv-document">Document @if (isEditing) { (facultatif pour conserver le document actuel) } @else { <span class="text-danger">*</span> }</label>
@@ -62,7 +62,7 @@
         </div>
         <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()"><i class="bi bi-x-lg me-2" aria-hidden="true"></i>Annuler</button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting()"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || form.invalid || form.pending || (!isEditing && !selectedFile())"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Créer le PV') }}
           </button>

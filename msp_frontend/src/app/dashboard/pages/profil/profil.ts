@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {matchingPasswords, pastDate, requiredValue} from '../../../shared/utils/form-validators';
 import {Component, computed, inject, OnInit, signal} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
@@ -8,7 +10,7 @@ import {ProfilService} from '../services/profil.service';
 
 @Component({
   selector: 'app-profil',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './profil.html',
   styleUrl: './profil.scss',
 })
@@ -25,6 +27,18 @@ export class Profil implements OnInit {
   readonly passwordError = signal<string | null>(null);
   readonly selectedPhoto = signal<File | null>(null);
   readonly photoPreview = signal<string | null>(null);
+  readonly maxDateNaissance = (() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  })();
+  readonly missingProfileFields = computed(() => {
+    const user = this.profil();
+    if (!user) return [];
+    return ([['dateNaissance', 'date de naissance'], ['lieuNaissance', 'lieu de naissance'],
+      ['pere', 'nom du père'], ['mere', 'nom de la mère'], ['adresse', 'adresse']] as const)
+      .filter(([key]) => !user[key]?.trim()).map(([, label]) => label);
+  });
   readonly initials = computed(() => {
     const user = this.profil();
     return `${user?.prenom ?? ''} ${user?.nom ?? ''}`
@@ -41,55 +55,40 @@ export class Profil implements OnInit {
   });
 
   readonly profilForm = new FormGroup({
-    nom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    prenom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-    matricule: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    telephonePrincipal: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    nom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    prenom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    email: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.email]}),
+    matricule: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    telephonePrincipal: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     telephoneSecondaire: new FormControl('', {nonNullable: true}),
-    dateNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    lieuNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    dateNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue, pastDate]}),
+    lieuNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     adresse: new FormControl('', {nonNullable: true}),
-    numeroInscription: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    pere: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    mere: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    genre: new FormControl('HOMME', {nonNullable: true, validators: [Validators.required]}),
+    numeroInscription: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    pere: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    mere: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    genre: new FormControl('HOMME', {nonNullable: true, validators: [requiredValue]}),
     observations: new FormControl('', {nonNullable: true}),
   });
 
   readonly passwordForm = new FormGroup({
-    ancienMotDePasse: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(8)]}),
-    nouveauMotDePasse: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(8)]}),
-    confirmationPassword: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(8)]}),
-  });
+    ancienMotDePasse: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.minLength(8)]}),
+    nouveauMotDePasse: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.minLength(8)]}),
+    confirmationPassword: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.minLength(8)]}),
+  }, {validators: matchingPasswords('nouveauMotDePasse', 'confirmationPassword', 'ancienMotDePasse')});
 
   ngOnInit(): void {
     this.chargerProfil();
   }
 
   chargerProfil(): void {
+    if (this.isSaving() || this.isSavingPhoto()) return;
+    this.errorMessage.set(null);
     this.isLoading.set(true);
     this.profilService.getProfil().pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: response => {
         const user = response.donnees.resultat;
-        this.profil.set(user);
-        this.auth.updateCurrentUserProfile(`${user.prenom} ${user.nom}`, user.email);
-        this.profilForm.patchValue({
-          nom: user.nom,
-          prenom: user.prenom,
-          email: user.email,
-          matricule: user.matricule,
-          telephonePrincipal: user.telephonePrincipal,
-          telephoneSecondaire: user.telephoneSecondaire ?? '',
-          dateNaissance: user.dateNaissance,
-          lieuNaissance: user.lieuNaissance,
-          adresse: user.adresse ?? '',
-          numeroInscription: user.numeroInscription,
-          pere: user.pere,
-          mere: user.mere,
-          genre: user.genre,
-          observations: user.observations ?? '',
-        });
+        this.remplirProfil(user);
       },
       error: error => {
         console.error('Erreur lors du chargement du profil.', error);
@@ -100,15 +99,14 @@ export class Profil implements OnInit {
 
   enregistrerProfil(): void {
     this.profilForm.markAllAsTouched();
-    if (this.profilForm.invalid || this.isSaving()) return;
+    if (this.profilForm.invalid || this.isSaving() || this.isLoading()) return;
     this.errorMessage.set(null);
     this.isSaving.set(true);
     this.profilService.updateProfil(this.profilForm.getRawValue())
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
         next: response => {
-          this.profil.set(response.donnees.resultat);
-          this.auth.updateCurrentUserProfile(response.donnees.resultat.prenom + ' ' + response.donnees.resultat.nom, response.donnees.resultat.email);
+          this.remplirProfil(response.donnees.resultat);
           this.sweetAlert.showSuccess(response.message || 'Votre profil a été mis à jour.');
         },
         error: error => {
@@ -116,6 +114,19 @@ export class Profil implements OnInit {
           this.errorMessage.set(error?.error?.message ?? 'La mise à jour du profil a échoué.');
         },
       });
+  }
+
+  private remplirProfil(user: UtilisateurDetail): void {
+    this.profil.set(user);
+    this.auth.updateCurrentUserProfile(`${user.prenom} ${user.nom}`, user.email);
+    this.profilForm.reset({
+      nom: user.nom ?? '', prenom: user.prenom ?? '', email: user.email ?? '',
+      matricule: user.matricule ?? '', telephonePrincipal: user.telephonePrincipal ?? '',
+      telephoneSecondaire: user.telephoneSecondaire ?? '',
+      dateNaissance: user.dateNaissance?.slice(0, 10) ?? '', lieuNaissance: user.lieuNaissance ?? '',
+      adresse: user.adresse ?? '', numeroInscription: user.numeroInscription ?? '',
+      pere: user.pere ?? '', mere: user.mere ?? '', genre: user.genre ?? '', observations: user.observations ?? '',
+    });
   }
 
   choisirPhoto(event: Event): void {

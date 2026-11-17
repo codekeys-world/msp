@@ -196,7 +196,16 @@ export class Adjoints implements OnInit {
     this.selectedRole.set('');
   }
 
+  get formulaireValide(): boolean {
+    return !!this.adjointSlug() && !!this.dateDebut() && (!this.dateFin() || this.dateFin() >= this.dateDebut());
+  }
+
   async submit(): Promise<void> {
+    if (this.submitting()) return;
+    if (!this.formulaireValide) {
+      this.sweetAlert.showError('Sélectionnez un adhérent et vérifiez les dates de la délégation.');
+      return;
+    }
     if (!this.adjointSlug() || !this.dateDebut()) {
       this.sweetAlert.showError('Veuillez remplir les champs obligatoires.');
       return;

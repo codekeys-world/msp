@@ -20,40 +20,40 @@
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="form-label">Nom</label>
-            <input class="form-control" formControlName="nom" placeholder="Ex. Ordinateur portable" />
+            <label class="form-label">Nom <span class="text-danger">*</span></label>
+            <input aria-label="Nom" appFieldValidation class="form-control" formControlName="nom" placeholder="Ex. Ordinateur portable" />
           </div>
           <div class="col-md-6">
-            <label class="form-label">Catégorie</label>
-            <input class="form-control" formControlName="categorie" placeholder="Ex. Informatique, mobilier…" />
+            <label class="form-label">Catégorie <span class="text-danger">*</span></label>
+            <input aria-label="Catégorie" appFieldValidation class="form-control" formControlName="categorie" placeholder="Ex. Informatique, mobilier…" />
           </div>
           <div class="col-md-6">
-            <label class="form-label">Fournisseur</label>
-            <input class="form-control" formControlName="fournisseur" placeholder="Nom du fournisseur" />
+            <label class="form-label">Fournisseur <span class="text-danger">*</span></label>
+            <input aria-label="Fournisseur" appFieldValidation class="form-control" formControlName="fournisseur" placeholder="Nom du fournisseur" />
           </div>
           <div class="col-md-3">
-            <label class="form-label">Quantité</label>
-            <input class="form-control" type="number" min="0" formControlName="quantite" placeholder="Ex. 1" />
+            <label class="form-label">Quantité <span class="text-danger">*</span></label>
+            <input aria-label="Quantité" appFieldValidation class="form-control" type="number" min="0" formControlName="quantite" placeholder="Ex. 1" />
           </div>
           <div class="col-md-3">
-            <label class="form-label">Prix unitaire (FCFA)</label>
-            <input class="form-control" type="number" min="0" step="100" formControlName="prixUnitaire" placeholder="Ex. 250000" />
+            <label class="form-label">Prix unitaire (FCFA) <span class="text-danger">*</span></label>
+            <input aria-label="Prix unitaire (FCFA)" appFieldValidation class="form-control" type="number" min="0" step="100" formControlName="prixUnitaire" placeholder="Ex. 250000" />
           </div>
           <div class="col-md-3">
             <label class="form-label">Date d’acquisition</label>
-            <input class="form-control" type="date" formControlName="dateAcquisition" placeholder="Date d’acquisition" />
+            <input aria-label="Date d’acquisition" appFieldValidation class="form-control" type="date" formControlName="dateAcquisition" placeholder="Date d’acquisition" />
           </div>
           <div class="col-md-3">
-            <label class="form-label">Emplacement</label>
-            <input class="form-control" formControlName="emplacement" placeholder="Ex. Bureau de la trésorerie" />
+            <label class="form-label">Emplacement <span class="text-danger">*</span></label>
+            <input aria-label="Emplacement" appFieldValidation class="form-control" formControlName="emplacement" placeholder="Ex. Bureau de la trésorerie" />
           </div>
           <div class="col-md-6">
             <label class="form-label">Numéro de série</label>
-            <input class="form-control" formControlName="numeroSerie" placeholder="Numéro de série (facultatif)" />
+            <input aria-label="Numéro de série" appFieldValidation class="form-control" formControlName="numeroSerie" placeholder="Numéro de série (facultatif)" />
           </div>
           <div class="col-md-6">
-            <label class="form-label">Statut</label>
-            <select class="form-select" formControlName="statut">
+            <label class="form-label">Statut <span class="text-danger">*</span></label>
+            <select aria-label="Statut" appFieldValidation class="form-select" formControlName="statut">
               <option value="" disabled>Choisir un statut</option>
               <option value="ACTIF">Actif</option>
               <option value="EN_MAINTENANCE">En maintenance</option>
@@ -62,13 +62,13 @@
           </div>
           <div class="col-12">
             <label class="form-label">Observation</label>
-            <textarea class="form-control" rows="4" formControlName="observation" placeholder="Détails ou remarques sur le matériel (facultatif)"></textarea>
+            <textarea aria-label="Observation" appFieldValidation class="form-control" rows="4" formControlName="observation" placeholder="Détails ou remarques sur le matériel (facultatif)"></textarea>
           </div>
         </div>
 
         <div class="d-flex justify-content-end gap-2 mt-4">
           <button class="btn btn-outline-secondary" type="button" (click)="router.navigate(['dashboard', 'materiels'])" [disabled]="isSubmitting()">Annuler</button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || form.invalid || form.pending">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             {{ isSubmitting() ? 'Enregistrement…' : (slug() ? 'Enregistrer les modifications' : 'Créer le matériel') }}
           </button>

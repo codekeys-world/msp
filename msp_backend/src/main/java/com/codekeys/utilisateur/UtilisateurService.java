@@ -550,7 +550,7 @@ public class UtilisateurService implements UserDetailsService {
         return true;
     }
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public UtilisateurReponseDetaillee obtenirProfilConnecte() {
         Utilisateur utilisateur = this.utilisateurConnecte();
         return this.utilisateurMapper.utilisateurToUtilisateurReponseDetaillee(utilisateur);

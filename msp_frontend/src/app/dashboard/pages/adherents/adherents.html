@@ -65,7 +65,7 @@
                 <button class="member-card__summary" type="button" (click)="view(adherent)"
                         [attr.aria-label]="'Consulter le dossier de ' + adherent.prenom + ' ' + adherent.nom">
                   @if (getPhotoUrl(adherent); as photoUrl) {
-                    <img [src]="photoUrl" alt="Photo" class="member-avatar-img">
+                    <img width="96" height="96" decoding="async" loading="lazy" [src]="photoUrl" [alt]="'Photo de ' + adherent.prenom + ' ' + adherent.nom" class="member-avatar-img">
                   } @else {
                     <span class="member-avatar"><i class="bi bi-person" aria-hidden="true"></i></span>
                   }

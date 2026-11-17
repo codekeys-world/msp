@@ -11,6 +11,10 @@ export interface ModifierMotDePasseRequest {
   confirmationPassword: string;
 }
 
+export type ProfilUtilisateurRequest = Pick<UtilisateurDetail,
+  'nom' | 'prenom' | 'email' | 'matricule' | 'telephonePrincipal' | 'telephoneSecondaire'
+  | 'dateNaissance' | 'lieuNaissance' | 'adresse' | 'numeroInscription' | 'pere' | 'mere' | 'genre' | 'observations'>;
+
 @Injectable({providedIn: 'root'})
 export class ProfilService {
   private readonly http = inject(HttpClient);
@@ -20,7 +24,7 @@ export class ProfilService {
     return this.http.get<AppResponse<UtilisateurDetail>>(`${this.baseUrl}/me`);
   }
 
-  updateProfil(request: Omit<UtilisateurDetail, 'slug' | 'role' | 'authorisations' | 'conjoints' | 'descendants' | 'profileImage' | 'profileImageType' | 'nomCertificatVieCollectif'>): Observable<AppResponse<UtilisateurDetail>> {
+  updateProfil(request: ProfilUtilisateurRequest): Observable<AppResponse<UtilisateurDetail>> {
     return this.http.put<AppResponse<UtilisateurDetail>>(`${this.baseUrl}/me`, request);
   }
 

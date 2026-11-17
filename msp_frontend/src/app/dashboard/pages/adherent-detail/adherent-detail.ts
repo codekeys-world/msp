@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -11,7 +13,7 @@ import {SweetAlertService} from '../../../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-adherent-detail',
-  imports: [DatePipe, RouterLink, ReactiveFormsModule],
+  imports: [FieldValidationDirective, DatePipe, RouterLink, ReactiveFormsModule],
   templateUrl: './adherent-detail.html',
   styleUrl: './adherent-detail.scss',
 })
@@ -39,11 +41,11 @@ export class AdherentDetail implements OnInit {
   readonly selectedAuthorisationIds = signal<number[]>([]);
   readonly photoUrl = signal<string | null>(null);
   readonly familyForm = new FormGroup({
-    nom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    prenom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    dateNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    lieuNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    genre: new FormControl('HOMME', {nonNullable: true, validators: [Validators.required]}),
+    nom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    prenom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    dateNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    lieuNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    genre: new FormControl('HOMME', {nonNullable: true, validators: [requiredValue]}),
     adresse: new FormControl('', {nonNullable: true}),
     telephonePrincipal: new FormControl('', {nonNullable: true}),
     telephoneSecondaire: new FormControl('', {nonNullable: true}),
@@ -284,16 +286,16 @@ export class AdherentDetail implements OnInit {
   ): void {
     const spouse = type === 'conjoints';
     this.familyForm.controls.telephonePrincipal.setValidators(
-      spouse ? [Validators.required] : []
+      spouse ? [requiredValue] : []
     );
     this.familyForm.controls.acteDeMariage.setValidators(
-      spouse && (newRecord || requireMarriageCertificate) ? [Validators.required] : []
+      spouse && (newRecord || requireMarriageCertificate) ? [requiredValue] : []
     );
     this.familyForm.controls.acteDeNaissance.setValidators(
-      !spouse && (newRecord || requireBirthCertificate) ? [Validators.required] : []
+      !spouse && (newRecord || requireBirthCertificate) ? [requiredValue] : []
     );
     this.familyForm.controls.certificatVieCollectif.setValidators(
-      !spouse && (newRecord || requireLifeCertificate) ? [Validators.required] : []
+      !spouse && (newRecord || requireLifeCertificate) ? [requiredValue] : []
     );
     Object.values(this.familyForm.controls).forEach(control => control.updateValueAndValidity());
   }

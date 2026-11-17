@@ -48,7 +48,7 @@
           </h2>
 
           <div class="mb-3">
-            <label for="searchAdherentInput" class="form-label small fw-semibold text-muted">Rechercher un adhérent</label>
+            <label class="form-label small fw-semibold text-muted" for="searchAdherentInput">Rechercher un adhérent</label>
             <div class="input-group input-group-sm">
               <span class="input-group-text"><i class="fas fa-search"></i></span>
               <input type="text" id="searchAdherentInput" class="form-control"
@@ -63,7 +63,7 @@
                       [class.is-active]="adherent()?.slug === adh.slug"
                       (click)="selectAdherent(adh)">
                 @if (adh.profileImage && adh.profileImageType) {
-                  <img [src]="getAdherentPhoto(adh)" alt="Photo" class="adh-avatar-img">
+                  <img width="96" height="96" decoding="async" loading="lazy" [src]="getAdherentPhoto(adh)" [alt]="'Photo de ' + adh.prenom + ' ' + adh.nom" class="adh-avatar-img">
                 } @else {
                   <span class="adh-avatar">
                     <i class="fas fa-user"></i>
@@ -117,7 +117,7 @@
           </h2>
 
           <div class="mb-2">
-            <label for="dateDelivranceInput" class="form-label small text-muted">Délivrance</label>
+            <label class="form-label small text-muted" for="dateDelivranceInput">Délivrance</label>
             <input type="date" id="dateDelivranceInput" class="form-control form-control-sm"
                    [(ngModel)]="dateDelivrance" placeholder="Date de délivrance">
           </div>
@@ -132,7 +132,7 @@
           <div class="d-flex align-items-center gap-3">
             <div class="badge-photo-preview">
               @if (memberPhoto()) {
-                <img [src]="memberPhoto()" alt="Photo adhérent">
+                <img width="96" height="96" decoding="async" loading="lazy" [src]="memberPhoto()" alt="Photo adhérent">
               } @else {
                 <i class="fas fa-user"></i>
               }
@@ -257,7 +257,7 @@
                     </div>
                     <div class="card-header-badge__entity">
                       <div class="entity-logo-box">
-                        <img src="/logo_msp_vf.png" alt="Logo MSP" class="entity-logo" onerror="this.src='/logo_msp.png'">
+                        <img width="96" height="96" decoding="async" fetchpriority="high" src="/logo_msp_vf.webp" alt="Logo MSP" class="entity-logo" onerror="this.src='/logo_msp.webp'">
                       </div>
                       <div class="entity-names">
                         <span class="entity-main">MUTUELLE DES SURVEILLANTS DE PRISON</span>
@@ -277,7 +277,7 @@
                     <div class="card-photo-column">
                       <div class="card-photo-frame">
                         @if (memberPhoto()) {
-                          <img [src]="memberPhoto()" alt="Photo du membre" class="card-photo-img">
+                          <img width="96" height="96" decoding="async" loading="lazy" [src]="memberPhoto()" alt="Photo du membre" class="card-photo-img">
                         } @else {
                           <div class="card-photo-placeholder">
                             <i class="fas fa-user"></i>

@@ -12,25 +12,25 @@
         <p class="text-muted small">Les champs marqués d’un <span class="text-danger">*</span> sont obligatoires.</p>
         <div class="row g-3">
           <div class="col-12">
-            <label for="assemblee-nom" class="form-label">Nom <span class="text-danger">*</span></label>
+            <label class="form-label" for="assemblee-nom">Nom <span class="text-danger">*</span></label>
             <input id="assemblee-nom" class="form-control" formControlName="nom" maxlength="200" placeholder="Ex. Assemblée générale ordinaire" required [class.is-invalid]="form.controls.nom.touched && form.controls.nom.invalid" [attr.aria-invalid]="form.controls.nom.touched && form.controls.nom.invalid" aria-describedby="assemblee-nom-error">
             <div id="assemblee-nom-error" class="invalid-feedback">Saisissez un nom (200 caractères maximum).</div>
           </div>
           <div class="col-12 col-md-6">
-            <label for="assemblee-date" class="form-label">Date <span class="text-danger">*</span></label>
+            <label class="form-label" for="assemblee-date">Date <span class="text-danger">*</span></label>
             <input id="assemblee-date" type="date" class="form-control" formControlName="date" placeholder="Date de l’assemblée" required [class.is-invalid]="form.controls.date.touched && form.controls.date.invalid" [attr.aria-invalid]="form.controls.date.touched && form.controls.date.invalid" aria-describedby="assemblee-date-help assemblee-date-error">
             <div id="assemblee-date-help" class="form-text">Sélectionnez la date de la réunion (jour/mois/année).</div>
             <div id="assemblee-date-error" class="invalid-feedback">La date est obligatoire.</div>
           </div>
           <div class="col-12 col-md-6">
-            <label for="assemblee-lieu" class="form-label">Lieu <span class="text-danger">*</span></label>
+            <label class="form-label" for="assemblee-lieu">Lieu <span class="text-danger">*</span></label>
             <input id="assemblee-lieu" class="form-control" formControlName="lieu" maxlength="255" placeholder="Ex. Salle de réunion de la MSP, Bamako" required [class.is-invalid]="form.controls.lieu.touched && form.controls.lieu.invalid" [attr.aria-invalid]="form.controls.lieu.touched && form.controls.lieu.invalid" aria-describedby="assemblee-lieu-error">
             <div id="assemblee-lieu-error" class="invalid-feedback">Saisissez un lieu (255 caractères maximum).</div>
           </div>
         </div>
         <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
           <button class="btn btn-outline-secondary" type="button" [disabled]="saving()" (click)="formVisible.set(false)">Annuler</button>
-          <button class="btn btn-success" type="submit" [disabled]="saving()">
+          <button class="btn btn-success" type="submit" [disabled]="saving() || form.invalid || form.pending">
             @if (saving()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             {{ saving() ? 'Enregistrement…' : (edition() ? 'Enregistrer les modifications' : 'Créer l’assemblée') }}
           </button>

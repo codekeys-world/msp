@@ -20,7 +20,7 @@
 .adherents-eyebrow { color: rgb(255 255 255 / 72%); font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 .adherents-content { padding: clamp(1rem, 2.5vw, 1.75rem); background: #f8faf8; border: 1px solid #e9efea; border-radius: 1rem; }
 .adherents-content h2 { margin: 0; color: #19352a; font-size: 1.2rem; font-weight: 700; }
-.adherents-content > div > p { margin: .3rem 0 0; color: #73847a; font-size: .88rem; }
+.adherents-content > div > p { margin: .3rem 0 0; color: #526259; font-size: .88rem; }
 .adherents-search { max-width: 58rem; .input-group-text { color: #176640; background: #fff; } .form-control:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); } }
 .adherents-state, .adherents-empty { display: flex; min-height: 12rem; align-items: center; justify-content: center; gap: .75rem; color: #65766b; }
 .adherents-empty { flex-direction: column; text-align: center; i { color: #16804e; font-size: 2.5rem; } h3 { margin: 0; } p { margin: 0; } }
@@ -117,13 +117,13 @@
 }
 .member-avatar { display: grid; width: 3.2rem; height: 3.2rem; flex: 0 0 auto; place-items: center; color: #176640; font-size: 1.35rem; background: #eaf6ee; border-radius: 50%; }
 .member-avatar-img { width: 3.2rem; height: 3.2rem; flex: 0 0 auto; object-fit: cover; border-radius: 50%; }
-.member-main { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: .18rem; strong { overflow: hidden; font-size: 1rem; text-overflow: ellipsis; white-space: nowrap; } span { color: #73847a; font-size: .82rem; } .member-number { color: #176640; font-weight: 650; } .member-gender { color: #176640; font-weight: 600; } }
+.member-main { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: .18rem; strong { overflow: hidden; font-size: 1rem; text-overflow: ellipsis; white-space: nowrap; } span { color: #526259; font-size: .82rem; } .member-number { color: #176640; font-weight: 650; } .member-gender { color: #176640; font-weight: 600; } }
 .member-family { display: flex; flex: 0 0 auto; gap: .6rem; color: #176640; font-size: .82rem; span { padding: .35rem .5rem; background: #eff7f1; border-radius: 999px; } }
 .member-details { padding: 0 1.15rem 1.2rem; border-top: 1px solid #edf1ee; }
 .member-details__actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; h3 { margin: 0; color: #19352a; font-size: 1rem; font-weight: 700; } }
-.member-fields { padding-bottom: 1rem; span, strong { display: block; } span { margin-bottom: .15rem; color: #73847a; font-size: .76rem; } strong { overflow-wrap: anywhere; color: #284438; font-size: .88rem; font-weight: 600; } }
+.member-fields { padding-bottom: 1rem; span, strong { display: block; } span { margin-bottom: .15rem; color: #526259; font-size: .76rem; } strong { overflow-wrap: anywhere; color: #284438; font-size: .88rem; font-weight: 600; } }
 .family-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; section { padding: .9rem; background: #f7faf7; border-radius: .7rem; } h4 { color: #176640; font-size: .92rem; font-weight: 700; } }
-.family-person { display: flex; flex-direction: column; gap: .15rem; padding: .65rem 0; border-top: 1px solid #e7eee9; strong { color: #284438; font-size: .86rem; } span { color: #73847a; font-size: .78rem; } }
+.family-person { display: flex; flex-direction: column; gap: .15rem; padding: .65rem 0; border-top: 1px solid #e7eee9; strong { color: #284438; font-size: .86rem; } span { color: #526259; font-size: .78rem; } }
 
 @media (max-width: 575.98px) {
   .adherents-page { padding: .75rem; }

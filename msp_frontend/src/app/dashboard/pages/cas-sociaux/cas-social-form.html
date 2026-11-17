@@ -79,7 +79,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="cas-heures">Duree d'hospitalisation (heures) <span class="text-danger">*</span></label>
                   <input id="cas-heures" class="form-control" type="number" min="72" formControlName="heuresHospitalisation"
-                         [class.is-invalid]="form.controls.heuresHospitalisation.touched && form.controls.heuresHospitalisation.invalid">
+                         [class.is-invalid]="form.controls.heuresHospitalisation.touched && form.controls.heuresHospitalisation.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.heuresHospitalisation.touched && form.controls.heuresHospitalisation.invalid) {
                     <div class="invalid-feedback">La maladie doit avoir necessite au moins 72 heures d'hospitalisation.</div>
                   }
@@ -96,7 +96,7 @@
                   <label class="form-label" for="cas-cotisations-versees">Total des cotisations versees (FCFA) <span class="text-danger">*</span></label>
                   <input id="cas-cotisations-versees" class="form-control" type="number" min="0"
                          formControlName="montantCotisationsVersees"
-                         [class.is-invalid]="form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid">
+                         [class.is-invalid]="form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid) {
                     <div class="invalid-feedback">Le total verse doit etre renseigne pour calculer le remboursement.</div>
                   }
@@ -129,7 +129,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="cas-beneficiaire-prenom">Prenom <span class="text-danger">*</span></label>
                   <input id="cas-beneficiaire-prenom" class="form-control" formControlName="prenomBeneficiaire"
-                         [class.is-invalid]="form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le prenom de la personne designee est obligatoire.</div>
                   }
@@ -137,7 +137,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="cas-beneficiaire-nom">Nom <span class="text-danger">*</span></label>
                   <input id="cas-beneficiaire-nom" class="form-control" formControlName="nomBeneficiaire"
-                         [class.is-invalid]="form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le nom de la personne designee est obligatoire.</div>
                   }
@@ -145,7 +145,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="cas-beneficiaire-telephone">Telephone <span class="text-danger">*</span></label>
                   <input id="cas-beneficiaire-telephone" class="form-control" type="tel" formControlName="telephoneBeneficiaire"
-                         [class.is-invalid]="form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le numero de telephone de la personne designee est obligatoire.</div>
                   }
@@ -198,7 +198,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
             <i class="bi bi-x-lg me-1" aria-hidden="true"></i>Annuler
           </button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading() || form.invalid || form.pending">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             @else { <i class="bi me-2" [class.bi-pencil-square]="isEditing" [class.bi-plus-circle]="!isEditing" aria-hidden="true"></i> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer le cas social') }}

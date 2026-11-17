@@ -60,6 +60,7 @@ public class SecuriteApplicationConfiguration {
                                 .anyRequest().authenticated()
                 ).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AntiSpamFilter(), JwtFilter.class)
                 .addFilterAfter(this.journalActionFilter, JwtFilter.class);
         return http.build();
     }

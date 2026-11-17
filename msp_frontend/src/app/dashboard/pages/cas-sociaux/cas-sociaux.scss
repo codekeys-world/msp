@@ -11,7 +11,7 @@
 .cas-sociaux-eyebrow { color: rgb(255 255 255 / 72%); font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 .cas-sociaux-content { padding: clamp(1rem, 2.5vw, 1.75rem); background: #f8faf8; border: 1px solid #e9efea; border-radius: 1.1rem; }
 .cas-sociaux-content h2 { margin: 0; color: #19352a; font-size: 1.2rem; font-weight: 700; }
-.cas-sociaux-content > div > p { margin: .3rem 0 0; color: #73847a; font-size: .88rem; }
+.cas-sociaux-content > div > p { margin: .3rem 0 0; color: #526259; font-size: .88rem; }
 .cas-sociaux-search { max-width: 58rem; .input-group-text { color: #176640; background: #fff; } .form-control:focus { border-color: #78b88f; box-shadow: 0 0 0 .2rem rgb(23 102 64 / 12%); } }
 .cas-sociaux-state { display: flex; min-height: 12rem; align-items: center; justify-content: center; gap: .75rem; color: #65766b; }
 .cas-social-card {
@@ -22,14 +22,14 @@
 }
 .cas-social-card__header, .cas-social-card__footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 .cas-social-card__heading { min-width: 0; h3 { margin: .35rem 0 .25rem; color: #176640; font-size: 1.12rem; font-weight: 700; overflow-wrap: anywhere; } p { margin: 0; color: #52645a; font-size: .93rem; line-height: 1.45; overflow-wrap: anywhere; } }
-.cas-social-card__eyebrow, .cas-social-card__label { display: block; color: #73847a; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.cas-social-card__eyebrow, .cas-social-card__label { display: block; color: #526259; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .cas-social-card__icon, .cas-social-card__document-icon { display: grid; flex: 0 0 auto; place-items: center; color: #16804e; background: #eaf6ee; border-radius: .8rem; }
 .cas-social-card__icon { width: 2.8rem; height: 2.8rem; font-size: 1.3rem; }
 .cas-social-card__summary { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 1.1rem 0; padding: .85rem 1rem; background: #f5f9f6; border: 1px solid #edf3ee; border-radius: .8rem; strong { display: block; margin-top: .2rem; color: #263d31; font-size: .95rem; } strong i { color: #16804e; } }
 .cas-social-card__amount { color: #176640; font-weight: 750; text-align: right; }
 .cas-social-card__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; margin: 0 0 1.2rem; }
 .cas-social-card__details > div { min-width: 0; }
-.cas-social-card__details dt { margin-bottom: .25rem; color: #73847a; font-size: .78rem; font-weight: 600; i { color: #16804e; } }
+.cas-social-card__details dt { margin-bottom: .25rem; color: #526259; font-size: .78rem; font-weight: 600; i { color: #16804e; } }
 .cas-social-card__details dd { margin: 0; color: #263d31; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; span { display: block; color: #76877d; font-size: .78rem; font-weight: 400; } }
 .cas-social-card__footer { align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid #edf1ee; }
 .cas-social-card__document { display: flex; min-width: 0; align-items: center; gap: .6rem; }

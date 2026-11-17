@@ -10,11 +10,11 @@
                         </span>
                         <h1 class="landing-title text-uppercase fw-bold ">
                             mutuelle des Surveillants
+                            <span class="landing-title--accent d-block">de Prison du Mali</span>
                         </h1>
-                        <h1 class="landing-title landing-title--accent text-uppercase fw-bold"> de Prison du Mali</h1>
-                        <h3 class="landing-subtitle mt-4">
+                        <p class="landing-subtitle mt-4">
                             Gérez vos cotisations, sollicitez une aide sociale, demandez un prêt et restez informé des assemblées générales — depuis votre espace adhérent sécurisé.
-                        </h3>
+                        </p>
                     </div>
                     <div class="col-12 col-lg-5 mt-5 mt-lg-0">
                         <div class="landing-stats">
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col-12 d-flex justify-content-center align-items-center text-center mb-4">
                         <div >
-                            <h1 class="fw-bold">Nos services aux adhérents</h1>
+                            <h2 class="fw-bold">Nos services aux adhérents</h2>
                             <p class="text-secondary">Quatre piliers au service de la communauté</p>
                         </div>
                     </div>
@@ -91,9 +91,9 @@
                         <div class="card service-card p-4 rounded-4">
                             <i class="fa-regular fa-circle-check fa-2x text-primary rounded-2 d-inline-flex align-items-center justify-content-center  p-2" style="width:60px; background-color: #DCF7E2;"></i>
                             <h3 class="mt-3 fw-semibold">Cotisations</h3>
-                            <h6 class="fw-light">
+                            <p class="fw-light">
                                 Suivez vos paiements mensuels et historique en toute transparence.
-                            </h6>
+                            </p>
                         </div>
                     </div>
 
@@ -101,9 +101,9 @@
                         <div class="card service-card p-4 rounded-4">
                             <i class="fa-regular fa-handshake fa-2x text-primary d-inline-flex align-items-center justify-content-center rounded-2 p-2" style="width:60px; background-color: #DCF7E2;"></i>
                             <h3 class="mt-3 fw-semibold">Prestations</h3>
-                            <h6 class="fw-light">
+                            <p class="fw-light">
                                 Aides en cas de maladie, décès, mariage ou naissance.
-                            </h6>
+                            </p>
                         </div>
                     </div>
 
@@ -111,9 +111,9 @@
                         <div class="card service-card p-4 rounded-4">
                             <i class="fa-regular fa-money-bill-1 fa-2x text-primary  d-inline-flex align-items-center justify-content-center rounded-2 p-2" style="width:60px; background-color: #DCF7E2;"></i>
                             <h3 class="mt-3 fw-semibold">Demander Prêts</h3>
-                            <h6 class="fw-light">
+                            <p class="fw-light">
                                 Demandez un prêt à conditions favorables avec échéancier clair.
-                            </h6>
+                            </p>
                         </div>
                     </div>
 
@@ -123,9 +123,9 @@
                         <div class="card service-card p-4 rounded-4">
                             <i class="fa-solid fa-user-group fa-2x text-primary d-inline-flex align-items-center justify-content-center rounded-2 p-2 btn-outline-primary" style="width:60px; background-color: #DCF7E2;"></i>
                             <h3 class="mt-3 fw-semibold">Vie associative</h3>
-                            <h6 class="fw-light">
+                            <p class="fw-light">
                                 Restez informé des AG, événements et documents officiels.
-                            </h6>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="mb-4 ">
-                            <h1 class="fw-bold">Nos missions</h1>
+                            <h2 class="fw-bold">Nos missions</h2>
                         </div>
                         <p class="text-secondary">
                             La MSP rassemble les surveillants de prison du Mali autour d'une démarche solidaire de protection sociale, d'entraide financière et de cohésion professionnelle.
@@ -167,12 +167,12 @@
                         <div class="card landing-join-card p-4 p-md-5">
                             <h3 class="fw-bold mb-2">Devenir adhérent</h3>
                             <p>
-                                Rejoignez la MSP en quelques minutes. Inscription en ligne, validation par l'administration, accès immédiat à votre tableau de bord.
+                                Pour devenir adhérent, rapprochez-vous de l’administration de la MSP. Une fois votre compte créé, accédez à vos informations dans votre espace personnel.
                             </p>
                             <div class="d-grid d-md-block">
-                                <button class="btn btn-primary" type="button">
-                                  <i class="fa fa-phone"></i>
-                                  Contacter l'administrateur
+                                <button class="btn btn-primary" type="button" (click)="goToLogin()">
+                                  <i class="fa fa-user" aria-hidden="true"></i>
+                                  Accéder à mon espace
                                 </button>
                             </div>
                         </div>

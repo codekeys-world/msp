@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -10,7 +12,7 @@ type FamilyForm = FormGroup;
 
 @Component({
   selector: 'app-adherent-form',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [FieldValidationDirective, ReactiveFormsModule, RouterLink],
   templateUrl: './adherent-form.html',
   styleUrl: './adherent-form.scss',
 })
@@ -27,19 +29,19 @@ export class AdherentForm implements OnInit {
   readonly adherentSlug = signal<string | null>(null);
 
   readonly adherentForm = new FormGroup({
-    nom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    prenom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    dateNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    lieuNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    genre: new FormControl('HOMME', {nonNullable: true, validators: [Validators.required]}),
+    nom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    prenom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    dateNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    lieuNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    genre: new FormControl('HOMME', {nonNullable: true, validators: [requiredValue]}),
     adresse: new FormControl('', {nonNullable: true}),
-    matricule: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    matricule: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     numeroAdhesion: new FormControl('', {nonNullable: true}),
-    email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-    telephonePrincipal: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    email: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.email]}),
+    telephonePrincipal: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     telephoneSecondaire: new FormControl('', {nonNullable: true}),
-    pere: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    mere: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    pere: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    mere: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     observations: new FormControl('', {nonNullable: true}),
     conjoints: new FormArray<FamilyForm>([]),
     descendants: new FormArray<FamilyForm>([]),
@@ -84,30 +86,30 @@ export class AdherentForm implements OnInit {
     if (!this.peutAjouterConjoint) return;
     const genreConjoint = this.adherentForm.controls.genre.value === 'HOMME' ? 'FEMME' : 'HOMME';
     this.conjoints.push(new FormGroup({
-      nom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      prenom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      dateNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      lieuNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      genre: new FormControl(genreConjoint, {nonNullable: true, validators: [Validators.required]}),
+      nom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      prenom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      dateNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      lieuNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      genre: new FormControl(genreConjoint, {nonNullable: true, validators: [requiredValue]}),
       adresse: new FormControl('', {nonNullable: true}),
-      telephonePrincipal: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+      telephonePrincipal: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
       telephoneSecondaire: new FormControl('', {nonNullable: true}),
-      acteDeMariage: new FormControl<File | null>(null, {validators: [Validators.required]}),
+      acteDeMariage: new FormControl<File | null>(null, {validators: [requiredValue]}),
     }));
   }
 
   ajouterDescendant(): void {
     this.descendants.push(new FormGroup({
-      nom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      prenom: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      dateNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      lieuNaissance: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-      genre: new FormControl('HOMME', {nonNullable: true, validators: [Validators.required]}),
+      nom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      prenom: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      dateNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      lieuNaissance: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+      genre: new FormControl('HOMME', {nonNullable: true, validators: [requiredValue]}),
       adresse: new FormControl('', {nonNullable: true}),
-      telephonePrincipal: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+      telephonePrincipal: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
       telephoneSecondaire: new FormControl('', {nonNullable: true}),
-      acteDeNaissance: new FormControl<File | null>(null, {validators: [Validators.required]}),
-      certificatVieCollectif: new FormControl<File | null>(null, {validators: [Validators.required]}),
+      acteDeNaissance: new FormControl<File | null>(null, {validators: [requiredValue]}),
+      certificatVieCollectif: new FormControl<File | null>(null, {validators: [requiredValue]}),
     }));
   }
 

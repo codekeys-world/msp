@@ -88,7 +88,7 @@
 
       <!-- Module selector -->
       <div class="filter-panel__select">
-        <select class="form-select" [value]="selectedModule()" (change)="onModuleChange($event)">
+        <select class="form-select" aria-label="Filtrer par module" [value]="selectedModule()" (change)="onModuleChange($event)">
           <option value="">Tous les modules</option>
           <option value="AUTHENTIFICATION">Authentification</option>
           <option value="ADHÉRENTS">Adhérents</option>
@@ -106,7 +106,7 @@
 
       <!-- Statut selector -->
       <div class="filter-panel__select filter-panel__select--sm">
-        <select class="form-select" [value]="selectedStatut()" (change)="onStatutChange($event)">
+        <select class="form-select" aria-label="Filtrer par statut" [value]="selectedStatut()" (change)="onStatutChange($event)">
           <option value="">Tous statuts</option>
           <option value="SUCCES">Succès</option>
           <option value="ECHEC">Échecs</option>

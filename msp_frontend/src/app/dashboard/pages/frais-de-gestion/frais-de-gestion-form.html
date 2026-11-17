@@ -26,7 +26,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Année <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" formControlName="annee"
+                            <input aria-label="Année" type="number" class="form-control" formControlName="annee"
                                    placeholder="Ex. 2026"
                                    [class.is-invalid]="form.get('annee')?.invalid && form.get('annee')?.touched">
                             @if (form.get('annee')?.errors?.['required']) {
@@ -36,7 +36,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Montant total (FCFA) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" formControlName="montantTotal"
+                            <input aria-label="Montant total (FCFA)" type="number" class="form-control" formControlName="montantTotal"
                                    placeholder="Montant du frais de gestion"
                                    [class.is-invalid]="form.get('montantTotal')?.invalid && form.get('montantTotal')?.touched">
                             @if (form.get('montantTotal')?.errors?.['required']) {
@@ -46,13 +46,13 @@
 
                         <div class="col-12">
                             <label class="form-label">Observation</label>
-                            <textarea class="form-control" rows="3" formControlName="observation"
+                            <textarea aria-label="Observation" appFieldValidation class="form-control" rows="3" formControlName="observation"
                                       placeholder="Observation facultative..."></textarea>
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Justificatif (fichier)</label>
-                            <input type="file" class="form-control" (change)="onFichierChange($event)"
+                            <input aria-label="Justificatif (fichier)" type="file" class="form-control" (change)="onFichierChange($event)"
                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                             @if (fichierSelectionne) {
                                 <small class="text-muted">Fichier sélectionné : {{ fichierSelectionne }}</small>

@@ -1,3 +1,4 @@
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -31,9 +32,9 @@ export class Assemblees implements OnInit {
   readonly deletingSlug = signal<string | null>(null);
   recherche = '';
   readonly form = this.fb.nonNullable.group({
-    nom: ['', [Validators.required, Validators.maxLength(200), Validators.pattern(/\S/)]],
-    date: ['', Validators.required],
-    lieu: ['', [Validators.required, Validators.maxLength(255), Validators.pattern(/\S/)]]
+    nom: ['', [requiredValue, Validators.maxLength(200), Validators.pattern(/\S/)]],
+    date: ['', requiredValue],
+    lieu: ['', [requiredValue, Validators.maxLength(255), Validators.pattern(/\S/)]]
   });
 
   ngOnInit() {

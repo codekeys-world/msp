@@ -43,7 +43,7 @@
 .home-section__icon--courrier { color: #167b88; background: #e8f7f8; }
 .home-section__icon--complaints { color: #b84d4d; background: #fff0ef; }
 .home-section__heading h2, .home-panel__heading h2 { margin: 0; color: #19352a; font-size: 1rem; font-weight: 750; }
-.home-section__heading p { margin: .2rem 0 0; color: #7b8a81; font-size: .8rem; }
+.home-section__heading p { margin: .2rem 0 0; color: #526259; font-size: .8rem; }
 .home-section__link { flex: 0 0 auto; color: #176640; font-size: .82rem; font-weight: 650; text-decoration: none; &:hover { color: #104a2c; } }
 .metric-card { display: grid; min-height: 9rem; align-content: start; gap: .2rem; padding: 1rem; background: #fbfcfb; border: 1px solid #edf1ee; border-radius: .85rem; }
 .metric-card__icon { display: grid; width: 2rem; height: 2rem; margin-bottom: .25rem; place-items: center; font-size: .95rem; border-radius: .65rem; }
@@ -54,7 +54,7 @@
 .metric-card__icon--neutral { color: #64766b; background: #eef1ef; }
 .metric-card__label { color: #64766b; font-size: .8rem; font-weight: 650; }
 .metric-card strong { color: #19352a; font-size: 1.6rem; line-height: 1.2; }
-.metric-card small { color: #89968e; font-size: .73rem; }
+.metric-card small { color: #526259; font-size: .73rem; }
 
 .home-bottom-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 1fr); align-items: start; gap: 1rem; }
 .home-panel__heading { margin-bottom: .85rem; }
@@ -68,7 +68,7 @@
 .activity-item__icon--mail { color: #167b88; background: #e8f7f8; }
 .activity-item__icon--complaint { color: #b84d4d; background: #fff0ef; }
 .activity-item__name { flex: 1 1 auto; color: #344b3d; font-size: .82rem; font-weight: 600; }
-.activity-item > small { flex: 0 0 auto; color: #89968e; font-size: .7rem; }
+.activity-item > small { flex: 0 0 auto; color: #526259; font-size: .7rem; }
 .activity-item .badge { font-size: .67rem; font-weight: 650; }
 .home-side-panels { display: grid; gap: 1rem; }
 .home-monthly__icon { display: grid; width: 2.35rem; height: 2.35rem; place-items: center; color: #176640; background: #eaf6ee; border-radius: .75rem; }

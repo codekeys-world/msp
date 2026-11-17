@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "images:optimize": "node scripts/optimize-images.mjs",
+    "audit:ui": "node scripts/audit-ui.mjs",
+    "audit:performance": "node scripts/audit-performance.mjs"
   },
   "private": true,
   "packageManager": "npm@11.11.0",
@@ -30,8 +33,12 @@
     "@angular/build": "^21.2.6",
     "@angular/cli": "^21.2.6",
     "@angular/compiler-cli": "^21.2.0",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
     "jsdom": "^28.0.0",
+    "lighthouse": "^13.6.0",
     "prettier": "^3.8.1",
+    "sharp": "^0.35.5",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }

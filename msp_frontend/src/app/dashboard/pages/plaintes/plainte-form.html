@@ -35,7 +35,7 @@
             </div>
             <div class="col-12">
               <label class="form-label" for="plainte-observation">Description de la plainte</label>
-              <textarea id="plainte-observation" class="form-control" rows="5" formControlName="observation"
+              <textarea appFieldValidation id="plainte-observation" class="form-control" rows="5" formControlName="observation"
                         placeholder="Ex. Réclamation concernant la prise en charge sociale d’un adhérent à Bamako…"></textarea>
             </div>
             <div class="col-12">
@@ -56,7 +56,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
             <i class="bi bi-x-lg me-1" aria-hidden="true"></i>Annuler
           </button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading() || form.invalid || form.pending">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             @else { <i class="bi me-2" [class.bi-pencil-square]="isEditing" [class.bi-plus-circle]="!isEditing" aria-hidden="true"></i> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer la plainte') }}

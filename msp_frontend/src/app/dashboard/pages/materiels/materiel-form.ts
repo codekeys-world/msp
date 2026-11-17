@@ -1,3 +1,5 @@
+import {FieldValidationDirective} from '../../../shared/directives/field-validation.directive';
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -10,7 +12,7 @@ import {SweetAlertService} from '../../../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-materiel-form',
-  imports: [ReactiveFormsModule],
+  imports: [FieldValidationDirective, ReactiveFormsModule],
   templateUrl: './materiel-form.html',
 })
 export class MaterielForm implements OnInit {
@@ -25,16 +27,16 @@ export class MaterielForm implements OnInit {
   readonly slug = signal<string | null>(null);
 
   readonly form = new FormGroup({
-    nom: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.maxLength(200)]}),
-    categorie: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.maxLength(200)]}),
-    fournisseur: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.maxLength(200)]}),
-    quantite: new FormControl<number | null>(null, {validators: [Validators.required, Validators.min(0)]}),
-    prixUnitaire: new FormControl<number | null>(null, {validators: [Validators.required, Validators.min(0)]}),
+    nom: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.maxLength(200)]}),
+    categorie: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.maxLength(200)]}),
+    fournisseur: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.maxLength(200)]}),
+    quantite: new FormControl<number | null>(null, {validators: [requiredValue, Validators.min(0)]}),
+    prixUnitaire: new FormControl<number | null>(null, {validators: [requiredValue, Validators.min(0)]}),
     dateAcquisition: new FormControl('', {nonNullable: true}),
-    emplacement: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.maxLength(200)]}),
+    emplacement: new FormControl('', {nonNullable: true, validators: [requiredValue, Validators.maxLength(200)]}),
     numeroSerie: new FormControl('', {nonNullable: true}),
     observation: new FormControl('', {nonNullable: true, validators: [Validators.maxLength(2000)]}),
-    statut: new FormControl<MaterielStatut | ''>('', {nonNullable: true, validators: [Validators.required]}),
+    statut: new FormControl<MaterielStatut | ''>('', {nonNullable: true, validators: [requiredValue]}),
   });
 
   ngOnInit(): void {

@@ -103,7 +103,7 @@
                   <div class="col-12 col-md-6">
                     <label class="form-label" for="pr-defunt-prenom">Prenom de la personne decedee <span class="text-danger">*</span></label>
                     <input id="pr-defunt-prenom" class="form-control" formControlName="prenomDefunt"
-                           [class.is-invalid]="form.controls.prenomDefunt.touched && form.controls.prenomDefunt.invalid">
+                           [class.is-invalid]="form.controls.prenomDefunt.touched && form.controls.prenomDefunt.invalid" placeholder="Saisissez une valeur">
                     @if (form.controls.prenomDefunt.touched && form.controls.prenomDefunt.invalid) {
                       <div class="invalid-feedback">Le prenom de la personne decedee est obligatoire.</div>
                     }
@@ -111,7 +111,7 @@
                   <div class="col-12 col-md-6">
                     <label class="form-label" for="pr-defunt-nom">Nom de la personne decedee <span class="text-danger">*</span></label>
                     <input id="pr-defunt-nom" class="form-control" formControlName="nomDefunt"
-                           [class.is-invalid]="form.controls.nomDefunt.touched && form.controls.nomDefunt.invalid">
+                           [class.is-invalid]="form.controls.nomDefunt.touched && form.controls.nomDefunt.invalid" placeholder="Saisissez une valeur">
                     @if (form.controls.nomDefunt.touched && form.controls.nomDefunt.invalid) {
                       <div class="invalid-feedback">Le nom de la personne decedee est obligatoire.</div>
                     }
@@ -130,7 +130,7 @@
                     <label class="form-label" for="pr-duree-cotisation">Duree totale de cotisation (mois) <span class="text-danger">*</span></label>
                     <input id="pr-duree-cotisation" class="form-control" type="number" min="0"
                            formControlName="dureeCotisationMois"
-                           [class.is-invalid]="form.controls.dureeCotisationMois.touched && form.controls.dureeCotisationMois.invalid">
+                           [class.is-invalid]="form.controls.dureeCotisationMois.touched && form.controls.dureeCotisationMois.invalid" placeholder="Saisissez une valeur">
                     @if (form.controls.dureeCotisationMois.touched && form.controls.dureeCotisationMois.invalid) {
                       <div class="invalid-feedback">La duree de cotisation est obligatoire.</div>
                     }
@@ -144,7 +144,7 @@
                     <label class="form-label" for="pr-cotisations-versees">Total des cotisations versees (FCFA) <span class="text-danger">*</span></label>
                     <input id="pr-cotisations-versees" class="form-control" type="number" min="0"
                            formControlName="montantCotisationsVersees"
-                           [class.is-invalid]="form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid">
+                           [class.is-invalid]="form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid" placeholder="Saisissez une valeur">
                     @if (form.controls.montantCotisationsVersees.touched && form.controls.montantCotisationsVersees.invalid) {
                       <div class="invalid-feedback">Le total verse doit etre renseigne pour calculer le remboursement.</div>
                     }
@@ -191,7 +191,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="pr-beneficiaire-prenom">Prenom <span class="text-danger">*</span></label>
                   <input id="pr-beneficiaire-prenom" class="form-control" formControlName="prenomBeneficiaire"
-                         [class.is-invalid]="form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.prenomBeneficiaire.touched && form.controls.prenomBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le prenom de la personne designee est obligatoire.</div>
                   }
@@ -199,7 +199,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="pr-beneficiaire-nom">Nom <span class="text-danger">*</span></label>
                   <input id="pr-beneficiaire-nom" class="form-control" formControlName="nomBeneficiaire"
-                         [class.is-invalid]="form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.nomBeneficiaire.touched && form.controls.nomBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le nom de la personne designee est obligatoire.</div>
                   }
@@ -207,7 +207,7 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label" for="pr-beneficiaire-telephone">Telephone <span class="text-danger">*</span></label>
                   <input id="pr-beneficiaire-telephone" class="form-control" type="tel" formControlName="telephoneBeneficiaire"
-                         [class.is-invalid]="form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid">
+                         [class.is-invalid]="form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid" placeholder="Saisissez une valeur">
                   @if (form.controls.telephoneBeneficiaire.touched && form.controls.telephoneBeneficiaire.invalid) {
                     <div class="invalid-feedback">Le numero de telephone de la personne designee est obligatoire.</div>
                   }
@@ -264,7 +264,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="retourListe()">
             <i class="bi bi-x-lg me-1" aria-hidden="true"></i>Annuler
           </button>
-          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading()">
+          <button class="btn btn-success" type="submit" [disabled]="isSubmitting() || isLoading() || form.invalid || form.pending">
             @if (isSubmitting()) { <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span> }
             @else { <i class="bi me-2" [class.bi-pencil-square]="isEditing" [class.bi-plus-circle]="!isEditing" aria-hidden="true"></i> }
             {{ isSubmitting() ? 'Enregistrement…' : (isEditing ? 'Enregistrer les modifications' : 'Enregistrer la prestation') }}

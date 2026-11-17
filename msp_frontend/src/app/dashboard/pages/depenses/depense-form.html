@@ -26,7 +26,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Libellé <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" formControlName="libelle"
+                            <input aria-label="Libellé" type="text" class="form-control" formControlName="libelle"
                                    placeholder="Description de la dépense"
                                    [class.is-invalid]="form.get('libelle')?.invalid && form.get('libelle')?.touched">
                             @if (form.get('libelle')?.errors?.['required']) {
@@ -36,7 +36,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Date de dépense <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" formControlName="dateDepense"
+                            <input aria-label="Date de dépense" type="date" class="form-control" formControlName="dateDepense"
                                    placeholder="Sélectionner la date"
                                    [class.is-invalid]="form.get('dateDepense')?.invalid && form.get('dateDepense')?.touched">
                             @if (form.get('dateDepense')?.errors?.['required']) {
@@ -46,7 +46,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Montant (FCFA) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" formControlName="montant"
+                            <input aria-label="Montant (FCFA)" type="number" class="form-control" formControlName="montant"
                                    placeholder="Montant de la dépense"
                                    [class.is-invalid]="form.get('montant')?.invalid && form.get('montant')?.touched">
                             @if (form.get('montant')?.errors?.['required']) {
@@ -56,7 +56,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Frais de gestion <span class="text-danger">*</span></label>
-                            <select class="form-select" formControlName="fraisDeGestionSlug"
+                            <select aria-label="Frais de gestion" class="form-select" formControlName="fraisDeGestionSlug"
                                     [class.is-invalid]="form.get('fraisDeGestionSlug')?.invalid && form.get('fraisDeGestionSlug')?.touched">
                                 <option value="">Sélectionner un frais de gestion</option>
                                 @for (fdg of fraisDeGestions; track fdg.slug) {
@@ -72,13 +72,13 @@
 
                         <div class="col-12">
                             <label class="form-label">Observation</label>
-                            <textarea class="form-control" rows="3" formControlName="observation"
+                            <textarea aria-label="Observation" appFieldValidation class="form-control" rows="3" formControlName="observation"
                                       placeholder="Observation facultative..."></textarea>
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Justificatif (fichier)</label>
-                            <input type="file" class="form-control" (change)="onFichierChange($event)"
+                            <input aria-label="Justificatif (fichier)" type="file" class="form-control" (change)="onFichierChange($event)"
                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                             @if (fichierSelectionne) {
                                 <small class="text-muted">Fichier sélectionné : {{ fichierSelectionne }}</small>

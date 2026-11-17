@@ -1,3 +1,4 @@
+import {requiredValue} from '../../../shared/utils/form-validators';
 ﻿import {Component, DestroyRef, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -38,14 +39,14 @@ export class PrestationForm implements OnInit {
   readonly adherentSearchError = signal('');
 
   readonly form = new FormGroup({
-    adherentSlug: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    typePrestation: new FormControl<TypePrestation | ''>('', {nonNullable: true, validators: [Validators.required]}),
-    datePrestation: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
+    adherentSlug: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
+    typePrestation: new FormControl<TypePrestation | ''>('', {nonNullable: true, validators: [requiredValue]}),
+    datePrestation: new FormControl('', {nonNullable: true, validators: [requiredValue]}),
     heuresHospitalisation: new FormControl('', {nonNullable: true}),
     lienDefunt: new FormControl<LienDefunt | ''>('', {nonNullable: true}),
     nomDefunt: new FormControl('', {nonNullable: true}),
     prenomDefunt: new FormControl('', {nonNullable: true}),
-    typeBeneficiaire: new FormControl<TypeBeneficiaire | ''>('', {nonNullable: true, validators: [Validators.required]}),
+    typeBeneficiaire: new FormControl<TypeBeneficiaire | ''>('', {nonNullable: true, validators: [requiredValue]}),
     nomBeneficiaire: new FormControl('', {nonNullable: true}),
     prenomBeneficiaire: new FormControl('', {nonNullable: true}),
     telephoneBeneficiaire: new FormControl('', {nonNullable: true}),
@@ -288,22 +289,22 @@ export class PrestationForm implements OnInit {
     const relation = this.form.controls.lienDefunt.value;
     const beneficiary = this.form.controls.typeBeneficiaire.value;
     this.form.controls.heuresHospitalisation.setValidators(
-      false ? [Validators.required, Validators.min(72)] : []
+      false ? [requiredValue, Validators.min(72)] : []
     );
-    this.form.controls.lienDefunt.setValidators(type === 'DECES' ? [Validators.required] : []);
+    this.form.controls.lienDefunt.setValidators(type === 'DECES' ? [requiredValue] : []);
     const deceasedDetailsRequired = type === 'DECES' && !!relation && relation !== 'ADHERENT';
-    this.form.controls.nomDefunt.setValidators(deceasedDetailsRequired ? [Validators.required, Validators.maxLength(100)] : []);
-    this.form.controls.prenomDefunt.setValidators(deceasedDetailsRequired ? [Validators.required, Validators.maxLength(100)] : []);
+    this.form.controls.nomDefunt.setValidators(deceasedDetailsRequired ? [requiredValue, Validators.maxLength(100)] : []);
+    this.form.controls.prenomDefunt.setValidators(deceasedDetailsRequired ? [requiredValue, Validators.maxLength(100)] : []);
     const designated = beneficiary === 'PERSONNE_DESIGNEE' && !this.isRetirement;
-    this.form.controls.nomBeneficiaire.setValidators(designated ? [Validators.required, Validators.maxLength(100)] : []);
-    this.form.controls.prenomBeneficiaire.setValidators(designated ? [Validators.required, Validators.maxLength(100)] : []);
+    this.form.controls.nomBeneficiaire.setValidators(designated ? [requiredValue, Validators.maxLength(100)] : []);
+    this.form.controls.prenomBeneficiaire.setValidators(designated ? [requiredValue, Validators.maxLength(100)] : []);
     this.form.controls.telephoneBeneficiaire.setValidators(designated
-      ? [Validators.required, Validators.maxLength(30)] : []);
+      ? [requiredValue, Validators.maxLength(30)] : []);
     this.form.controls.dureeCotisationMois.setValidators(
-      this.requiresContributionDuration ? [Validators.required, Validators.min(0)] : []
+      this.requiresContributionDuration ? [requiredValue, Validators.min(0)] : []
     );
     this.form.controls.montantCotisationsVersees.setValidators(
-      this.requiresContributionAmount ? [Validators.required, Validators.min(0)] : []
+      this.requiresContributionAmount ? [requiredValue, Validators.min(0)] : []
     );
     for (const control of [
       this.form.controls.heuresHospitalisation, this.form.controls.lienDefunt, this.form.controls.nomDefunt,

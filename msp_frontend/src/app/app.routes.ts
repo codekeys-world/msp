@@ -2,8 +2,10 @@ import { Router, Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthentificationService } from './authentification/services/authentification-service';
 import { authentificationGuardGuard } from './authentification/guards/authentification-guard-guard';
+import {withPageMetadata} from './shared/services/page-metadata';
 
-export const routes: Routes = [
+export const routes: Routes = withPageMetadata([
+    {path: 'confidentialite', loadComponent: () => import('./pages/privacy').then(c => c.Privacy)},
     {path : '', loadComponent : () => import('./index/components/index').then(c => c.Index), pathMatch :'full'},
     {path : 'index', loadComponent : () => import('./index/components/index').then(c => c.Index)},
     {path : 'authentification', loadComponent : () => import('./authentification/components/authentification/authentification').then(c => c.Authentification)},
@@ -224,5 +226,5 @@ export const routes: Routes = [
         ]
     },
 
-    {path : '**', redirectTo : ''}
-];
+    {path: '**', loadComponent: () => import('./pages/not-found').then(c => c.NotFound)}
+]);

@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 $primary: #0F7D4B;
 $body-bg: #f7faf8;
+$success: #146c43;
+$secondary: #526259;
 @import "bootstrap/scss/bootstrap";
 
 
@@ -22,4 +24,46 @@ $body-bg: #f7faf8;
   background-color: #0F7D4B;
   border-color: #0F7D4B;
 }
+
+// Shared accessibility and layout rules apply to public and authenticated pages.
+html { scroll-padding-top: 6rem; }
+body { min-width: 320px; color: #19352a; }
+app-root { display: block; }
+img { max-width: 100%; }
+input, textarea, select { max-width: 100%; }
+.form-control::placeholder { color: #596b62; opacity: 1; }
+.text-muted, .text-secondary { color: #526259 !important; }
+.text-white-50 { color: #fff !important; opacity: .9; }
+.dashboard-theme .sidebar-section,
+.dashboard-theme .sidebar-brand small { color: #fff; opacity: .9; }
+.dashboard-theme .sidebar .nav-link { color: #fff; }
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #155caf;
+  outline-offset: 3px;
+}
+.table-responsive { max-width: 100%; overscroll-behavior-x: contain; }
+.table-responsive:focus-visible { outline-offset: -3px; }
+
+@media (max-width: 767.98px) {
+  .container, .container-fluid { max-width: 100%; }
+  .row > *, .d-flex > *, [class$="-heading"] > *, [class$="-header"] > * { min-width: 0; }
+  h1, h2, h3, p, .card-body, .alert { overflow-wrap: anywhere; }
+  .form-control, .form-select { font-size: 1rem; }
+  .btn, .nav-link { min-height: 44px; }
+  .btn { white-space: normal; }
+  .pagination { flex-wrap: wrap; gap: .25rem; }
+  [class$="-heading"], [class$="-header"], .page-header { flex-wrap: wrap; gap: 1rem; }
+  .modal-dialog { margin: .5rem; max-width: calc(100vw - 1rem); }
+  .modal-content { max-height: calc(100dvh - 1rem); overflow-y: auto; }
+  .dashboard-theme .content-area { padding: .75rem; }
+  .dashboard-theme .card-body { padding: 1rem; }
+  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+@media print { app-cookie-banner { display: none !important; } }
 

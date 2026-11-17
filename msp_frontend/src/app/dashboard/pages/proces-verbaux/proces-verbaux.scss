@@ -11,7 +11,7 @@
 .pvs-eyebrow { color: rgb(255 255 255 / 72%); font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 .pvs-content { padding: clamp(1rem, 2.5vw, 1.75rem); background: #f8faf8; border: 1px solid #e9efea; border-radius: 1rem; }
 .pvs-content h2 { margin: 0; color: #19352a; font-size: 1.2rem; font-weight: 700; }
-.pvs-content > div > p { margin: .3rem 0 0; color: #73847a; font-size: .88rem; }
+.pvs-content > div > p { margin: .3rem 0 0; color: #526259; font-size: .88rem; }
 .pvs-search { max-width: 58rem; .input-group-text { color: #176640; background: #fff; } }
 .pvs-state, .pvs-empty { display: flex; min-height: 12rem; align-items: center; justify-content: center; gap: .75rem; color: #65766b; }
 .pvs-empty { flex-direction: column; text-align: center; i { color: #16804e; font-size: 2.5rem; } h3, p { margin: 0; } }
@@ -24,7 +24,7 @@
 }
 .pv-card__header, .pv-card__footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 .pv-card__heading { min-width: 0; }
-.pv-card__eyebrow, .pv-card__label { display: block; color: #73847a; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.pv-card__eyebrow, .pv-card__label { display: block; color: #526259; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 .pv-card__number { margin: .35rem 0 .25rem; color: #176640; font-size: 1.12rem; font-weight: 700; overflow-wrap: anywhere; }
 .pv-card__subject { margin: 0; color: #52645a; font-size: .93rem; line-height: 1.45; overflow-wrap: anywhere; }
 .pv-card__icon, .pv-card__document-icon { display: grid; flex: 0 0 auto; place-items: center; color: #16804e; background: #eaf6ee; border-radius: .8rem; }
@@ -34,7 +34,7 @@
 .pv-card__summary strong i { color: #16804e; }
 .pv-card__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; margin: 0 0 1.2rem; }
 .pv-card__details > div { min-width: 0; }
-.pv-card__details dt { margin-bottom: .25rem; color: #73847a; font-size: .78rem; font-weight: 600; }
+.pv-card__details dt { margin-bottom: .25rem; color: #526259; font-size: .78rem; font-weight: 600; }
 .pv-card__details dt i { color: #16804e; }
 .pv-card__details dd { margin: 0; color: #263d31; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; }
 .pv-card__observation { grid-column: 1 / -1; }

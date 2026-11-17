@@ -1,3 +1,4 @@
+import {requiredValue} from '../../../shared/utils/form-validators';
 import {Component, ElementRef, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -29,8 +30,8 @@ export class ConvocationForm implements OnInit {
   readonly selectedFile = signal<File | null>(null);
   readonly existingFilename = signal<string | null>(null);
   readonly form = new FormGroup({
-    description: new FormControl('', {validators: [Validators.required], nonNullable: true}),
-    dateConvocation: new FormControl('', {validators: [Validators.required], nonNullable: true}),
+    description: new FormControl('', {validators: [requiredValue], nonNullable: true}),
+    dateConvocation: new FormControl('', {validators: [requiredValue], nonNullable: true}),
   });
 
   get isEditing(): boolean { return this.slug() !== null; }
